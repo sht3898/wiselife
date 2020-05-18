@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import TeamPage from './views/TeamPage.vue'
 import ErrorPage from './views/ErrorPage.vue'
+import SignUp from './views/SignUp.vue'
 
 Vue.use(Router)
 
@@ -35,6 +36,11 @@ export default new Router({
 			path : '*',
 			name : 'errorPage',
 			component: ErrorPage
+        },
+        {
+			path : '/signup',
+			name : 'signUp',
+			component: SignUp
 		},
   ]
 })
