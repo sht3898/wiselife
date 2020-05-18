@@ -1,9 +1,9 @@
 package com.ssafy.wiselife.service;
 
-import com.ssafy.wiselife.dto.UserDTO;
+import com.ssafy.wiselife.model.User;
 
 public interface IUserService {
-
-	UserDTO signup(UserDTO user);
+	
+	int signUp(User user);
 	
 }
