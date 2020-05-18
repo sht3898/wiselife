@@ -3,6 +3,7 @@
     <toolbar />
     <router-view/>
     <go-top />
+    <v-divider></v-divider>
     <Footer />
   </v-app>
   <v-app v-else id="app">

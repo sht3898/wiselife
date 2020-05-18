@@ -1,30 +1,26 @@
 <template>
-  <div >
+  <div>
     <v-app-bar class="toolbar" id="app-toolbar" app flat color="white">
       <v-toolbar-title>
         <v-img :src="getImgUrl('wiselife.png')" height="60px" width="100px" @click="gohome()" />
       </v-toolbar-title>
       <v-spacer />
       <v-toolbar-items>
-        <div class="searchbar mt-3 mr-3">
+        <div class="searchbar mt-3 mr-5 pr-4" style="width:500px">
           <v-text-field
-            outlined
-            label="강좌/모임 검색"
+            placeholder="🔎  강좌/모임 검색"
             @keyup.enter="goSearch(researchValue)"
-            :dense="true"
-            color="teal"
+            filled
+            rounded
+            dense
             v-model="researchValue"
           ></v-text-field>
         </div>
+        <v-btn small rounded>강좌/모임 만들기 ✒️</v-btn>
         <v-btn text v-if="isLogin" class="text-center" style="padding-top:20px;">
           <v-menu offset-y open-on-hover>
             <template v-slot:activator="{ on }">
-              <span
-                class="infotext"
-                text
-                v-on="on"
-                style="padding-bottom:15px; font-size:20pt; color:white"
-              >
+              <span class="infotext" text v-on="on" style="padding-bottom:15px; font-size:18pt; color:dimgrey">
                 <span class="mdi mdi-account-circle"></span>
                 {{name}} 님
               </span>
@@ -140,9 +136,10 @@ export default {
 .infotext {
   font-family: "Nanum Pen Script", cursive;
 }
-.toolbar{
-max-width:930px; 
-margin:auto;
-padding-top:10px;
+.toolbar {
+  max-width: 930px;
+  margin: auto;
+  padding-top: 20px;
+  position: absolute;
 }
 </style>

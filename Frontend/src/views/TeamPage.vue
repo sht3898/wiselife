@@ -1,5 +1,5 @@
 <template>
-  <v-flex lg9 class="ma-auto pa-8">
+  <v-flex lg8 class="ma-auto pa-8">
     <v-container fluid mb-12>
       <h2 class="headline mb-3">
         About
@@ -7,26 +7,28 @@
       </h2>
       <br />
       <p class="infotext" style="text-align:center">
-        상새로이는
-        <span style="color:darkorange">' 상권의 활성화를 도와 상권을 새로이 한다는 목적을 갖는 서비스 '</span>를 제공합니다!
+        슬기로운 여가생활은
+        <span style="color:darkorange">' 개인의 성향에 맞춘 여가생활 추천 서비스 '</span>를 제공합니다!
       </p>
       <br />
       <v-row>
         <v-col lg="4">
-          
+          <v-flex d-sm-flex>
+            <v-img :src="getImgUrl('wiselife.png')" aspect-ratio="1.6" />
+          </v-flex>
         </v-col>
         <v-col lg="8">
           <v-flex d-sm-flex>
             <p class="infocontent">
-              음식점을 오픈하고자 하는 예비 소상공인과 프랜차이즈화를 원하는 소상공인을 위해
-              <strong
-                style="color:darkblue"
-              >공공데이터와 다이닝코드의 음식점 리뷰 데이터</strong>를 활용하여
-              <strong style="color:darkblue">상권을 분석</strong>한 결과를 제공합니다.
+              사용자의 성별, 지역, 나이대, 관심사, 설문조사를 통한 성향을 통해 빅데이터 분석을 하여 사용자에게 맞는 활동을 추천해주고 실천할 수 있도록 강좌와 모임을 소개하여 슬기로운 여가생활을 누릴 수 있게 해줍니다.
               <br />
-              <br />또한 분석한 정보를 토대로 창업 시 유리한 조건을 갖추거나 경쟁력을 갖추기 위한
-              <strong style="color:darkblue">업종을 추천</strong>해 줌으로써
-              <strong style="color:darkblue">창업 실패율을 낮추고 상권의 활성화를 돕는 효과</strong>를 기대합니다.
+              <br />1) 무료한 현대 사회인들을 위해 빅데이터를 활용하여 개인의 성향과 관심사에 맞춘 여가생활 추천
+              <br />
+              <br />2) 이용자들의 성향과 관심사에 맞춘 지역별 강좌와 모임을 소개하여 함께 즐길 수 있는 슬기로운 여가생활을 독려
+              <br />
+              <br />3) 여가생활의 활성화로 현대 사회인의 스트레스 완화와 지역별 소통의 기회를 넓히고 건전한 여가생활을 통해 지역 주민들의 자기개발과 다양한 프로그램 제공
+              <br />
+              <br />이를 통해, 정신적, 육체적 건강을 유지, 향상하여 삶의 질을 높이고 자신의 잠재적 재능을 확인하고 표현함으로써 자아실현의 기회를 가질 수 있게 해줍니다.
             </p>
           </v-flex>
         </v-col>
@@ -45,7 +47,7 @@
             <v-row align="center" class="spacer" no-gutters>
               <v-col cols="4" sm="2" md="1">
                 <v-avatar size="36px">
-                  <img alt="Avatar" :src="getImgUrl('김대래.jpg')" />
+                  <img alt="Avatar" :src="getImgUrl('김수빈.jpg')" />
                 </v-avatar>
               </v-col>
 
@@ -56,14 +58,14 @@
                   label
                   small
                 >Back-end</v-chip>
-                <strong>김대래</strong>
+                <strong>김수빈</strong>
               </v-col>
 
               <v-col class="text-no-wrap hidden-xs-only" cols="5" sm="3">
-                <span>Leader</span>
+                <span>팀장</span>
               </v-col>
 
-              <v-col class="grey--text text-truncate">drk0830@naver.com</v-col>
+              <v-col class="grey--text text-truncate">soobin1080@naver.com</v-col>
             </v-row>
           </v-expansion-panel-header>
 
@@ -87,20 +89,20 @@
             <v-row align="center" class="spacer" no-gutters>
               <v-col cols="4" sm="2" md="1">
                 <v-avatar size="36px">
-                  <img alt="Avatar" :src="getImgUrl('우동균.jpg')" />
+                  <img alt="Avatar" :src="getImgUrl('김가은.jpg')" />
                 </v-avatar>
               </v-col>
 
               <v-col class="hidden-xs-only" sm="5" md="3">
                 <v-chip :color="`blue lighten-3`" class="ml-0 mr-6 black--text" label small>Back-end</v-chip>
-                <strong>우동균</strong>
+                <strong>김가은</strong>
               </v-col>
 
               <v-col class="text-no-wrap hidden-xs-only" cols="5" sm="3">
-                <span>Back 팀장, CTO</span>
+                <span>코딩 깡패</span>
               </v-col>
 
-              <v-col class="grey--text text-truncate">wdj1207@naver.com</v-col>
+              <v-col class="grey--text text-truncate">l9960204@naver.com</v-col>
             </v-row>
           </v-expansion-panel-header>
 
@@ -124,20 +126,20 @@
             <v-row align="center" class="spacer" no-gutters>
               <v-col cols="4" sm="2" md="1">
                 <v-avatar size="36px">
-                  <img alt="Avatar" :src="getImgUrl('김수빈.jpg')" />
+                  <img alt="Avatar" :src="getImgUrl('서현택.jpg')" />
                 </v-avatar>
               </v-col>
 
               <v-col class="hidden-xs-only" sm="5" md="3">
                 <v-chip :color="`blue lighten-3`" class="ml-0 mr-6 black--text" label small>Back-end</v-chip>
-                <strong>김수빈</strong>
+                <strong>서현택</strong>
               </v-col>
 
               <v-col class="text-no-wrap hidden-xs-only" cols="5" sm="3">
-                <span>데이터베이스</span>
+                <span>빅데이터</span>
               </v-col>
 
-              <v-col class="grey--text text-truncate">soobin1080@naver.com</v-col>
+              <v-col class="grey--text text-truncate">sehyunteg@naver.com</v-col>
             </v-row>
           </v-expansion-panel-header>
 
@@ -151,6 +153,48 @@
               <v-row>
                 <v-col cols="4">Rest API 구축</v-col>
                 <v-col>회원 정보 및 게시판 API 구축</v-col>
+              </v-row>
+            </v-card-text>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+
+        <v-expansion-panel hide-actions>
+          <v-expansion-panel-header>
+            <v-row align="center" class="spacer" no-gutters>
+              <v-col cols="4" sm="2" md="1">
+                <v-avatar size="36px">
+                  <img alt="Avatar" :src="getImgUrl('김대래.jpg')" />
+                </v-avatar>
+              </v-col>
+
+              <v-col class="hidden-xs-only" sm="5" md="3">
+                <v-chip
+                  :color="`orange lighten-3`"
+                  class="ml-0 mr-6 black--text"
+                  label
+                  small
+                >Front-end</v-chip>
+                <strong>김대래</strong>
+              </v-col>
+
+              <v-col class="text-no-wrap hidden-xs-only" cols="5" sm="3">
+                <span>디버거</span>
+              </v-col>
+
+              <v-col class="grey--text text-truncate">drk0830@naver.com</v-col>
+            </v-row>
+          </v-expansion-panel-header>
+
+          <v-expansion-panel-content>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-row>
+                <v-col cols="4">Front-end (Javascript, Axios, Vuex)</v-col>
+                <v-col>상권 분석 및 추천 페이지 구현</v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="4">API 활용</v-col>
+                <v-col>Kakao MAP API 활용 - 상권 분석 및 추천</v-col>
               </v-row>
             </v-card-text>
           </v-expansion-panel-content>
@@ -176,52 +220,10 @@
               </v-col>
 
               <v-col class="text-no-wrap hidden-xs-only" cols="5" sm="3">
-                <span>Front 팀장</span>
+                <span>프론트</span>
               </v-col>
 
               <v-col class="grey--text text-truncate">jennyahn94@naver.com</v-col>
-            </v-row>
-          </v-expansion-panel-header>
-
-          <v-expansion-panel-content>
-            <v-divider></v-divider>
-            <v-card-text>
-              <v-row>
-                <v-col cols="4">Front-end (Javascript, Axios, Vuex)</v-col>
-                <v-col>상권 분석 및 추천 페이지 구현</v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="4">API 활용</v-col>
-                <v-col>Kakao MAP API 활용 - 상권 분석 및 추천</v-col>
-              </v-row>
-            </v-card-text>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-
-        <v-expansion-panel hide-actions>
-          <v-expansion-panel-header>
-            <v-row align="center" class="spacer" no-gutters>
-              <v-col cols="4" sm="2" md="1">
-                <v-avatar size="36px">
-                  <img alt="Avatar" :src="getImgUrl('오유경.jpg')" />
-                </v-avatar>
-              </v-col>
-
-              <v-col class="hidden-xs-only" sm="5" md="3">
-                <v-chip
-                  :color="`orange lighten-3`"
-                  class="ml-0 mr-6 black--text"
-                  label
-                  small
-                >Front-end</v-chip>
-                <strong>오유경</strong>
-              </v-col>
-
-              <v-col class="text-no-wrap hidden-xs-only" cols="5" sm="3">
-                <span>AWS 배포</span>
-              </v-col>
-
-              <v-col class="grey--text text-truncate">action713@naver.com</v-col>
             </v-row>
           </v-expansion-panel-header>
 
@@ -250,7 +252,7 @@ export default {
   components: {},
   methods: {
     getImgUrl(img) {
-      return require("../assets/" + img);
+      return require("../assets/members/" + img);
     }
   }
 };
