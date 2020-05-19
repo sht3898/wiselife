@@ -45,32 +45,18 @@
     </v-row>
 
     <h3>관심 카테고리</h3>
-    <v-row>
-      <v-col class="mt-5">
-        <v-img :src="getImgUrl('레저,스포츠.png')" width="90px" @click="clickCategory" :class="{ green : clicked }" style="border-radius:17px" ></v-img>
-      </v-col>
-      <v-col class="mt-5">
-        <v-img :src="getImgUrl('요리.png')" width="90px" style="cursor:pointer" />
-      </v-col>
-      <v-col class="mt-5">
-        <v-img :src="getImgUrl('수공예,공방.png')" width="90px" />
-      </v-col>
-      <v-col class="mt-5">
-        <v-img :src="getImgUrl('놀이,게임.png')" width="90px" />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="mt-5">
-        <v-img :src="getImgUrl('문화.png')" width="90px" />
-      </v-col>
-      <v-col class="mt-5">
-        <v-img :src="getImgUrl('예술.png')" width="90px" />
-      </v-col>
-      <v-col class="mt-5">
-        <v-img :src="getImgUrl('축제,행사.png')" width="90px" />
-      </v-col>
-      <v-col class="mt-5">
-        <v-img :src="getImgUrl('기타.png')" width="90px" />
+    <v-row justify="space-around">
+      <v-col
+        class="mt-5"
+        v-for="category in categories" :key="category.name">
+        <v-img
+          :src="getImgUrl(category.url)"
+          width="90px"
+          @click="category.clicked = !category.clicked"
+          :class="{green: category.clicked}"
+          style="border-radius:17px; margin:auto"
+          ></v-img>
+          <div class="subheading" style="text-align:center;">{{category.name}}</div>
       </v-col>
     </v-row>
 
@@ -83,6 +69,9 @@
 <script>
 export default {
   name: "SignUp",
+  props: {
+    token:{type : String}
+  },
   data() {
     return {
       gender: "",
@@ -90,10 +79,52 @@ export default {
       area1: "",
       area2: "",
       instructor: "",
+      categories:[
+        {
+          url :"레저,스포츠.png",
+          name : "레저/스포츠",
+          clicked : false 
+        },
+        {
+          url :"요리.png",
+          name : "요리",
+          clicked : false 
+        },
+        {
+          url :"수공예,공방.png",
+          name : "수공예/공방",
+          clicked : false 
+        },
+        {
+          url :"놀이,게임.png",
+          name : "놀이/게임",
+          clicked : false 
+        },
+        {
+          url :"문화.png",
+          name : "문화",
+          clicked : false 
+        },
+        {
+          url :"예술.png",
+          name : "예술",
+          clicked : false 
+        },
+        {
+          url :"축제,행사.png",
+          name : "축제/행사",
+          clicked : false 
+        },
+        {
+          url :"기타.png",
+          name : "기타",
+          clicked : false 
+        },
+      ],
       interest_category: [],
       years: [],
       clicked: false,
-      valid: true,
+      valid: true
     };
   },
   methods: {
@@ -106,7 +137,7 @@ export default {
     getImgUrl(img) {
       return require("../assets/categories/" + img);
     },
-    clickCategory(){
+    clickCategory() {
       this.clicked = true;
     },
     resetValidation() {
@@ -126,7 +157,7 @@ export default {
 .signUp {
   margin: auto;
 }
-.green{
-  background-color:green;
+.green {
+  background-color: green;
 }
 </style>
