@@ -43,8 +43,7 @@ public class MeetingServiceImpl implements IMeetingService {
 
 	@Override
 	public int selectMeetingId(long uid) {
-		// TODO Auto-generated method stub
-		return 0;
+		return meetingdao.selectMeetingId(uid);
 	}
 
 }

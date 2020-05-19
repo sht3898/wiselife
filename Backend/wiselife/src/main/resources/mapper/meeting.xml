@@ -3,11 +3,11 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="wiselife.meeting">
-	<insert id="insertUserMeeting" parameterType="com.ssafy.wiselife.model.InsertUserMeeting">
-		insert into meeting(uid, meeting_id) values (#{uid}, #{meeting_id})
-	</insert>
+<!-- 	<insert id="insertUserMeeting" parameterType="com.ssafy.wiselife.model.InsertUserMeeting"> -->
+<!-- 		insert into meeting(uid, meeting_id) values (#{uid}, #{meeting_id}) -->
+<!-- 	</insert> -->
 	
-	<select id="selectMeetingId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+	<select id="select" parameterType="java.lang.Long" resultType="java.lang.Integer">
 		select last_insert_id() from meeting
 	</select>
 
