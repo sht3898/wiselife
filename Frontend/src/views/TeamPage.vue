@@ -1,6 +1,6 @@
 <template>
   <v-flex lg8 class="ma-auto pa-8">
-    <v-container fluid mb-12>
+    <v-container fluid>
       <h2 class="headline mb-3">
         About
         <strong>Service</strong>

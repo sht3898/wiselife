@@ -1,13 +1,14 @@
 <template>
   <v-app v-if="isLogin" id="app">
     <toolbar />
-    <router-view/>
+    <v-divider></v-divider>
+    <router-view class="mt-12 pt-12" />
     <go-top />
     <v-divider></v-divider>
     <Footer />
   </v-app>
   <v-app v-else id="app">
-    <Login/>
+    <Login />
   </v-app>
 </template>
 
@@ -24,10 +25,10 @@ export default {
     Footer,
     Login
   },
-  data(){
-    return{
-      isLogin:sessionStorage.getItem("token"),
-    }
+  data() {
+    return {
+      isLogin: sessionStorage.getItem("token")
+    };
   }
 };
 </script>
