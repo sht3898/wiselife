@@ -4,6 +4,7 @@ import Home from './views/Home.vue'
 import TeamPage from './views/TeamPage.vue'
 import ErrorPage from './views/ErrorPage.vue'
 import SignUp from './views/SignUp.vue'
+import ResultPage from './views/ResultPage.vue'
 
 Vue.use(Router)
 
@@ -41,6 +42,11 @@ export default new Router({
 			path : '/signup',
 			name : 'signUp',
 			component: SignUp
+		},
+		{
+			path : '/result/:keyword',
+			name : 'resultPage',
+			component: ResultPage
 		},
   ]
 })

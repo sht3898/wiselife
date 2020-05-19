@@ -6,7 +6,7 @@
       </v-toolbar-title>
       <v-spacer />
       <v-toolbar-items>
-        <div class="searchbar mt-3 mr-5 pr-4" style="width:500px">
+        <div class="searchbar mt-3 mr-3 pr-2" style="width:500px">
           <v-text-field
             placeholder="🔎  강좌/모임 검색"
             @keyup.enter="goSearch(researchValue)"
@@ -16,7 +16,9 @@
             v-model="researchValue"
           ></v-text-field>
         </div>
-        <v-btn small rounded>강좌/모임 만들기 ✒️</v-btn>
+        <div >
+        <v-btn rounded class="infotext mt-3 orange lighten-2">강좌/모임 만들기 ✒️</v-btn>
+        </div>
         <v-btn text v-if="isLogin" class="text-center" style="padding-top:20px;">
           <v-menu offset-y open-on-hover>
             <template v-slot:activator="{ on }">
@@ -106,8 +108,8 @@ export default {
       this.$router.push("/");
     },
     goSearch(content) {
-      // this.researchValue = ''
-      // router.push({ name: "searchresult", query:{cont: content}})
+      this.researchValue = ''
+      this.$router.push("/result/"+content)
     },
     /////////////////////////////////////////////////
     getUserName() {
@@ -136,8 +138,9 @@ export default {
 .infotext {
   font-family: "Nanum Pen Script", cursive;
 }
-.toolbar {
-  max-width: 930px;
+.toolbar {  
+  min-height: 100px;
+  max-width: 1000px;
   margin: auto;
   padding-top: 20px;
   position: absolute;
