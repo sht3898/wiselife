@@ -76,12 +76,15 @@ export default {
     login() {
       this.clickBtn = true;
       let token = "asdfasdfasdfasdfasdf";
+      let username="대래";
       let status = 2;
       // status { 1 : login ok, member ok / 2 : login ok, member : no / 3 : error }
       if (status == 1) {
         sessionStorage.setItem("token", token);
+        sessionStorage.setItem("username", username);
         this.$router.go();
       } else if (status == 2) {
+        sessionStorage.setItem("username", username);
         this.token = token;
         this.isMember = false;
       } else {
