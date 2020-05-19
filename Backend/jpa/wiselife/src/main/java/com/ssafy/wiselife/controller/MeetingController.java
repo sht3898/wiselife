@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.wiselife.model.Meeting.CreateMeeting;
-import com.ssafy.wiselife.model.Meeting.UpdateMeeting;
+import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
+import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
 import com.ssafy.wiselife.service.IMeetingService;
 
 import io.swagger.annotations.ApiOperation;
@@ -38,8 +38,8 @@ public class MeetingController {
 		HttpStatus status = null;
 
 		if (result > 0) {
-			resultMap.put(result, "success");
 			status = HttpStatus.OK;
+			resultMap.put(result, "success");
 		} else {
 			resultMap.put(result, "SQL error");
 			status = HttpStatus.BAD_REQUEST;
@@ -47,18 +47,16 @@ public class MeetingController {
 		
 		return new ResponseEntity<>(resultMap, status);
 	}
-
-	@PutMapping("/meeting/update/{meeting_id}")
-	@ApiOperation(value = "모임/강좌 수정하기")
-	public ResponseEntity<Map<HttpStatus, String>> updateMeeting(@PathVariable int meeting_id, @RequestParam long uid,
-			@RequestBody UpdateMeeting meeting) {
-		return null;
-	}
+//
+//	@PutMapping("/meeting/update/{meeting_id}")
+//	@ApiOperation(value = "모임/강좌 수정하기")
+//	public ResponseEntity<Map<HttpStatus, String>> updateMeeting(@PathVariable int meeting_id, @RequestParam long uid,
+//			@RequestBody UpdateMeeting meeting) {
+//		return null;
+//	}
 	
 	@GetMapping("/test")
-	public int test(@RequestParam long uid) {
-		return meetingservice.selectMeetingId(uid);
+	public int test() {
+		return meetingservice.findByLastMeetingId();
 	}
-	
-
 }

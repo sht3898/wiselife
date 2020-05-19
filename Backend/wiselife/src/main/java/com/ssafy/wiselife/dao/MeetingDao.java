@@ -1,5 +1,6 @@
 package com.ssafy.wiselife.dao;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -23,7 +24,7 @@ public class MeetingDao {
 	}
 	
 	public int selectMeetingId(long uid) {
-		return sqlSession.selectOne(ns+"selectMeetingId", uid);
+		return sqlSession.selectOne(ns+"select", uid);
 	}
 	
 }
