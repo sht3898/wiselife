@@ -5,10 +5,12 @@ import com.ssafy.wiselife.model.Meeting.DetailMeeting;
 import com.ssafy.wiselife.model.Meeting.UpdateMeeting;
 
 public interface IMeetingService {
-	public boolean createMeeting(CreateMeeting meeting);
+	public int createMeeting(CreateMeeting meeting);
 	
 	public void updateMeeting(UpdateMeeting meeting);
 	
 	public DetailMeeting detailMeeting(int meeting_id);
+	
+	public int selectMeetingId(long uid);
 	
 }
