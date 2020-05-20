@@ -108,9 +108,9 @@ export default {
     gohome() {
       this.$router.push("/");
     },
-    goSearch(content) {
+    goSearch(keyword) {
       this.researchValue = ''
-      this.$router.push("/result/"+content)
+      this.$router.push("/result/"+keyword)
     },
     /////////////////////////////////////////////////
     getUserName() {
