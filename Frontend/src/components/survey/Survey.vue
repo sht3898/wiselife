@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import http from "../http-common.js";
+import http from "../../http-common.js";
 
 export default {
   name: "survey",
@@ -44,7 +44,70 @@ export default {
           number: 2,
           question: "나는 평소2 asdfasdfasdfasdfasdfasdf하다.",
           answer: 2
-        }
+        },{
+          number: 1,
+          question: "나는 평소1 하다.",
+          answer: 2
+        },
+        {
+          number: 2,
+          question: "나는 평소2 asdfasdfasdfasdfasdfasdf하다.",
+          answer: 2
+        },{
+          number: 1,
+          question: "나는 평소1 하다.",
+          answer: 2
+        },
+        {
+          number: 2,
+          question: "나는 평소2 asdfasdfasdfasdfasdfasdf하다.",
+          answer: 2
+        },{
+          number: 1,
+          question: "나는 평소1 하다.",
+          answer: 2
+        },
+        {
+          number: 2,
+          question: "나는 평소2 asdfasdfasdfasdfasdfasdf하다.",
+          answer: 2
+        },{
+          number: 1,
+          question: "나는 평소1 하다.",
+          answer: 2
+        },
+        {
+          number: 2,
+          question: "나는 평소2 asdfasdfasdfasdfasdfasdf하다.",
+          answer: 2
+        },{
+          number: 1,
+          question: "나는 평소1 하다.",
+          answer: 2
+        },
+        {
+          number: 2,
+          question: "나는 평소2 asdfasdfasdfasdfasdfasdf하다.",
+          answer: 2
+        },{
+          number: 1,
+          question: "나는 평소1 하다.",
+          answer: 2
+        },
+        {
+          number: 2,
+          question: "나는 평소2 asdfasdfasdfasdfasdfasdf하다.",
+          answer: 2
+        },{
+          number: 1,
+          question: "나는 평소1 하다.",
+          answer: 2
+        },
+        {
+          number: 2,
+          question: "나는 평소2 asdfasdfasdfasdfasdfasdf하다.",
+          answer: 2
+        },
       ],
       ticksLabels: [
         "전혀 그렇지 않다",

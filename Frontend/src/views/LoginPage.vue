@@ -1,32 +1,10 @@
 <template>
   <v-container fluid>
-    <!-- <div v-if="!clickBtn">
-      <v-card class="mx-auto" max-width="80%">
-          <v-img src="../assets/wisedoctor.jpg" height="400px"></v-img>
-        <v-row>
-        <v-col>
-          <v-img src="../assets/wiselife.png" style="margin:30px" height="110px" width="170px"></v-img>
-        </v-col>
-        <v-spacer></v-spacer>
-        <v-col>
-          <v-img
-            style="cursor:pointer; margin:30px;"
-            max-width="500px"
-            src="../assets/kakao_login_btn_large_wide.png"
-            @click="login()"
-          ></v-img>
-        </v-col>
-        </v-row>
-        <v-spacer></v-spacer>
-
-        <v-card-title>빅데이터 기반으로 당신의 맞춤 여가생활을 추천해드립니다!</v-card-title>
-      </v-card>
-    </div>-->
     <div v-if="!clickBtn">
       <v-card class="mx-auto" max-width="80%">
         <v-row>
           <v-col>
-            <ImgBanner :imgSrc="bannerImg"/>
+            <img-banner :imgSrc="bannerImg"/>
           </v-col>
           <v-col>
             <div style="padding:50px;">
@@ -49,17 +27,17 @@
         </v-row>
       </v-card>
     </div>
-    <SignUp v-if="!isMember" :token="token" />
+    <sign-up v-if="!isMember" :token="token" />
   </v-container>
 </template>
 
 <script>
 import http from "../http-common";
-import SignUp from "@/components/SignUp.vue";
-import ImgBanner from "@/components/ImgBanner";
+import SignUp from "@/components/login/SignUp.vue";
+import ImgBanner from "@/components/login/ImgBanner";
 
 export default {
-  name: "Login",
+  name: "loginPage",
   components: {
     SignUp,
     ImgBanner
@@ -71,6 +49,11 @@ export default {
       token: "",
       bannerImg: [this.getImgUrl("banner1.jpg"), this.getImgUrl("banner2.jpg")],
     };
+  },
+  mounted(){
+    if(sessionStorage.getItem('token')){
+      this.$router.push('/');
+    }
   },
   methods: {
     login() {
