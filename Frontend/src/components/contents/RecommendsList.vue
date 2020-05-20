@@ -1,6 +1,5 @@
 <template>
-  <v-flex>
-        
+  <v-flex>        
       <div class="card-carousel-wrapper">
         <div class="card-carousel--nav__left" @click="moveCarousel(-1)" :disabled="atHeadOfList"></div>
         <div class="card-carousel">
@@ -23,7 +22,7 @@
 <script>
 import ContentsCard from "./ContentsCard";
 export default {
-  name: "recommends",
+  name: "recommendsList",
   components: {
     ContentsCard
   },

@@ -51,7 +51,8 @@ export default new Router({
 		{
 			path : '/result/:keyword',
 			name : 'resultPage',
-			component: ResultPage
+			component: ResultPage,
+			props : true
 		},
   ]
 })

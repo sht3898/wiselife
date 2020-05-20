@@ -3,7 +3,7 @@
     <v-flex class="ma-auto mt-5" lg9>
       <v-container fluid>
         <p class="menu">추천 강좌/모임</p>
-        <recommends></recommends>
+        <recommends-list></recommends-list>
       </v-container>
 
       <v-container fluid mb-12>
@@ -48,11 +48,11 @@
 </template>
 
 <script>
-import Recommends from "@/components/contents/Recommends";
+import RecommendsList from "@/components/contents/RecommendsList";
 export default {
   name: 'home',
   components: {
-    Recommends
+    RecommendsList
   },
   data() {
     return {
