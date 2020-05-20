@@ -82,18 +82,18 @@
     </div>
   </v-container>
   <v-container v-else>
-    <Survey :token="token"/>
+    <survey :token="token"/>
     <div class="btn py-3" style="float:right">
       <v-btn color="grey lighten-3" class="mr-4" @click="pass()">건너뛰기</v-btn>
     </div>
   </v-container>
 </template>
 <script>
-import http from "../http-common";
-import Survey from "@/components/Survey";
+import http from "../../http-common";
+import Survey from "@/components/survey/Survey";
 
 export default {
-  name: "SignUp",
+  name: "signUp",
   props: {
     token: { type: String },
 
@@ -183,7 +183,7 @@ export default {
         .map((v, idx) => now - idx);
     },
     getImgUrl(img) {
-      return require("../assets/categories/" + img);
+      return require("../../assets/categories/" + img);
     },
     clickCategory() {
       this.clicked = true;
@@ -244,8 +244,9 @@ export default {
 
     },
     pass(){
-      // sessionStorage.setItem('token', this.token);
-      this.$router.go();
+      sessionStorage.setItem('token', this.token);
+      this.$router.push('/');
+      location.reload();
     }
   },
   watch: {

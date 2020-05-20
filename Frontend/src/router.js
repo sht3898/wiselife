@@ -4,7 +4,12 @@ import Home from './views/Home.vue'
 import TeamPage from './views/TeamPage.vue'
 import ErrorPage from './views/ErrorPage.vue'
 import ResultPage from './views/ResultPage.vue'
-import Login from './views/Login.vue'
+import LoginPage from './views/LoginPage.vue'
+
+const originalPush = Router.prototype.push;
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+};
 
 Vue.use(Router)
 
@@ -30,12 +35,12 @@ export default new Router({
 		},
 		{
 			path: '/login',
-			name: 'login',
-			component: Login
+			name: 'loginPage',
+			component: LoginPage
 		},
 		{
 			path: '/team',
-			name: 'team',
+			name: 'teamPage',
 			component: TeamPage
 		},	
 		{

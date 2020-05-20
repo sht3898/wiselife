@@ -53,10 +53,11 @@
 </template>
 
 <script>
-import http from "../http-common";
+import http from "../../http-common";
 import jwtDecode from "jwt-decode";
 
 export default {
+  name:'toolbar',
   components: {},
   data: () => ({
     responsive: false,
@@ -102,7 +103,7 @@ export default {
       }
     },
     getImgUrl(img) {
-      return require("../assets/" + img);
+      return require("../../assets/" + img);
     },
     gohome() {
       this.$router.push("/");
