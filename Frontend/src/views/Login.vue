@@ -55,7 +55,7 @@
 
 <script>
 import http from "../http-common";
-import SignUp from "../views/SignUp.vue";
+import SignUp from "@/components/SignUp.vue";
 import ImgBanner from "@/components/ImgBanner";
 
 export default {
