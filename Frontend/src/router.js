@@ -3,8 +3,8 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import TeamPage from './views/TeamPage.vue'
 import ErrorPage from './views/ErrorPage.vue'
-import SignUp from './views/SignUp.vue'
 import ResultPage from './views/ResultPage.vue'
+import Login from './views/Login.vue'
 
 Vue.use(Router)
 
@@ -29,6 +29,11 @@ export default new Router({
 			component: Home
 		},
 		{
+			path: '/login',
+			name: 'login',
+			component: Login
+		},
+		{
 			path: '/team',
 			name: 'team',
 			component: TeamPage
@@ -38,11 +43,6 @@ export default new Router({
 			name : 'errorPage',
 			component: ErrorPage
         },
-        {
-			path : '/signup',
-			name : 'signUp',
-			component: SignUp
-		},
 		{
 			path : '/result/:keyword',
 			name : 'resultPage',

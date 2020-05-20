@@ -57,7 +57,25 @@ export default {
   },
   mounted: {},
   methods: {
-    validate() {}
+    validate() {
+        var answers = [];
+        for( var i = 0; i < this.questions.length; i++){
+            answers.push(this.questions[i].answer);
+        }
+        let data = {
+            answers : answers,
+            headers: {
+                Authorization: "JWT " + this.token
+            }
+        }
+        http
+        .post(``, data)
+        .then(response =>{
+            if(response.data.state == 200){
+                this.$router.push('/surveyResult');
+            }
+        })
+    }
   }
 };
 </script>

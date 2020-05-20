@@ -242,6 +242,10 @@ export default {
       //   }
       // })
 
+    },
+    pass(){
+      // sessionStorage.setItem('token', this.token);
+      this.$router.go();
     }
   },
   watch: {

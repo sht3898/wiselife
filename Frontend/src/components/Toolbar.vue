@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar class="toolbar" id="app-toolbar" app flat color="white">
+    <v-app-bar class="toolbar" id="app-toolbar" flat color="white">
       <v-toolbar-title>
         <v-img :src="getImgUrl('wiselife.png')" height="60px" width="100px" @click="gohome()" />
       </v-toolbar-title>

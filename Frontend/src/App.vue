@@ -8,7 +8,7 @@
     <Footer />
   </v-app>
   <v-app v-else id="app">
-    <Login />
+    <router-view />
   </v-app>
 </template>
 
@@ -16,19 +16,22 @@
 import Toolbar from "@/components/Toolbar";
 import GoTop from "@/components/GoTop";
 import Footer from "@/components/Footer";
-import Login from "@/components/Login";
 
 export default {
   components: {
     Toolbar,
     GoTop,
     Footer,
-    Login
   },
   data() {
     return {
       isLogin: sessionStorage.getItem("token")
     };
+  },
+  created(){
+    if(!this.isLogin){
+      this.$router.push('/login');
+    }
   }
 };
 </script>
