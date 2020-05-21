@@ -4,6 +4,8 @@ import com.ssafy.wiselife.dto.UserDTO;
 
 public interface IUserService {
 	
-	int signUp(UserDTO user);
+	UserDTO signUp(UserDTO user);
+
+	boolean uidDuplicateCheck(long uid);
 	
 }
