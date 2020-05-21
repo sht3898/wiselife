@@ -1,33 +1,5 @@
 <template>
   <v-container fluid>
-<<<<<<< HEAD:Frontend/src/views/Login.vue
-    <!-- <div v-if="!clickBtn">
-      <v-card class="mx-auto" max-width="80%">
-          <v-img src="../assets/wisedoctor.jpg" height="400px"></v-img>
-        <v-row>
-        <v-col>
-          <v-img src="../assets/wiselife.png" style="margin:30px" height="110px" width="170px"></v-img>
-        </v-col>
-        <v-spacer></v-spacer>
-        <v-col> -->
-          <v-img
-            style="cursor:pointer; margin:30px;"
-            max-width="500px"
-            src="../assets/kakao_login_btn_large_wide.png"
-            @click="kakaoLogin()"     
-          >
-          <!-- <a href="https://kauth.kakao.com/oauth/authorize?client_id=e51118ba54c2776d75f8e4f9557acb4a&amp;redirect_uri=http://localhost:8080/api/user/login&amp;response_type=code"/> -->
-          </v-img>
-          <!--
-        </v-col>
-        </v-row>
-        <v-spacer></v-spacer>
-
-        <v-card-title>빅데이터 기반으로 당신의 맞춤 여가생활을 추천해드립니다!</v-card-title>
-      </v-card>
-    </div>-->
-=======
->>>>>>> 5ebb860020d00f8128092f2709e574c7e1ab506f:Frontend/src/views/LoginPage.vue
     <div v-if="!clickBtn">
       <v-card class="mx-auto" max-width="75%">
         <v-row>
@@ -102,18 +74,8 @@ export default {
     }
   },
   methods: {
-<<<<<<< HEAD:Frontend/src/views/Login.vue
-    kakaoLogin(){
-      http
-      .get('https://kauth.kakao.com/oauth/authorize?client_id=c2d9f09a902e77b8550b754cdb90d407&redirect_uri=http://localhost:8080/api/user/login&response_type=code')
-      .then(res=>{
-        console.log(res);
-      })
-    },
-=======
     onSuccess,
     onFailure,
->>>>>>> 5ebb860020d00f8128092f2709e574c7e1ab506f:Frontend/src/views/LoginPage.vue
     login() {
       this.clickBtn = true;
       let token = "asdfasdfasdfasdfasdf";
