@@ -1,9 +1,14 @@
 <template>
-  <v-card :loading="loading" class="mx-auto my-12" width="200">
+  <v-card :loading="loading" class="mx-auto my-3" width="200">
     <v-img height="150" src="https://cdn.vuetifyjs.com/images/cards/cooking.png">
-      <v-btn icon style="z-index:5; position: relative; top: 110px; left: 160px;">
+    <div style="z-index:5; position: relative;">
+    <v-chip :color="`green lighten-4`" class="black--text" label small style="top: 0px; left: 5px;">
+        대전 서구
+      </v-chip>
+      <v-btn icon style="top: 110px; left: 80px;">
         <v-icon color="white" style="opacity:0.7">mdi-heart</v-icon>
       </v-btn>
+    </div>
     </v-img>
 
     <v-card-title style="font-weight:bold">강좌명</v-card-title>

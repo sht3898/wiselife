@@ -8,7 +8,8 @@
       <v-toolbar-items>
         <div class="searchbar mt-3 mr-3 pr-2" style="width:500px">
           <v-text-field
-            placeholder="🔎  강좌/모임 검색"
+          prefix="🔎"
+            placeholder="강좌/모임 검색"
             @keyup.enter="goSearch(researchValue)"
             filled
             rounded
@@ -17,7 +18,7 @@
           ></v-text-field>
         </div>
         <div >
-        <v-btn rounded class="infotext mt-3 orange lighten-2">강좌/모임 만들기 ✒️</v-btn>
+        <v-btn rounded class="infotext mt-3 orange lighten-2" @click="insertContent">강좌/모임 만들기 ✒️</v-btn>
         </div>
         <v-btn text v-if="isLogin" class="text-center" style="padding-top:20px;">
           <v-menu offset-y open-on-hover>
@@ -93,7 +94,6 @@ export default {
   beforeDestroy() {
     window.removeEventListener("resize", this.onResponsiveInverted);
   },
-
   methods: {
     onResponsiveInverted() {
       if (window.innerWidth < 900) {
@@ -110,15 +110,16 @@ export default {
     },
     goSearch(keyword) {
       this.researchValue = ''
-      this.$router.push("/result/"+keyword)
+      this.$router.push("/result/0/"+keyword)
     },
-    /////////////////////////////////////////////////
+    insertContent(){
+      this.$router.push("/contentwrite")
+    },
+    /////////////////// 회원 ////////////////////////
     getUserName() {
       this.id = sessionStorage.getItem("id");
     },
-    modalAppear() {
-      this.dialog = true;
-    },
+    
     logout() {
       let conf = confirm("로그아웃 하시겠습니까?");
       if (conf == true) {

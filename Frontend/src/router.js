@@ -5,6 +5,8 @@ import TeamPage from './views/TeamPage.vue'
 import ErrorPage from './views/ErrorPage.vue'
 import ResultPage from './views/ResultPage.vue'
 import LoginPage from './views/LoginPage.vue'
+import ContentWritePage from './views/ContentWritePage.vue'
+import ContentDetailPage from './views/ContentDetailPage.vue'
 
 const originalPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
@@ -49,10 +51,21 @@ export default new Router({
 			component: ErrorPage
         },
 		{
-			path : '/result/:keyword',
+			path : '/result/:category/:keyword',
 			name : 'resultPage',
 			component: ResultPage,
 			props : true
 		},
+		{
+			path : '/contentwrite',
+			name : 'contentWritePage',
+			component: ContentWritePage	
+		},
+		{
+			path : '/contentdetail/:seq',
+			name : 'contentDetailPage',
+			component: ContentDetailPage,
+			props : true	
+		}
   ]
 })
