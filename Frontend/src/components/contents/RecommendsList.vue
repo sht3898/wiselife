@@ -84,7 +84,7 @@ body {
 .card-carousel {
   display: flex;
   justify-content: center;
-  width: 55vw;
+  width: 60vw;
 }
 .card-carousel--overflow-container {
   overflow: hidden;

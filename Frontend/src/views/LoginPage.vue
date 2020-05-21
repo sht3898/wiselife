@@ -1,9 +1,9 @@
 <template>
   <v-container fluid>
     <div v-if="!clickBtn">
-      <v-card class="mx-auto" max-width="80%">
+      <v-card class="mx-auto" max-width="75%">
         <v-row>
-          <v-col>
+          <v-col class="hidden-sm-and-down">
             <img-banner :imgSrc="bannerImg"/>
           </v-col>
           <v-col>
@@ -18,7 +18,7 @@
             <div style="padding:50px;">
             <v-img
               style="cursor:pointer; margin:auto"
-              max-width="500px"
+              max-width="450px"
               src="../assets/kakao_login_btn_large_wide.png"
               @click="login()"
             ></v-img>
@@ -28,19 +28,37 @@
       </v-card>
     </div>
     <sign-up v-if="!isMember" :token="token" />
+    <!-- <KakaoLogin
+      api-key="c2d9f09a902e77b8550b754cdb90d407"
+      image="kakao_login_btn_large"
+      :on-success=onSuccess
+      :on-failure=onFailure
+    /> -->
   </v-container>
+  
 </template>
 
 <script>
 import http from "../http-common";
 import SignUp from "@/components/login/SignUp.vue";
 import ImgBanner from "@/components/login/ImgBanner";
+// import KakaoLogin from 'vue-kakao-login'
+
+let onSuccess = (data) => {
+  console.log(data)
+  console.log("success")
+}
+let onFailure = (data) => {
+  console.log(data)
+  console.log("failure")
+}
 
 export default {
   name: "loginPage",
   components: {
     SignUp,
-    ImgBanner
+    ImgBanner,
+    // KakaoLogin
   },
   data() {
     return {
@@ -56,6 +74,8 @@ export default {
     }
   },
   methods: {
+    onSuccess,
+    onFailure,
     login() {
       this.clickBtn = true;
       let token = "asdfasdfasdfasdfasdf";
