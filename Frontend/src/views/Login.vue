@@ -8,13 +8,16 @@
           <v-img src="../assets/wiselife.png" style="margin:30px" height="110px" width="170px"></v-img>
         </v-col>
         <v-spacer></v-spacer>
-        <v-col>
+        <v-col> -->
           <v-img
             style="cursor:pointer; margin:30px;"
             max-width="500px"
             src="../assets/kakao_login_btn_large_wide.png"
-            @click="login()"
-          ></v-img>
+            @click="kakaoLogin()"     
+          >
+          <!-- <a href="https://kauth.kakao.com/oauth/authorize?client_id=e51118ba54c2776d75f8e4f9557acb4a&amp;redirect_uri=http://localhost:8080/api/user/login&amp;response_type=code"/> -->
+          </v-img>
+          <!--
         </v-col>
         </v-row>
         <v-spacer></v-spacer>
@@ -73,6 +76,13 @@ export default {
     };
   },
   methods: {
+    kakaoLogin(){
+      http
+      .get('https://kauth.kakao.com/oauth/authorize?client_id=c2d9f09a902e77b8550b754cdb90d407&redirect_uri=http://localhost:8080/api/user/login&response_type=code')
+      .then(res=>{
+        console.log(res);
+      })
+    },
     login() {
       this.clickBtn = true;
       let token = "asdfasdfasdfasdfasdf";
