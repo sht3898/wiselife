@@ -1,22 +1,21 @@
 <template>
-  <v-flex>        
-      <div class="card-carousel-wrapper">
-        <div class="card-carousel--nav__left" @click="moveCarousel(-1)" :disabled="atHeadOfList"></div>
-        <div class="card-carousel">
-          <div class="card-carousel--overflow-container">
-            <div
-              class="card-carousel-cards"
-              :style="{ transform: 'translateX' + '(' + currentOffset + 'px' + ')'}"
-            >
-              <div class="card-carousel--card" v-for="item in items" :key="item.name">
-                <contents-card />
-              </div>
+  <v-flex>
+    <div class="card-carousel-wrapper">
+      <div class="card-carousel--nav__left" @click="moveCarousel(-1)" :disabled="atHeadOfList"></div>
+      <div class="card-carousel">
+        <div class="card-carousel--overflow-container">
+          <div
+            class="card-carousel-cards"
+            :style="{ transform: 'translateX' + '(' + currentOffset + 'px' + ')'}"
+          >
+            <div class="card-carousel--card" v-for="item in items" :key="item.name">
+              <contents-card />
             </div>
           </div>
         </div>
-        <div class="card-carousel--nav__right" @click="moveCarousel(1)" :disabled="atEndOfList"></div>
       </div>
-    
+      <div class="card-carousel--nav__right" @click="moveCarousel(1)" :disabled="atEndOfList"></div>
+    </div>
   </v-flex>
 </template>
 <script>

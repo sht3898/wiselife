@@ -10,8 +10,8 @@
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="2">
-          <v-checkbox :label="'내 지역 보기'"></v-checkbox>
+        <v-col class="pl-7" cols="2">
+          <v-checkbox :label="'내 지역 보기'" color="success"></v-checkbox>
         </v-col>
       </v-row>
 
@@ -31,42 +31,52 @@ export default {
       content: "",
       categories: [
         {
+          key: 0,
           name: "전체",
           clicked: false
         },
         {
+          key: 1,
           name: "레저/스포츠",
           clicked: false
         },
         {
+          key: 2,
           name: "요리",
           clicked: false
         },
         {
+          key: 3,
           name: "수공예/공방",
           clicked: false
         },
         {
+          key: 4,
           name: "놀이/게임",
           clicked: false
         },
         {
+          key: 5,
           name: "문화",
           clicked: false
         },
         {
+          key: 6,
           name: "예술",
           clicked: false
         },
         {
+          key: 7,
           name: "축제/행사",
           clicked: false
         },
         {
+          key: 8,
           name: "기타",
           clicked: false
         }
-      ]
+      ],
+      selctedCategory: 0
     };
   },
   methods: {
@@ -77,8 +87,7 @@ export default {
       this.content = this.$route.params.keyword;
       return this.content;
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 <style scoped>
