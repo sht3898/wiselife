@@ -1,6 +1,5 @@
 <template>
-  <v-flex>
-        
+  <v-flex>        
       <div class="card-carousel-wrapper">
         <div class="card-carousel--nav__left" @click="moveCarousel(-1)" :disabled="atHeadOfList"></div>
         <div class="card-carousel">
@@ -10,7 +9,7 @@
               :style="{ transform: 'translateX' + '(' + currentOffset + 'px' + ')'}"
             >
               <div class="card-carousel--card" v-for="item in items" :key="item.name">
-                <ContentsCard />
+                <contents-card />
               </div>
             </div>
           </div>
@@ -21,9 +20,9 @@
   </v-flex>
 </template>
 <script>
-import ContentsCard from "@/components/ContentsCard";
+import ContentsCard from "./ContentsCard";
 export default {
-  name: "Recommends",
+  name: "recommendsList",
   components: {
     ContentsCard
   },
@@ -85,7 +84,7 @@ body {
 .card-carousel {
   display: flex;
   justify-content: center;
-  width: 900px;
+  width: 60vw;
 }
 .card-carousel--overflow-container {
   overflow: hidden;

@@ -31,7 +31,7 @@ export default {
       this.$router.push("/team");
     },
     getImgUrl(img) {
-      return require("../assets/" + img);
+      return require("../../assets/" + img);
     }
   }
 };

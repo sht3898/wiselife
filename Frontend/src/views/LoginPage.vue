@@ -1,5 +1,6 @@
 <template>
   <v-container fluid>
+<<<<<<< HEAD:Frontend/src/views/Login.vue
     <!-- <div v-if="!clickBtn">
       <v-card class="mx-auto" max-width="80%">
           <v-img src="../assets/wisedoctor.jpg" height="400px"></v-img>
@@ -25,11 +26,13 @@
         <v-card-title>빅데이터 기반으로 당신의 맞춤 여가생활을 추천해드립니다!</v-card-title>
       </v-card>
     </div>-->
+=======
+>>>>>>> 5ebb860020d00f8128092f2709e574c7e1ab506f:Frontend/src/views/LoginPage.vue
     <div v-if="!clickBtn">
-      <v-card class="mx-auto" max-width="80%">
+      <v-card class="mx-auto" max-width="75%">
         <v-row>
-          <v-col>
-            <ImgBanner :imgSrc="bannerImg"/>
+          <v-col class="hidden-sm-and-down">
+            <img-banner :imgSrc="bannerImg"/>
           </v-col>
           <v-col>
             <div style="padding:50px;">
@@ -43,7 +46,7 @@
             <div style="padding:50px;">
             <v-img
               style="cursor:pointer; margin:auto"
-              max-width="500px"
+              max-width="450px"
               src="../assets/kakao_login_btn_large_wide.png"
               @click="login()"
             ></v-img>
@@ -52,20 +55,38 @@
         </v-row>
       </v-card>
     </div>
-    <SignUp v-if="!isMember" :token="token" />
+    <sign-up v-if="!isMember" :token="token" />
+    <!-- <KakaoLogin
+      api-key="c2d9f09a902e77b8550b754cdb90d407"
+      image="kakao_login_btn_large"
+      :on-success=onSuccess
+      :on-failure=onFailure
+    /> -->
   </v-container>
+  
 </template>
 
 <script>
 import http from "../http-common";
-import SignUp from "@/components/SignUp.vue";
-import ImgBanner from "@/components/ImgBanner";
+import SignUp from "@/components/login/SignUp.vue";
+import ImgBanner from "@/components/login/ImgBanner";
+// import KakaoLogin from 'vue-kakao-login'
+
+let onSuccess = (data) => {
+  console.log(data)
+  console.log("success")
+}
+let onFailure = (data) => {
+  console.log(data)
+  console.log("failure")
+}
 
 export default {
-  name: "Login",
+  name: "loginPage",
   components: {
     SignUp,
-    ImgBanner
+    ImgBanner,
+    // KakaoLogin
   },
   data() {
     return {
@@ -75,7 +96,13 @@ export default {
       bannerImg: [this.getImgUrl("banner1.jpg"), this.getImgUrl("banner2.jpg")],
     };
   },
+  mounted(){
+    if(sessionStorage.getItem('token')){
+      this.$router.push('/');
+    }
+  },
   methods: {
+<<<<<<< HEAD:Frontend/src/views/Login.vue
     kakaoLogin(){
       http
       .get('https://kauth.kakao.com/oauth/authorize?client_id=c2d9f09a902e77b8550b754cdb90d407&redirect_uri=http://localhost:8080/api/user/login&response_type=code')
@@ -83,6 +110,10 @@ export default {
         console.log(res);
       })
     },
+=======
+    onSuccess,
+    onFailure,
+>>>>>>> 5ebb860020d00f8128092f2709e574c7e1ab506f:Frontend/src/views/LoginPage.vue
     login() {
       this.clickBtn = true;
       let token = "asdfasdfasdfasdfasdf";

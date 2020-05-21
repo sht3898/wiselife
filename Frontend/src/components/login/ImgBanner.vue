@@ -9,14 +9,7 @@
       interval="3000"
     >
       <v-carousel-item v-for="k in 2" :key="k">
-        <v-img :src="imgSrc[k-1]" height="700px" id="desk" :aspect-ratio="0.8"></v-img>
-        <v-img
-          :src="imgSrc[k-1]"
-          id="mobile"
-          :contain="true"
-          :aspect-ratio="0.8"
-          max-height="100vh"
-        ></v-img>
+        <v-img :src="imgSrc[k-1]" height="600px" :aspect-ratio="0.8"></v-img>
       </v-carousel-item>
     </v-carousel>
   </div>

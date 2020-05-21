@@ -68,10 +68,10 @@
       <v-col class="mt-5" v-for="category in categories" :key="category.name">
         <v-img
           :src="getImgUrl(category.url)"
-          width="90px"
+          width="70px"
           @click="category.clicked = !category.clicked"
           :class="{green: category.clicked}"
-          style="border-radius:17px; margin:auto"
+          style="border-radius:12px; margin:auto"
         ></v-img>
         <div class="subheading" style="text-align:center;">{{category.name}}</div>
       </v-col>
@@ -82,18 +82,18 @@
     </div>
   </v-container>
   <v-container v-else>
-    <Survey :token="token"/>
+    <survey :token="token" style="text-align:center; margin:auto; width:85%"/>
     <div class="btn py-3" style="float:right">
       <v-btn color="grey lighten-3" class="mr-4" @click="pass()">건너뛰기</v-btn>
     </div>
   </v-container>
 </template>
 <script>
-import http from "../http-common";
-import Survey from "@/components/Survey";
+import http from "../../http-common";
+import Survey from "@/components/survey/Survey";
 
 export default {
-  name: "SignUp",
+  name: "signUp",
   props: {
     token: { type: String },
 
@@ -183,7 +183,7 @@ export default {
         .map((v, idx) => now - idx);
     },
     getImgUrl(img) {
-      return require("../assets/categories/" + img);
+      return require("../../assets/categories/" + img);
     },
     clickCategory() {
       this.clicked = true;
@@ -244,8 +244,9 @@ export default {
 
     },
     pass(){
-      // sessionStorage.setItem('token', this.token);
-      this.$router.go();
+      sessionStorage.setItem('token', this.token);
+      this.$router.push('/');
+      location.reload();
     }
   },
   watch: {
@@ -259,6 +260,7 @@ export default {
 <style scoped>
 .signUp {
   margin: auto;
+  width: 60%;
 }
 .green {
   background-color: green;
