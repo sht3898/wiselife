@@ -10,24 +10,23 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Setter;
-
+import lombok.ToString;
 import lombok.Getter;
 
 @Entity
 @Getter
 @Setter
+@ToString
 @Table(name = "survey")
 public class Survey {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int surveyId;
-	
+	private long uid;
 	private int openness;
 	private int conscientiousness ;
 	private int extraversion;
 	private int agreeableness;
 	private int neuroticism;
 	
-	@OneToOne(mappedBy = "survey")
-	private User user;
 }

@@ -17,10 +17,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
+@ToString
 @Table(name = "user")
 public class User {
 	@Id
@@ -57,11 +59,11 @@ public class User {
 	@JsonIgnore
 	private List<Review> reviewList = new ArrayList<>();
 	
-	@OneToOne
-	@JoinColumn(name="survey_id")
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JsonIgnore
-	private Survey survey = new Survey();
+//	@OneToOne
+//	@JoinColumn(name="surveyId")
+//	@OnDelete(action = OnDeleteAction.CASCADE)
+//	@JsonIgnore
+//	private Survey survey = new Survey();
 	
 	@OneToMany(mappedBy = "user")
 	@OnDelete(action = OnDeleteAction.CASCADE)
