@@ -1,14 +1,5 @@
 package com.ssafy.wiselife.controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,8 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.ssafy.wiselife.dto.SurveyDTO;
 import com.ssafy.wiselife.dto.UserDTO;
 import com.ssafy.wiselife.service.IKakaoService;
 import com.ssafy.wiselife.service.IUserService;
@@ -47,31 +37,30 @@ public class UserController {
 
 	@PostMapping("/user/login")
 	@ApiOperation(value = "로그인하기")
-	public ResponseEntity<Map<String, Object>> login(@RequestParam("code") String code, HttpServletResponse res) {
+	public ResponseEntity<Map<String, Object>> login(HttpServletRequest req, HttpServletResponse res) {
 
-		String access_token = kakaoservice.getAccessToken(code);
+		String access_token = req.getHeader("access_token");
 
-		System.out.println("code :" + code);
+		System.out.println("access_token : " + access_token);
 		// 카카오계정으로 로그인
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		HttpStatus status = null;
-
-		System.out.println("access_token :" + access_token);
 
 		HashMap<String, Object> userInfo = kakaoservice.getUserInfo(access_token);
 
 		long uid = (long) userInfo.get("id");
 		String nickname = userInfo.get("nickname").toString();
-//		String profile_image = userInfo.get("profile_image").toString();
+		String profile_image = userInfo.get("profile_image").toString();
 
 		System.out.println(uid);
 		System.out.println(nickname);
-//		System.out.println(profile_image);
+		System.out.println(profile_image);
+		
 		try {
 			UserDTO user = new UserDTO();
 			user.setUid(uid);
 			user.setUsername(nickname);
-//			user.setProfileImage(profile_image);
+			user.setProfileImage(profile_image);
 
 			if (userservice.uidDuplicateCheck(uid)) {
 				resultMap.put("status", true);
@@ -99,7 +88,7 @@ public class UserController {
 
 	@PostMapping("/user/signup")
 	@ApiOperation(value = "회원가입하기")
-	public ResponseEntity<Map<String, Object>> kakaosignup(@RequestBody UserDTO user, HttpServletRequest req) {
+	public ResponseEntity<Map<String, Object>> signup(@RequestBody UserDTO user, HttpServletRequest req) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		HttpStatus status = null;
 
@@ -118,5 +107,20 @@ public class UserController {
 
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
+	
+	@PostMapping("/user/survey")
+	@ApiOperation(value = "성향 설문조사하기")
+	public void survey(@RequestBody SurveyDTO survey, HttpServletRequest req) {
+		String access_token = req.getHeader("access_token");
+		
+		HashMap<String, Object> userInfo = kakaoservice.getUserInfo(access_token);
+
+		long uid = (long) userInfo.get("id");
+		
+		SurveyDTO surveydto = new SurveyDTO();
+		
+	}
+	
+	
 
 }

@@ -1,10 +1,11 @@
-package com.ssafy.wiselife.service;
+ package com.ssafy.wiselife.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.wiselife.domain.User;
+import com.ssafy.wiselife.dto.SurveyDTO;
 import com.ssafy.wiselife.dto.UserDTO;
 import com.ssafy.wiselife.mapper.EntityMapper;
 import com.ssafy.wiselife.repository.UserRepository;
@@ -54,5 +55,10 @@ public class UserServiceImpl implements IUserService {
 			return false;
 		else
 			return true;
+	}
+
+	@Override
+	public void survey(SurveyDTO survey) {
+		// TODO Auto-generated method stub
 	}
 }
