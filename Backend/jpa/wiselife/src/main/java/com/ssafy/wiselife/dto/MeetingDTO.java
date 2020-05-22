@@ -25,6 +25,7 @@ public class MeetingDTO {
 		private String tags;
 		private String area1;
 		private String area2;
+		private String phone;
 	}
 	
 	@Getter @Setter
@@ -41,6 +42,7 @@ public class MeetingDTO {
 		private int isActive;
 		private int mainCategory;
 		private String tags;
+		private String phone;
 	}
 	
 	@Getter @Setter
@@ -64,6 +66,7 @@ public class MeetingDTO {
 		private int mainCategory;
 		private String tags;
 		private int score;
+		private String phone;
 	}
 	
 	@Getter @Setter

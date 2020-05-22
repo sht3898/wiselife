@@ -19,8 +19,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -32,7 +34,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Table(name = "meeting", indexes = {@Index(columnList = "tags"), @Index(columnList = "title"), @Index(columnList = "content")})
+@Table(name = "meeting")
 public class Meeting {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,9 +45,11 @@ public class Meeting {
 	private String title;
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@CreationTimestamp
 	private Date createdAt;
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@UpdateTimestamp
 	private Date updatedAt;
 	
 	private int isPeriod;
@@ -74,7 +78,7 @@ public class Meeting {
 	private String tags;
 	private String area1;
 	private String area2;
-	private int phone;
+	private String phone;
 	
 	@ManyToOne
 	@JoinColumn(name = "uid")
