@@ -213,8 +213,12 @@
             outlined
             dense
             placeholder="위치"
-            @click="sample6_execDaumPostcode()"
+            v-model="address"
           />
+         
+        </v-col>
+        <v-col cols="1" style="padding:2px" >
+             <v-btn @click="sample6_execDaumPostcode()" outlined color="green lighten-1">검색</v-btn>
         </v-col>
       </v-row>
       <v-row class="mb-5" style="text-align:right; float:right">
@@ -233,7 +237,7 @@ export default {
       writer: "",
       main_category: "",
       title: "",
-      tags: "", // 해시태그 띄어쓰기로 구분
+      tags: "", // 해시태그 띄어쓰기로 구분 (#붙여서 입력!)
       is_period: 0,
       meeting_date: "",
       is_class: 0,
@@ -419,32 +423,33 @@ export default {
           }
 
           // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-          if (data.userSelectedType === "R") {
-            // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-            // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-            if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
-              extraAddr += data.bname;
-            }
-            // 건물명이 있고, 공동주택일 경우 추가한다.
-            if (data.buildingName !== "" && data.apartment === "Y") {
-              extraAddr +=
-                extraAddr !== "" ? ", " + data.buildingName : data.buildingName;
-            }
+        //   if (data.userSelectedType === "R") {
+        //     // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+        //     // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+        //     if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
+        //       extraAddr += data.bname;
+        //     }
+        //     // 건물명이 있고, 공동주택일 경우 추가한다.
+        //     if (data.buildingName !== "" && data.apartment === "Y") {
+        //       extraAddr +=
+        //         extraAddr !== "" ? ", " + data.buildingName : data.buildingName;
+        //     }
             // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-            if (extraAddr !== "") {
-              extraAddr = " (" + extraAddr + ")";
-            }
-            // 조합된 참고항목을 해당 필드에 넣는다.
-            document.getElementById("sample6_extraAddress").value = extraAddr;
-          } else {
-            document.getElementById("sample6_extraAddress").value = "";
-          }
+            // if (extraAddr !== "") {
+            //   extraAddr = " (" + extraAddr + ")";
+            // }
+            // // 조합된 참고항목을 해당 필드에 넣는다.
+            // document.getElementById("sample6_extraAddress").value = extraAddr;
+        //   } 
+        //   else {
+        //     document.getElementById("sample6_extraAddress").value = "";
+        //   }
 
           // 우편번호와 주소 정보를 해당 필드에 넣는다.
-          document.getElementById("sample6_postcode").value = data.zonecode;
+        //   document.getElementById("sample6_postcode").value = data.zonecode;
           document.getElementById("sample6_address").value = addr;
           // 커서를 상세주소 필드로 이동한다.
-          document.getElementById("sample6_detailAddress").focus();
+        //   document.getElementById("sample6_detailAddress").focus();
         }
       }).open();
     }
