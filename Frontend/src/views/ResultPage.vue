@@ -1,20 +1,25 @@
 <template>
-  <v-container>
-    <v-flex class="ma-auto mt-5" lg10>
-      <h3 class="mt-5">'{{keyword}}'에 대한 검색 결과입니다.</h3>
+  <v-container class="my-5">
+    <v-flex class="ma-auto" lg9 xs11>
+      <h3 class="mt-5">'{{keyword}}'에 대한 검색 결과입니다. 선택된 카테고리는 '{{category}}'</h3>
       <v-row>
         <v-col>
-          <v-row class="filtering my-2">
+          <v-row class="filtering">
             <v-col v-for="category in categories" :key="category.name">
-              <v-btn x-small text style="text-align:center; font-size:10pt">{{category.name}}</v-btn>
+              <v-btn  :class="{bold: category.clicked}" @click="clickCategory(category)" x-small text style="text-align:center; font-size:10pt">{{category.name}}</v-btn>
             </v-col>
           </v-row>
         </v-col>
-        <v-col class="pl-7" cols="2">
-          <v-checkbox :label="'내 지역 보기'" color="success"></v-checkbox>
+        <v-col class="pl-5" cols="1">
+          <span style="font-size:9pt; color:dimgrey">내 지역</span>
+          <span class="ma-auto" style="float:center; text-align:center">
+          <v-switch class="my-0 py-0" dense v-model="myarea" inset color="success"></v-switch>      
+          </span>
         </v-col>
       </v-row>
 
+    </v-flex>
+    <v-flex class="ma-auto" lg10 xs12>
       <contents-list :content="this.content" />
     </v-flex>
   </v-container>
@@ -76,16 +81,40 @@ export default {
           clicked: false
         }
       ],
-      selctedCategory: 0
+      selctedCategory: 0,
+      myarea: 0,
     };
   },
   methods: {
-    search() {}
+    search() {},
+    clickCategory(category) {
+      for(var i = 0; i < this.categories.length; i++){
+        if(this.categories[i] != category){
+          this.categories[i].clicked = false;
+        }
+      }
+      category.clicked = true;
+      this.$router.push("/result/"+category.key+"/"+this.$route.params.keyword)
+    },
+    checkURL(){
+      for(var i = 0; i < this.categories.length; i++){
+        if(this.categories[i].key == this.$route.params.category){
+          this.categories[i].clicked =true;
+        } 
+      }
+    }
+  },
+  mounted(){
+    this.checkURL();
   },
   computed: {
     keyword: function() {
       this.content = this.$route.params.keyword;
       return this.content;
+    },
+    category: function(){
+      this.selctedCategory=this.$route.params.category;
+      return this.selctedCategory;
     }
   }
 };
@@ -94,5 +123,8 @@ export default {
 .filtering {
   background-color: lightgray;
   border-radius: 12px;
+}
+.bold{
+  font-weight: bold;
 }
 </style>
