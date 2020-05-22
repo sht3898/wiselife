@@ -1,6 +1,6 @@
 <template>
   <v-card :loading="loading" class="mx-auto my-3" width="200">
-    <v-img height="150" src="https://cdn.vuetifyjs.com/images/cards/cooking.png">
+    <v-img height="150" @click="goDetail" src="https://cdn.vuetifyjs.com/images/cards/cooking.png">
     <div style="z-index:5; position: relative;">
     <v-chip :color="`green lighten-4`" class="black--text" label small style="top: 0px; left: 5px;">
         대전 서구
@@ -11,7 +11,7 @@
     </div>
     </v-img>
 
-    <v-card-title style="font-weight:bold">강좌명</v-card-title>
+    <v-card-title style="font-weight:bold" @click="goDetail">강좌명</v-card-title>
 
     <v-card-text>
 
@@ -45,6 +45,9 @@ export default {
       this.loading = true;
 
       setTimeout(() => (this.loading = false), 2000);
+    },
+    goDetail(){
+      this.$router.push("/contentdetail/"+1)
     }
   }
 };
