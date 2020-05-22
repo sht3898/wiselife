@@ -9,6 +9,6 @@ public interface IUserService {
 
 	boolean uidDuplicateCheck(long uid);
 	
-	void survey(SurveyDTO survey);
+	SurveyDTO survey(SurveyDTO survey);
 	
 }

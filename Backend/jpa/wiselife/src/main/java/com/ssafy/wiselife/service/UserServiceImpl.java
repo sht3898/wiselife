@@ -4,10 +4,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ssafy.wiselife.domain.Survey;
 import com.ssafy.wiselife.domain.User;
 import com.ssafy.wiselife.dto.SurveyDTO;
 import com.ssafy.wiselife.dto.UserDTO;
 import com.ssafy.wiselife.mapper.EntityMapper;
+import com.ssafy.wiselife.repository.SurveyRepository;
 import com.ssafy.wiselife.repository.UserRepository;
 
 @Service
@@ -15,6 +17,9 @@ public class UserServiceImpl implements IUserService {
 
 	@Autowired
 	private UserRepository userrepo;
+	
+	@Autowired
+	private SurveyRepository surveyrepo;
 
 	@Autowired
 	private ModelMapper modelMapper; // DTO를 Entity타입으로 mapping할때 사용
@@ -58,7 +63,15 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public void survey(SurveyDTO survey) {
+	public SurveyDTO survey(SurveyDTO survey) {
 		// TODO Auto-generated method stub
+		Survey surveyentity = modelMapper.map(survey, Survey.class);// user(UserDTO)를 User(Entity)타입으로 매핑시킨다
+
+		try {
+			surveyrepo.save(surveyentity); 
+			return survey;
+		} catch (Exception e) {
+			return survey;
+		}
 	}
 }

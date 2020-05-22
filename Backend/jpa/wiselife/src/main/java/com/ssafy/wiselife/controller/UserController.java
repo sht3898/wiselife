@@ -35,32 +35,25 @@ public class UserController {
 	@Autowired
 	private IKakaoService kakaoservice;
 
-	@PostMapping("/user/login")
+	@GetMapping("/user/login")
 	@ApiOperation(value = "로그인하기")
 	public ResponseEntity<Map<String, Object>> login(HttpServletRequest req, HttpServletResponse res) {
-
+		
 		String access_token = req.getHeader("access_token");
 
 		System.out.println("access_token : " + access_token);
-		// 카카오계정으로 로그인
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		HttpStatus status = null;
 
 		HashMap<String, Object> userInfo = kakaoservice.getUserInfo(access_token);
 
 		long uid = (long) userInfo.get("id");
-		String nickname = userInfo.get("nickname").toString();
-		String profile_image = userInfo.get("profile_image").toString();
 
 		System.out.println(uid);
-		System.out.println(nickname);
-		System.out.println(profile_image);
-		
+
 		try {
 			UserDTO user = new UserDTO();
 			user.setUid(uid);
-			user.setUsername(nickname);
-			user.setProfileImage(profile_image);
 
 			if (userservice.uidDuplicateCheck(uid)) {
 				resultMap.put("status", true);
@@ -72,7 +65,6 @@ public class UserController {
 				resultMap.put("status", false);
 				resultMap.put("log", "회원가입이 필요합니다.");
 				status = HttpStatus.ACCEPTED;
-				System.out.println("signup");
 
 			}
 			res.setHeader("access-token", access_token);
@@ -92,7 +84,20 @@ public class UserController {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		HttpStatus status = null;
 
-		String accessToken = req.getHeader("access-token");
+		String access_token = req.getHeader("access_token");
+
+		HashMap<String, Object> userInfo = kakaoservice.getUserInfo(access_token);
+
+		long uid = (long) userInfo.get("id");
+		String nickname = userInfo.get("nickname").toString();
+		String profile_image = userInfo.get("profile_image").toString();
+
+		user.setUid(uid);
+		user.setUsername(nickname);
+		user.setProfileImage(profile_image);
+		
+		int ages=  user.getYear();
+		user.setAges(ages);
 		try {
 			user = userservice.signUp(user);
 
@@ -107,20 +112,35 @@ public class UserController {
 
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
-	
+
 	@PostMapping("/user/survey")
 	@ApiOperation(value = "성향 설문조사하기")
-	public void survey(@RequestBody SurveyDTO survey, HttpServletRequest req) {
+	public ResponseEntity<Map<String, Object>> survey(@RequestBody SurveyDTO survey, HttpServletRequest req) {
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		HttpStatus status = null;
+
 		String access_token = req.getHeader("access_token");
-		
+
 		HashMap<String, Object> userInfo = kakaoservice.getUserInfo(access_token);
 
 		long uid = (long) userInfo.get("id");
+
+		survey.setUid(uid);
+
+		try {
+			survey = userservice.survey(survey);
+
+			resultMap.put("status", true);
+			resultMap.put("info", survey);
+			status = HttpStatus.ACCEPTED;
+
+		} catch (RuntimeException e) {
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
 		
-		SurveyDTO surveydto = new SurveyDTO();
-		
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
-	
-	
 
 }
