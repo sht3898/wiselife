@@ -38,7 +38,6 @@ public class SearchServiceImpl implements ISearchService {
 					
 					keywords = keywords.substring(0,keyword.length()-1);
 					System.out.println(keywords);
-//					meetingrepo.alterTable();
 					meetingList = meetingrepo.findByTags(keyword);
 					System.out.println(meetingList.toString());
 					return meetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class)).collect(Collectors.toList());

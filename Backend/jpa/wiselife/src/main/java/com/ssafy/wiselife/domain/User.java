@@ -53,6 +53,16 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
+	private List<Review> reviewList = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "user")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JsonIgnore
+	private List<Survey> surveyList = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "user")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JsonIgnore
 	private List<Meeting> meetingList = new ArrayList<>();
 	
 }

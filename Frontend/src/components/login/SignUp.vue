@@ -184,10 +184,7 @@ export default {
     },
     getImgUrl(img) {
       return require("../../assets/categories/" + img);
-    },
-    clickCategory() {
-      this.clicked = true;
-    },
+    },    
     resetValidation() {
       this.$refs.form.resetValidation();
     },
