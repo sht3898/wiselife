@@ -65,15 +65,17 @@ public class MeetingDTO {
 		private int viewCnt;
 		private int mainCategory;
 		private String tags;
-		private int score;
+		private double score;
 		private String phone;
+		private int isLike;
 	}
 	
-	@Getter @Setter
+	@Getter @Setter @ToString
 	public static class CardMeeting {
+		private int meetingId;
 		private String title;
 		private String tags; //태그는 3개만
-		private int score;
+		private double score;
 		private int isLike; //0 : 좋아요(X), 1 : 좋아요(O)
 		private String area1;
 		private String area2;
@@ -82,6 +84,6 @@ public class MeetingDTO {
 	@Getter @Setter
 	public static class InsertUserMeeting {
 		private long uid;
-		private int meeting_id;
+		private int meetingId;
 	}
 }

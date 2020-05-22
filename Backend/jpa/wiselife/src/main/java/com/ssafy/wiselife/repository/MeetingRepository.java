@@ -15,10 +15,25 @@ import com.ssafy.wiselife.domain.User;
 public interface MeetingRepository extends JpaRepository<Meeting, Integer>{
 	
 	@Query(value = "SELECT LAST_INSERT_ID() FROM MEETING", nativeQuery = true)
-	public int findLaseMeetingId();
+	public int findLastMeetingId();
 	
 	public Meeting findByMeetingIdAndUser(int meeting_id, User user);
 	
-	@Query(value = "SELECT address FROM MEETING m WHERE MATCH(m.tags) AGAINST(:tags)", nativeQuery = true)
-	public List<String> findByTags(@Param("tags") String tags); //전체 검색일때
+	@Query(value = "SELECT * FROM MEETING m WHERE MATCH(m.tags) AGAINST(:tags in boolean mode)", nativeQuery = true)
+	public List<Meeting> findByTags(@Param("tags") String tags); //전체 검색일때
+	
+	@Query(value = "SELECT * FROM MEETING m WHERE MATCH(m.title, m.content, "
+			+ "m.tags, m.area1, m.area2) AGAINST(:keywords in boolean mode)", nativeQuery = true)
+	public List<Meeting> findByAllFullText(@Param("keywords") String keywords);
+	
+	@Query(value = "SELECT * FROM MEETING m WHERE m.main_category = :category_id "
+			+ "AND MATCH(m.tags) AGAINST(:tags in boolean mode)", nativeQuery = true)
+	public List<Meeting> findByCategoryAndTags(@Param("category_id") int category_id, @Param("tags") String tags);
+	
+	@Query(value = "SELECT * FROM MEETING m WHERE m.main_category = :category_id AND "
+			+ "MATCH(m.title, m.content, m.tags, m.area1, m.area2) AGAINST(:keywords in boolean mode)", nativeQuery = true)
+	public List<Meeting> findByCategoryAndAllFullText(@Param("category_id") int category_id, @Param("keywords") String keywords);
+
+	public List<Meeting> findByMainCategory(int category_id);
+	
 }
