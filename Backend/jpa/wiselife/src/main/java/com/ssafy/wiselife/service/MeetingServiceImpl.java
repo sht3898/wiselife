@@ -53,9 +53,9 @@ public class MeetingServiceImpl implements IMeetingService {
 			}
 			
 			Meeting meetingEntity = modelMapper.map(meeting, Meeting.class);
-			Date date = new Date();
-			meetingEntity.setCreatedAt(date);
-			meetingEntity.setUpdatedAt(date);
+//			Date date = new Date();
+//			meetingEntity.setCreatedAt(date);
+//			meetingEntity.setUpdatedAt(date);
 			meetingEntity.setNowPerson(1);
 			meetingEntity.setUser(user);
 			meetingEntity.setCategory(category);
@@ -95,7 +95,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			}
 		
 			Meeting meetingEntity = meetingrepo.findById(meeting_id).get();
-			meetingEntity.setUpdatedAt(new Date());
+//			meetingEntity.setUpdatedAt(new Date());
 			meetingEntity.setUser(user);
 			meetingEntity.setCategory(category);
 			meetingEntity.setMeetingId(meeting_id);
@@ -110,6 +110,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingEntity.setUnit(meeting.getUnit());
 			meetingEntity.setIsActive(meeting.getIsActive());
 			meetingEntity.setTags(meeting.getTags());
+			meetingEntity.setPhone(meeting.getPhone());
 			meetingrepo.save(meetingEntity);
 			return meeting_id;
 		} catch (Exception e) {
