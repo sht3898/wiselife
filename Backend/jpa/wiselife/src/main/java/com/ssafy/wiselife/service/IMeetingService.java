@@ -9,10 +9,12 @@ public interface IMeetingService {
 	
 	public int updateMeeting(int meeting_id, long uid, UpdateMeeting meeting);
 	
-	public DetailMeeting detailMeeting(int meeting_id);
+	public DetailMeeting detailMeeting(int meeting_id, long uid);
 	
 	public boolean checkAuthentication(long uid);
 
 	public int deleteMeeting(int meeting_id, long uid);
+
+	public int saveLikeMeeting(int meeting_id, long uid);
 	
 }

@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -74,7 +72,7 @@ public class Meeting {
 	private int isActive;
 	private int likeCnt;
 	private int viewCnt;
-	private int score;
+	private double score;
 	private String tags;
 	private String area1;
 	private String area2;
@@ -93,7 +91,7 @@ public class Meeting {
 	@JsonIgnore
 	private List<UserMeeting> users = new ArrayList<>();
 	
-//	@OneToOne
-//	@JsonIgnore
-//	private MeetingImages meetingImages;
+	@OneToOne
+	@JoinColumn(name = "meetingImages_id")
+	private MeetingImages meetingImages;
 }
