@@ -37,7 +37,7 @@
 
 <script>
 import http from "../http-common";
-import SignUp from "@/components/login/SignUp.vue";
+import SignUp from "@/components/login/SignUp";
 import ImgBanner from "@/components/login/ImgBanner";
 
 Kakao.init("c2d9f09a902e77b8550b754cdb90d407");
@@ -64,20 +64,18 @@ export default {
   methods: {
     login() {
       this.clickBtn = true;
+      let this_component = this;
       Kakao.Auth.login({
         success: function(authObj) {
-          console.log(authObj);
           let headers = {
             access_token: authObj.access_token,
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type":"application/json",
           };
           http
-            .post(`user/login`, null, {
+            .get(`user/login`, {
               headers
             })
             .then(response => {
-              if (response.data.state) {
+              if (response.data.status) {
                 var username = "";
                 Kakao.API.request({
                   url: "/v2/user/me",
@@ -88,17 +86,18 @@ export default {
                     alert("회원 정보를 가져오는데 실패했습니다!");
                   }
                 });
-                sessionStorage.setItem("token", access_token);
+                sessionStorage.setItem("token", authObj.access_token);
                 sessionStorage.setItem("username", username);
               } else {
-                this.token = access_token;
-                this.isMember = false;
+                this_component.isMember = false;
+                this_component.token = authObj.access_token;
               }
             });
         },
         fail: function(err) {
           console.log(err);
           alert("로그인에 실패하였습니다! 다시 시도해주세요!");
+          this.clickBtn = false;
           return;
         }
       });
