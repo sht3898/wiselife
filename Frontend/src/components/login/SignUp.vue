@@ -82,7 +82,7 @@
     </div>
   </v-container>
   <v-container v-else>
-    <survey :token="token" style="text-align:center; margin:auto; width:85%"/>
+    <survey :token="token" style="text-align:center; margin:auto; width:85%" />
     <div class="btn py-3" style="float:right">
       <v-btn color="grey lighten-3" class="mr-4" @click="pass()">건너뛰기</v-btn>
     </div>
@@ -95,11 +95,10 @@ import Survey from "@/components/survey/Survey";
 export default {
   name: "signUp",
   props: {
-    token: { type: String },
-
+    token: { type: String }
   },
-  components:{
-    Survey,
+  components: {
+    Survey
   },
   data() {
     return {
@@ -152,27 +151,27 @@ export default {
       ],
       years: [],
       valid: true,
-      complete : false,
-      first_area:[
-        '서울특별시',
-        '부산광역시',
-        '대구광역시',
-        '인천광역시',
-        '광주광역시',
-        '대전광역시',
-        '울산광역시',
-        '세종특별자치시',
-        '경기도',
-        '강원도',
-        '충청북도',
-        '충청남도',
-        '전라북도',
-        '전라남도',
-        '경상북도',
-        '경상남도',
-        '제주특별자치도'
+      complete: false,
+      first_area: [
+        "서울특별시",
+        "부산광역시",
+        "대구광역시",
+        "인천광역시",
+        "광주광역시",
+        "대전광역시",
+        "울산광역시",
+        "세종특별자치시",
+        "경기도",
+        "강원도",
+        "충청북도",
+        "충청남도",
+        "전라북도",
+        "전라남도",
+        "경상북도",
+        "경상남도",
+        "제주특별자치도"
       ],
-      second_area:[],
+      second_area: []
     };
   },
   methods: {
@@ -184,65 +183,73 @@ export default {
     },
     getImgUrl(img) {
       return require("../../assets/categories/" + img);
-    },    
+    },
     resetValidation() {
       this.$refs.form.resetValidation();
     },
     reset() {
       this.$refs.form.reset();
     },
-    getSecondArea(){
-      if(this.area1.charAt(this.area1.length-1) == "시"){
+    getSecondArea() {
+      if (this.area1.charAt(this.area1.length - 1) == "시") {
         this.second_area.push("전체");
       }
       // http
-      //   .get(`api/area/${this.first_area}`)
+      //   .get(`area/${this.first_area}`)
       //   .then(response => {
-      //     this.second_area.push(response.data.second_area);
+      //     console.log(response.data);
+      //     // this.second_area.push(response.data.second_area);
       //   })
       //   .catch(err => {
       //     console.log(err);
       //   });
     },
     validate() {
-      if(this.gender == "" || this.birth == "" || this.area1 == "" || this.area2 == "" || this.instructor == ""){
+      if (
+        this.gender == "" ||
+        this.birth == "" ||
+        this.area1 == "" ||
+        this.area2 == "" ||
+        this.instructor == ""
+      ) {
         alert("입력하지 않은 값이 있습니다!");
         return;
       }
       var picked = [];
-      for(var i = 0; i < this.categories.length; i++){
-        if(this.categories[i].clicked){
-          picked.push(i+1);
+      for (var i = 0; i < this.categories.length; i++) {
+        if (this.categories[i].clicked) {
+          picked.push(i + 1);
         }
       }
       let params = {
-        username : sessionStorage.getItem("username"),
         gender: this.gender,
-        year : this.birth,
+        year: this.birth,
         area1: this.area1,
         area2: this.area2,
-        is_inst : this.instructor,
-        interest_category : picked,
+        is_inst: this.instructor,
+        // interest_category: picked,
+      };
+      let config = {
         headers: {
-          Authorization: "JWT " + this.token
+          access_token : this.token
         }
       }
-      console.log(params);
-      this.complete = true;
+      // this.complete = true;
 
-      // http
-      // .post(`api/signup/`,params)
-      // .then(response =>{
-      //   if(respons.data.state == 200){
-          // this.complete = true;
-          // sessionStorage.setItem("token",this.token);
-      //   }
-      // })
-
+      http
+      .post(`user/signup/`,params, config)
+      .then(response =>{
+        console.log(response);
+        if(response.data.status){
+          this.complete = true;
+          sessionStorage.setItem("token",this.token);
+          sessionStorage.setItem("username", response.data.info.username);
+        }
+      })
     },
-    pass(){
-      sessionStorage.setItem('token', this.token);
-      this.$router.push('/');
+    pass() {
+      sessionStorage.setItem("token", this.token);
+      this.$router.push("/");
       location.reload();
     }
   },

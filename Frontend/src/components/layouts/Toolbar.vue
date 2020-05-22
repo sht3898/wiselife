@@ -37,7 +37,7 @@
                   style="padding-bottom:15px; font-size:18pt; color:dimgrey"
                 >
                   <span class="mdi mdi-account-circle"></span>
-                  
+                  {{name}} 님
                 </span>
               </template>
 
@@ -140,7 +140,7 @@ export default {
     id: "",
     isLogin: false,
     email: "",
-    name: "",
+    name: sessionStorage.getItem('username'),
     researchValue: ""
   }),
   computed: {},
