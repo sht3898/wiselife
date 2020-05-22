@@ -1,5 +1,6 @@
 package com.ssafy.wiselife.controller;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.wiselife.dto.SurveyDTO;
@@ -38,7 +38,7 @@ public class UserController {
 	@GetMapping("/user/login")
 	@ApiOperation(value = "로그인하기")
 	public ResponseEntity<Map<String, Object>> login(HttpServletRequest req, HttpServletResponse res) {
-		
+
 		String access_token = req.getHeader("access_token");
 
 		System.out.println("access_token : " + access_token);
@@ -67,6 +67,7 @@ public class UserController {
 				status = HttpStatus.ACCEPTED;
 
 			}
+			
 			res.setHeader("access-token", access_token);
 			resultMap.put("access-token", access_token);
 
@@ -88,6 +89,9 @@ public class UserController {
 
 		HashMap<String, Object> userInfo = kakaoservice.getUserInfo(access_token);
 
+//		System.out.println("access_token: "+access_token);
+//		System.out.println(userInfo.toString());
+		
 		long uid = (long) userInfo.get("id");
 		String nickname = userInfo.get("nickname").toString();
 		String profile_image = userInfo.get("profile_image").toString();
@@ -96,8 +100,15 @@ public class UserController {
 		user.setUsername(nickname);
 		user.setProfileImage(profile_image);
 		
-		int ages=  user.getYear();
+		Calendar cal = Calendar.getInstance();
+
+		int year = cal.get(cal.YEAR);
+		
+		System.out.println("year : "+year);
+
+		int ages = ((year - user.getYear() + 1) / 10) * 10;
 		user.setAges(ages);
+		
 		try {
 			user = userservice.signUp(user);
 
@@ -139,8 +150,38 @@ public class UserController {
 			resultMap.put("message", e.getMessage());
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
-		
+
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
+	
+//	@GetMapping("/area")
+//	@ApiOperation(value = "지역1통해서 지역2 가져오기")
+//	public ResponseEntity<Map<String, Object>> (@RequestBody SurveyDTO survey, HttpServletRequest req) {
+//
+//		Map<String, Object> resultMap = new HashMap<String, Object>();
+//		HttpStatus status = null;
+//
+//		String access_token = req.getHeader("access_token");
+//
+//		HashMap<String, Object> userInfo = kakaoservice.getUserInfo(access_token);
+//
+//		long uid = (long) userInfo.get("id");
+//
+//		survey.setUid(uid);
+//
+//		try {
+//			survey = userservice.survey(survey);
+//
+//			resultMap.put("status", true);
+//			resultMap.put("info", survey);
+//			status = HttpStatus.ACCEPTED;
+//
+//		} catch (RuntimeException e) {
+//			resultMap.put("message", e.getMessage());
+//			status = HttpStatus.INTERNAL_SERVER_ERROR;
+//		}
+//
+//		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+//	}
 
 }

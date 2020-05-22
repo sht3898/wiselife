@@ -114,12 +114,12 @@ public class KakaoServiceImpl implements IKakaoService {
 			String profile_image=properties.getAsJsonObject().get("profile_image").getAsString();
 
 			System.out.println("id : "+id);
-//			System.out.println("nickname : "+nickname);
-//			System.out.println("profile_image : "+profile_image);
+			System.out.println("nickname : "+nickname);
+			System.out.println("profile_image : "+profile_image);
 
 			userInfo.put("id", id);
-//			userInfo.put("nickname", nickname);
-//			userInfo.put("profile_image",profile_image);
+			userInfo.put("nickname", nickname);
+			userInfo.put("profile_image",profile_image);
 
 		} catch (IOException e) {
 			e.printStackTrace();

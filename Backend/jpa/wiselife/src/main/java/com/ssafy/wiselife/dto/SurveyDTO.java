@@ -17,10 +17,5 @@ public class SurveyDTO {
 	private int agreeableness; //친화성
 	private int neuroticism; //신경성
 	
-	@Getter @Setter
-	public static class UserLogin{
-		private String email;
-		private String password;
-	}
 
 }

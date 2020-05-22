@@ -16,7 +16,8 @@ public class UserDTO {
 	private int gender;
 	private int year;
 	private int ages;
-	private int area;
+	private String area1;
+	private String area2;
 	
 	@Getter @Setter
 	public static class UserLogin{
