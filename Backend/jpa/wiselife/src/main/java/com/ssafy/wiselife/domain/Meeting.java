@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -30,13 +32,15 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Table(name = "meeting")
+@Table(name = "meeting", indexes = {@Index(columnList = "tags"), @Index(columnList = "title"), @Index(columnList = "content")})
 public class Meeting {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int meetingId;
 	
 	private String writer;
+	
+	private String title;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
@@ -66,7 +70,11 @@ public class Meeting {
 	private int isActive;
 	private int likeCnt;
 	private int viewCnt;
+	private int score;
 	private String tags;
+	private String area1;
+	private String area2;
+	private int phone;
 	
 	@ManyToOne
 	@JoinColumn(name = "uid")

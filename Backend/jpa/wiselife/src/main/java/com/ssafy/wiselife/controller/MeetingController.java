@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
+import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
 import com.ssafy.wiselife.service.IMeetingService;
 
@@ -32,31 +34,99 @@ public class MeetingController {
 
 	@PostMapping("/meeting/create")
 	@ApiOperation(value = "모임/강좌 개설하기")
-	public ResponseEntity<Map<Integer, String>> createMeeting(CreateMeeting meeting) {
-		int result = meetingservice.createMeeting(meeting);
-		Map<Integer, String> resultMap = new HashMap<Integer, String>();
+	public ResponseEntity<Map<Object, String>> createMeeting(@RequestParam long uid,
+			@RequestBody CreateMeeting meeting) {
+		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
+		if (!meetingservice.checkAuthentication(uid)) {
+			status = HttpStatus.UNAUTHORIZED;
+			resultMap.put(status, "회원가입을 먼저 진행해주세요");
+			return new ResponseEntity<>(resultMap, status);
+		}
+
+		int result = meetingservice.createMeeting(uid, meeting);
+
+		// meeting_id 값을 return
+		if (result > 0) {
+			status = HttpStatus.OK;
+			resultMap.put(result, "SUCCESS");
+		} else if (result == -1) {
+			status = HttpStatus.BAD_REQUEST;
+			resultMap.put(status, "FAIL");
+		} else if (result == -2) {
+			status = HttpStatus.BAD_REQUEST;
+			resultMap.put(status, "존재하지 않는 카테고리입니다");
+		}
+
+		return new ResponseEntity<>(resultMap, status);
+	}
+
+	@PutMapping("/meeting/update/{meeting_id}")
+	@ApiOperation(value = "모임/강좌 수정하기")
+	public ResponseEntity<Map<Object, String>> updateMeeting(@PathVariable int meeting_id, @RequestParam long uid,
+			@RequestBody UpdateMeeting meeting) {
+		Map<Object, String> resultMap = new HashMap<>();
+		HttpStatus status = null;
+
+		int result = meetingservice.updateMeeting(meeting_id, uid, meeting);
 
 		if (result > 0) {
 			status = HttpStatus.OK;
-			resultMap.put(result, "success");
-		} else {
-			resultMap.put(result, "SQL error");
+			resultMap.put(result, "SUCCESS");
+		} else if (result == -1) {
 			status = HttpStatus.BAD_REQUEST;
+			resultMap.put(status, "FAIL");
+		} else if (result == -2) {
+			status = HttpStatus.BAD_REQUEST;
+			resultMap.put(status, "존재하지 않는 카테고리입니다");
+		} else {
+			status = HttpStatus.UNAUTHORIZED;
+			resultMap.put(status, "NOT PERMISSION");
+		}
+
+		return new ResponseEntity<>(resultMap, status);
+	}
+
+	@GetMapping("/meeting/detail/{meeting_id}")
+	@ApiOperation(value = "모임/강좌 상세 조회")
+	public ResponseEntity<Map<Object, Object>> detailMeeting(@PathVariable int meeting_id) {
+		Map<Object, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+
+		DetailMeeting meeting = meetingservice.detailMeeting(meeting_id);
+		if (meeting == null) {
+			status = HttpStatus.NOT_FOUND;
+			resultMap.put(status, "삭제되었거나 존재하지 않는 게시물");
+		} else {
+			status = HttpStatus.OK;
+			resultMap.put(meeting_id, meeting);
+		}
+
+		return new ResponseEntity<>(resultMap, status);
+	}
+
+	@DeleteMapping("/meeting/delete/{meeting_id}")
+	@ApiOperation(value = "모임/강좌 삭제")
+	public ResponseEntity<Map<Object, String>> deleteMeeting(@PathVariable int meeting_id, @RequestParam long uid) {
+		Map<Object, String> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		
+		int result = meetingservice.deleteMeeting(meeting_id, uid);
+		
+		if(result > 0) {
+			status = HttpStatus.OK;
+			resultMap.put(status, "SUCCESS");
+		} else if(result == -1) {
+			status = HttpStatus.BAD_REQUEST;
+			resultMap.put(status, "FAIL");
+		} else if(result == -2) {
+			status = HttpStatus.NOT_FOUND;
+			resultMap.put(status, "삭제되었거나 존재하지 않는 게시물");
+		} else {
+			status = HttpStatus.UNAUTHORIZED;
+			resultMap.put(status, "NOT PERMISSION");
 		}
 		
 		return new ResponseEntity<>(resultMap, status);
-	}
-//
-//	@PutMapping("/meeting/update/{meeting_id}")
-//	@ApiOperation(value = "모임/강좌 수정하기")
-//	public ResponseEntity<Map<HttpStatus, String>> updateMeeting(@PathVariable int meeting_id, @RequestParam long uid,
-//			@RequestBody UpdateMeeting meeting) {
-//		return null;
-//	}
-	
-	@GetMapping("/test")
-	public int test() {
-		return meetingservice.findByLastMeetingId();
 	}
 }
