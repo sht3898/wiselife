@@ -101,21 +101,25 @@ public class KakaoServiceImpl implements IKakaoService {
 			while ((line = br.readLine()) != null) {
 				result += line;
 			}
+			
 			System.out.println("response body : " + result);
 
 			JsonParser parser = new JsonParser();
-			JsonElement element = parser.parse(result);
-			
+			JsonElement element = parser.parse(result);			
 
 			JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
+			
 			long id = element.getAsJsonObject().get("id").getAsInt();
 			String nickname = properties.getAsJsonObject().get("nickname").getAsString();
+			String profile_image=properties.getAsJsonObject().get("profile_image").getAsString();
 
 			System.out.println("id : "+id);
-			System.out.println("nickname : "+nickname);
+//			System.out.println("nickname : "+nickname);
+//			System.out.println("profile_image : "+profile_image);
 
 			userInfo.put("id", id);
-			userInfo.put("nickname", nickname);
+//			userInfo.put("nickname", nickname);
+//			userInfo.put("profile_image",profile_image);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -155,29 +159,4 @@ public class KakaoServiceImpl implements IKakaoService {
 		// TODO Auto-generated method stub
 
 	}
-
-//	public void secession(String access_Token) {
-//		String reqURL = "https://kapi.kakao.com/v1/user/unlink";
-//		try {
-//			URL url = new URL(reqURL);
-//			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//			conn.setRequestMethod("POST");
-//			conn.setRequestProperty("Authorization", "Bearer " + access_Token);
-//
-//			int responseCode = conn.getResponseCode();
-//			System.out.println("responseCode : " + responseCode);
-//
-//			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//
-//			String result = "";
-//			String line = "";
-//
-//			while ((line = br.readLine()) != null) {
-//				result += line;
-//			}
-//			System.out.println(result);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
 }

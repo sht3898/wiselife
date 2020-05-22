@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.OnDelete;
@@ -55,10 +57,11 @@ public class User {
 	@JsonIgnore
 	private List<Review> reviewList = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "user")
+	@OneToOne
+	@JoinColumn(name="survey_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
-	private List<Survey> surveyList = new ArrayList<>();
+	private Survey survey = new Survey();
 	
 	@OneToMany(mappedBy = "user")
 	@OnDelete(action = OnDeleteAction.CASCADE)
