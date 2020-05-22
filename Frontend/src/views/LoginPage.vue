@@ -88,6 +88,7 @@ export default {
                 });
                 sessionStorage.setItem("token", authObj.access_token);
                 sessionStorage.setItem("username", username);
+                this_component.$router.go();
               } else {
                 this_component.isMember = false;
                 this_component.token = authObj.access_token;
