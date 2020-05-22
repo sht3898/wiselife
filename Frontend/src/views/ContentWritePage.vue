@@ -4,7 +4,7 @@
       <v-row class="ma-0 pa-0">
         <v-col class="my-0 py-0" cols="2">
           <v-overflow-btn
-            v-model="main_category"
+            v-model="meeting.main_category"
             :items="categories"
             style="font-size:10pt"
             label="카테고리"
@@ -16,7 +16,7 @@
         </v-col>
         <v-col class="my-0 py-0" cols="2">
           <v-overflow-btn
-            v-model="is_class"
+            v-model="meeting.is_class"
             :items="classform"
             style="font-size:10pt"
             label="형태"
@@ -25,17 +25,23 @@
         </v-col>
         <v-col class="my-0 py-0" cols="2">
           <v-overflow-btn
-            v-model="is_period"
+            v-model="meeting.is_period"
             :items="periodform"
             style="font-size:10pt"
             label="기간"
             dense
           ></v-overflow-btn>
         </v-col>
-        <v-col v-if="is_period=='정기'">
-          <v-text-field dense outlined style="font-size:10pt" placeholder="주/월 n회"></v-text-field>
+        <v-col v-if="meeting.is_period=='정기'">
+          <v-text-field
+            v-model="meeting.period_date"
+            dense
+            outlined
+            style="font-size:10pt"
+            placeholder="주/월 n회"
+          ></v-text-field>
         </v-col>
-        <v-col v-if="is_period=='비정기'">
+        <v-col v-if="meeting.is_period=='비정기'">
           <v-menu
             v-model="menu2"
             :close-on-content-click="false"
@@ -48,7 +54,7 @@
               <v-text-field
                 dense
                 outlined
-                v-model="date"
+                v-model="meeting.meeting_date"
                 style="font-size:10pt"
                 label="모임 시간"
                 prepend-icon="mdi-calendar"
@@ -56,7 +62,7 @@
                 v-on="on"
               ></v-text-field>
             </template>
-            <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
+            <v-date-picker v-model="meeting.meeting_date" @input="menu2 = false"></v-date-picker>
           </v-menu>
         </v-col>
       </v-row>
@@ -127,11 +133,12 @@
             prepend-icon="mdi-camera-enhance"
             outlined
             dense
+            v-model="image_url"
           ></v-file-input>
         </v-col>
         <v-col>
           <v-text-field
-            v-model="max_person"
+            v-model="meeting.max_person"
             label="모집 인원"
             style="font-size:10pt"
             type="number"
@@ -142,21 +149,28 @@
         <v-col>
           <v-overflow-btn
             class="my-0 py-0"
-            v-model="unit"
+            v-model="meeting.unit"
             :items="unitform"
             style="font-size:10pt"
             label="모임비"
             dense
           ></v-overflow-btn>
         </v-col>
-        <v-col v-if="unit=='회비'">
-          <v-text-field type="number" style="font-size:9pt" suffix="원" outlined dense></v-text-field>
+        <v-col v-if="meeting.unit=='회비'">
+          <v-text-field
+            v-model="meeting.fee"
+            type="number"
+            style="font-size:9pt"
+            suffix="원"
+            outlined
+            dense
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row style="heigth:400px">
         <v-card class="pa-2" outlined tile style="width:100%; height:400px">
           <textarea
-            v-model="content"
+            v-model="meeting.content"
             auto-grow
             style="width:100%; height:100%"
             placeholder="내용을 입력해주세요."
@@ -166,12 +180,18 @@
 
       <v-row>
         <v-col>
-          <v-text-field class="my-0 py-0" label="문의 연락처) 전화번호 or 카카오톡id or 이메일" filled dense></v-text-field>
+          <v-text-field
+            class="my-0 py-0"
+            v-model="meeting.phone"
+            label="문의 연락처) 전화번호 or 카카오톡id or 이메일"
+            filled
+            dense
+          ></v-text-field>
         </v-col>
         <v-col>
           <v-text-field
             class="my-0 py-0"
-            v-model="ref_url"
+            v-model="meeting.ref_url"
             label="참고URL ex) http://k02b105.p.ssafy.io"
             filled
             dense
@@ -196,7 +216,7 @@
           <v-container id="dropdown-example-2" class="py-0">
             <v-overflow-btn
               class="my-0 py-0"
-              v-model="area2"
+              v-model="meeting.area2"
               :items="second_area"
               style="font-size:10pt"
               label="시/군/구"
@@ -206,6 +226,7 @@
         </v-col>
         <v-col cols="6" class="my-0 py-0">
           <v-text-field
+            v-model="meeting.address"
             class="my-0 py-0"
             id="sample6_address"
             prepend-icon="mdi-map-marker"
@@ -228,25 +249,31 @@
   </v-container>
 </template>
 <script>
+import http from "../http-common";
 export default {
   name: "contentWritePage",
   data() {
     return {
-      writer: "",
-      main_category: "",
-      title: "",
-      tags: "", // 해시태그 띄어쓰기로 구분 (#붙여서 입력!)
-      is_period: 0,
-      meeting_date: "",
-      is_class: 0,
-      max_person: 0,
-      content: "",
-      ref_url: "",
+      meeting: {
+        writer: "",
+        main_category: "",
+        title: "",
+        tags: "", // 해시태그 띄어쓰기로 구분 (#붙여서 입력!)
+        is_period: 0,
+        meeting_date: new Date().toISOString().substr(0, 10),
+        period_date: "",
+        is_class: 0,
+        max_person: 0,
+        content: "",
+        ref_url: "",
+        area1: "",
+        area2: "",
+        address: "",
+        phone: "",
+        fee: 0, // 회비 또는 금액을 작성시 숫자를 입력하도록
+        unit: "" // 단위 : 원/미정/회비
+      },
       area1: "",
-      area2: "",
-      address: "",
-      fee: 0, // 회비 또는 금액을 작성시 숫자를 입력하도록
-      unit: "", // 단위 : 원/미정/회비
 
       image_url: "",
 
@@ -280,7 +307,6 @@ export default {
         정기: 1,
         비정기: 0
       },
-      date: new Date().toISOString().substr(0, 10),
       modal: false,
       menu2: false,
 
@@ -290,13 +316,13 @@ export default {
       editing: null,
       index: -1,
       items: [
-        { header: "해시태그를 등록해주세요! (#예시 + enter)" },
+        { header: "해시태그를 등록해주세요!" },
         {
-          text: "#슬기로운",
+          text: "슬기로운",
           color: "green"
         },
         {
-          text: "#여가생활",
+          text: "여가생활",
           color: "orange"
         }
       ],
@@ -307,8 +333,7 @@ export default {
       search: null,
       y: 0,
       rules: [
-        value =>
-          !value || value.size < 2000000 || "이미지는 2 MB 이하로 등록해주세요!"
+        v => !v || v.size < 2000000 || "이미지는 2 MB 이하로 등록해주세요!"
       ],
       unitform: ["미정", "회비"],
       first_area: [
@@ -339,7 +364,7 @@ export default {
     hashtag(val, prev) {
       if (val.length === prev.length) return;
       if (val.length > 5) {
-        this.$nextTick(() => this.model.pop());
+        this.$nextTick(() => this.hashtag.pop());
       }
 
       this.hashtag = val.map(v => {
@@ -360,10 +385,25 @@ export default {
   },
   methods: {
     validate() {
-      alert(this.category_key[this.main_category]);
-      alert(this.class_key[this.is_class]);
-      alert(this.period_key[this.is_period]);
+      alert(this.category_key[this.meeting.main_category]);
+      alert(this.class_key[this.meeting.is_class]);
+      alert(this.period_key[this.meeting.is_period]);
       alert(document.getElementById("sample6_address").value);
+
+      for(var i=0; i<this.hashtag.length; i++){
+          this.meeting.tags += "#"+this.hashtag[i].text+","
+      }
+
+      http
+        .post(`meeting/create`, {
+          uid: "사용자",
+          meeting: this.meeting
+        })
+        .then(response => {
+          if (respons.data.state == 200) {
+            sessionStorage.setItem("token", this.token);
+          }
+        });
     },
     edit(index, item) {
       if (!this.editing) {
@@ -393,7 +433,8 @@ export default {
       this.files = this.$refs.files.files;
     },
     getSecondArea() {
-      if (this.area1.charAt(this.area1.length - 1) == "시") {
+      this.meeting.area1 = this.area1;
+      if (this.meeting.area1.charAt(this.meeting.area1.length - 1) == "시") {
         this.second_area.push("전체");
       }
       // http
@@ -417,7 +458,6 @@ export default {
             addr = data.jibunAddress;
           }
           document.getElementById("sample6_address").value = addr;
-
         }
       }).open();
     }
