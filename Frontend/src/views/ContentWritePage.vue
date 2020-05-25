@@ -134,7 +134,9 @@
             outlined
             dense
             v-model="image_url"
-            id="files" ref="files" v-on:change="handleFilesUploads()"
+            id="files"
+            ref="files"
+            v-on:change="handleFilesUploads()"
           ></v-file-input>
         </v-col>
         <v-col>
@@ -168,18 +170,11 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row style="heigth:400px">
-        <v-card class="pa-2" outlined tile style="width:100%; height:400px">
-          <textarea
-            v-model="meeting.content"
-            auto-grow
-            style="width:100%; height:100%"
-            placeholder="내용을 입력해주세요."
-          ></textarea>
-        </v-card>
+      <v-row style="heigth:300px">
+        <vue-editor v-model="meeting.content" :editorToolbar="customToolbar" style="width:100%; height:300px"></vue-editor>
       </v-row>
 
-      <v-row>
+      <v-row class="mt-12">
         <v-col>
           <v-text-field
             class="my-0 py-0"
@@ -193,7 +188,7 @@
           <v-text-field
             class="my-0 py-0"
             v-model="meeting.ref_url"
-            label="참고URL ex) http://k02b105.p.ssafy.io"
+            label="참고 URL) http://k02b105.p.ssafy.io"
             filled
             dense
           ></v-text-field>
@@ -251,10 +246,24 @@
 </template>
 <script>
 import http from "../http-common";
+import { VueEditor } from "vue2-editor";
 export default {
   name: "contentWritePage",
+  components: {
+    VueEditor
+  },
   data() {
     return {
+      customToolbar: [
+        ["bold", "italic", "underline"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [
+          { align: "" },
+          { align: "center" },
+          { align: "right" },
+          { align: "justify" }
+        ]
+      ],
       meeting: {
         writer: "",
         main_category: "",
@@ -277,7 +286,7 @@ export default {
       area1: "",
 
       image_url: "",
-      files:"",
+      files: "",
 
       categories: [
         "레저/스포츠",
@@ -392,8 +401,8 @@ export default {
       alert(this.period_key[this.meeting.is_period]);
       alert(document.getElementById("sample6_address").value);
 
-      for(var i=0; i<this.hashtag.length; i++){
-          this.meeting.tags += "#"+this.hashtag[i].text+","
+      for (var i = 0; i < this.hashtag.length; i++) {
+        this.meeting.tags += "#" + this.hashtag[i].text + ",";
       }
 
       http
@@ -407,30 +416,29 @@ export default {
           }
         });
 
+      /////////////// 이미지 업로드
+      // let formData = new FormData();
 
-        /////////////// 이미지 업로드 
-        // let formData = new FormData();
+      // for (var i = 0; i < this.files.length; i++) {
+      //   let file = this.files[i];
+      //   formData.append("files", file);
+      // }
+      // formData.append("budget_num", this.budgetInfo.budget_num);
+      // // alert("budget_num: " + this.budgetInfo.budget_num);
+      // formData.append("review_content", this.content);
+      // // alert("review_content: " + this.content);
 
-        // for (var i = 0; i < this.files.length; i++) {
-        //   let file = this.files[i];
-        //   formData.append("files", file);
-        // }
-        // formData.append("budget_num", this.budgetInfo.budget_num);
-        // // alert("budget_num: " + this.budgetInfo.budget_num);
-        // formData.append("review_content", this.content);
-        // // alert("review_content: " + this.content);
-
-        // http
-        //   .post("/review", formData)
-        //   .then(response => {
-        //     // console.log("SUCCESS!!");
-        //     this.$router.push({name:'review'});
-        //     // console.log(response);
-        //     // this.result = response.;
-        //   })
-        //   .catch(ex => {
-        //     // console.log("FAILURE!!");
-        //   });
+      // http
+      //   .post("/review", formData)
+      //   .then(response => {
+      //     // console.log("SUCCESS!!");
+      //     this.$router.push({name:'review'});
+      //     // console.log(response);
+      //     // this.result = response.;
+      //   })
+      //   .catch(ex => {
+      //     // console.log("FAILURE!!");
+      //   });
     },
     edit(index, item) {
       if (!this.editing) {
@@ -473,7 +481,7 @@ export default {
       //     console.log(err);
       //   });
     },
-    
+
     sample6_execDaumPostcode() {
       new daum.Postcode({
         oncomplete: function(data) {
