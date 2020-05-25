@@ -1,5 +1,7 @@
 package com.ssafy.wiselife.service;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,6 +77,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			UserMeeting usermeeting = new UserMeeting();
 			usermeeting.setMeeting(findMeeting);
 			usermeeting.setUser(meetingEntity.getUser());
+			usermeeting.setIsActive(1); //모집중
 			usermeetingrepo.save(usermeeting);
 
 			return meeting_id;
@@ -103,6 +106,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			}
 
 			Meeting meetingEntity = meetingrepo.findById(meeting_id).get();
+			List<UserMeeting> userMeetingList = usermeetingrepo.findByMeeting(meetingEntity);
 			meetingEntity.setUser(user);
 			meetingEntity.setCategory(category);
 			meetingEntity.setMeetingId(meeting_id);
@@ -119,6 +123,13 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingEntity.setTags(meeting.getTags());
 			meetingEntity.setPhone(meeting.getPhone());
 			meetingrepo.save(meetingEntity);
+			
+			// UserMeeting테이블 isActive 값도 변경
+			for (int i = 0; i < userMeetingList.size(); i++) {
+				userMeetingList.get(i).setIsActive(meeting.getIsActive());
+			}
+			usermeetingrepo.saveAll(userMeetingList);
+			
 			return meeting_id;
 		} catch (Exception e) {
 			return -1;
@@ -129,26 +140,37 @@ public class MeetingServiceImpl implements IMeetingService {
 	public DetailMeeting detailMeeting(int meeting_id, long uid) {
 		// 리뷰도 같이 보여줘야함
 		Meeting meetingEntity = null;
+		User user = null;
+		
 		try {
 			// 조회수 증가
 			meetingEntity = meetingrepo.findById(meeting_id).get();
 			int preViewCnt = meetingEntity.getViewCnt();
 			meetingEntity.setViewCnt(preViewCnt + 1);
 			meetingrepo.save(meetingEntity);
+			
+			
 			meetingEntity = meetingrepo.findById(meeting_id).get();
 
 			DetailMeeting meeting = entityMapper.convertToDomain(meetingrepo.findById(meeting_id).get(),
 					DetailMeeting.class);
 
 			// 좋아요 확인
-			if (uid == 0) {
+			user = userrepo.findById(uid).get();
+			
+			// 로그인 안 한 사용자거나 사용자가 작성자라면
+			if (uid == 0 || user == null) {
 				meeting.setIsLike(0);
+				meeting.setCheckUser(1); //일반사용자
+				return meeting;
+			} else if(uid == meetingEntity.getUser().getUid()) {
+				meeting.setIsLike(0);
+				meeting.setCheckUser(0); //작성자
 				return meeting;
 			}
 
-			User user = userrepo.findById(uid).get();
-			
 			try {
+				// LikeMeeting 테이블에 저장된 사용자라면
 				likemeetingrepo.findByUserAndMeeting(user, meetingEntity);
 				meeting.setIsLike(1);
 			} catch (Exception e) {

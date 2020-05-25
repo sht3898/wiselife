@@ -32,14 +32,20 @@ public class SearchController {
 	@ResponseBody
 	public Object searchKeyword(@PathVariable int category_id, String keyword) {
 		List<CardMeeting> meetingList = null;
+		Map<Object, Object> resultMap = new HashMap<>();
 		
 		if(keyword == null || keyword == "") {
 			meetingList = searchservice.searchByCategory(category_id);
+			if(meetingList.size() == 0) {
+				resultMap.put(HttpStatus.OK, "NO DATA");
+				return resultMap;
+			}
+			
+			return meetingList;
 		}
 		
 		meetingList = searchservice.searchByKeyword(category_id, keyword);
 		if(meetingList.size() == 0) {
-			Map<Object, Object> resultMap = new HashMap<>();
 			resultMap.put(HttpStatus.OK, "일치하는 내용 없음");
 			return resultMap;
 		}

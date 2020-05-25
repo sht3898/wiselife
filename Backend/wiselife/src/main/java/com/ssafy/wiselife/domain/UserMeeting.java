@@ -25,4 +25,7 @@ public class UserMeeting {
 	@ManyToOne
 	@JoinColumn(name = "meeting_id")
 	private Meeting meeting;
+	
+	//0-마감, 1-모집중, 2-진행중 / 0 또는 2는 리뷰를 작성할 수 있음
+	private int isActive;
 }

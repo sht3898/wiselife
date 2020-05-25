@@ -68,6 +68,7 @@ public class MeetingDTO {
 		private double score;
 		private String phone;
 		private int isLike;
+		private int checkUser; // 0-작성자, 1-일반사용자
 	}
 	
 	@Getter @Setter @ToString
