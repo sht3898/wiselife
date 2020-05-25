@@ -18,8 +18,8 @@ public class Area {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int areaId;
 	
-	private String first_area;
+	private String firstArea;
 	
-	private String second_area;
+	private String secondArea;
 	
 }

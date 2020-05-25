@@ -1,5 +1,7 @@
 package com.ssafy.wiselife.dto;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,10 +21,12 @@ public class UserDTO {
 	private String area1;
 	private String area2;
 	
+	private List<Integer> interestCategory;
+	
 	@Getter @Setter
 	public static class UserLogin{
 		private String email;
 		private String password;
 	}
-
+		
 }

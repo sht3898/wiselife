@@ -194,15 +194,17 @@ export default {
       if (this.area1.charAt(this.area1.length - 1) == "시") {
         this.second_area.push("전체");
       }
-      // http
-      //   .get(`area/${this.first_area}`)
-      //   .then(response => {
-      //     console.log(response.data);
-      //     // this.second_area.push(response.data.second_area);
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
+      http
+        .get(`area/${this.area1}`)
+        .then(response => {
+          console.log(response.data);
+          for(var i = 0 ; i < response.data.length; i++){
+            this.second_area.push(response.data[i]);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     validate() {
       if (
@@ -227,7 +229,7 @@ export default {
         area1: this.area1,
         area2: this.area2,
         is_inst: this.instructor,
-        // interest_category: picked,
+        interest_category: picked,
       };
       let config = {
         headers: {
