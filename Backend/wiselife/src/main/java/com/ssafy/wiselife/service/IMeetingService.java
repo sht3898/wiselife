@@ -5,16 +5,16 @@ import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
 
 public interface IMeetingService {
-	public int createMeeting(long uid, CreateMeeting meeting);
+	int createMeeting(long uid, CreateMeeting meeting);
 	
-	public int updateMeeting(int meeting_id, long uid, UpdateMeeting meeting);
+	int updateMeeting(int meeting_id, long uid, UpdateMeeting meeting);
 	
-	public DetailMeeting detailMeeting(int meeting_id, long uid);
+	DetailMeeting detailMeeting(int meeting_id, long uid);
 	
-	public boolean checkAuthentication(long uid);
+	boolean checkAuthentication(long uid);
 
-	public int deleteMeeting(int meeting_id, long uid);
+	int deleteMeeting(int meeting_id, long uid);
 
-	public int saveLikeMeeting(int meeting_id, long uid);
+	int saveLikeMeeting(int meeting_id, long uid);
 	
 }

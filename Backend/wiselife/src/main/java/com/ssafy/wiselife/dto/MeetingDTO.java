@@ -82,9 +82,11 @@ public class MeetingDTO {
 		private String area2;
 	}
 	
-	@Getter @Setter
-	public static class InsertUserMeeting {
-		private long uid;
+	
+	@Getter @Setter @ToString
+	public static class TopMeeting {
 		private int meetingId;
+		private String title;
 	}
+
 }
