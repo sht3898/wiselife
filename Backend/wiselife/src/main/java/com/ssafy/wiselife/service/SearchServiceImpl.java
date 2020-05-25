@@ -97,7 +97,7 @@ public class SearchServiceImpl implements ISearchService {
 				.collect(Collectors.toList());
 	}
 
-	//키워드가 없을때
+	//키워드가 없을때 최신순으로 보여줌
 	@Override
 	public List<CardMeeting> searchByCategory(int category_id) {
 		try {
