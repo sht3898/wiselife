@@ -17,30 +17,63 @@
       <v-divider></v-divider>
       <div class="group_question">
         <ol class="list_question">
-          <li  v-for="question in questions" :key="question.number">
-              <strong class="tit_question">{{question.number}}. {{question.question}}</strong>
+          <li v-for="question in questions" :key="question.number">
+            <strong class="tit_question">{{question.number}}. {{question.question}}</strong>
             <div class="area_auescase">
               <span class="indicate_standard standard_negative">전혀 그렇지 않다.</span>
               <span class="indicate_standard standard_positive">매우 그렇다.</span>
               <div class="list_quescase">
                 <span class="screen_out">텍스트 선택지</span>
-                <v-btn  text class="btn_dot btn_dot1" :class="{btn_active: (question.answer==1)}" @click="clickDot1(question)" freezebutton>
+                <v-btn
+                  text
+                  class="btn_dot btn_dot1"
+                  :class="{btn_active: (question.answer==1)}"
+                  @click="clickDot1(question)"
+                  freezebutton
+                >
                   <span class="screen_out">가장 부정</span>
                   <span class="ico_together2 ico_dot"></span>
                 </v-btn>
-                <v-btn text min-width="0" class="btn_dot btn_dot2" :class="{btn_active: (question.answer==2)}" @click="clickDot2(question)" freezebutton>
+                <v-btn
+                  text
+                  min-width="0"
+                  class="btn_dot btn_dot2"
+                  :class="{btn_active: (question.answer==2)}"
+                  @click="clickDot2(question)"
+                  freezebutton
+                >
                   <span class="screen_out">약간 부정</span>
                   <span class="ico_together2 ico_dot"></span>
                 </v-btn>
-                <v-btn min-width="0" text class="btn_dot btn_dot3" :class="{btn_active: (question.answer==3)}" @click="clickDot3(question)" freezebutton>
+                <v-btn
+                  min-width="0"
+                  text
+                  class="btn_dot btn_dot3"
+                  :class="{btn_active: (question.answer==3)}"
+                  @click="clickDot3(question)"
+                  freezebutton
+                >
                   <span class="screen_out">보통</span>
                   <span class="ico_together2 ico_dot"></span>
                 </v-btn>
-                <v-btn text min-width="0" class="btn_dot btn_dot4" :class="{btn_active: (question.answer==4)}" @click="clickDot4(question)" freezebutton>
+                <v-btn
+                  text
+                  min-width="0"
+                  class="btn_dot btn_dot4"
+                  :class="{btn_active: (question.answer==4)}"
+                  @click="clickDot4(question)"
+                  freezebutton
+                >
                   <span class="screen_out">약간 긍정</span>
                   <span class="ico_together2 ico_dot"></span>
                 </v-btn>
-                <v-btn text class="btn_dot btn_dot5" :class="{btn_active: (question.answer==5)}" @click="clickDot5(question)" freezebutton>
+                <v-btn
+                  text
+                  class="btn_dot btn_dot5"
+                  :class="{btn_active: (question.answer==5)}"
+                  @click="clickDot5(question)"
+                  freezebutton
+                >
                   <span class="screen_out">강한 긍정</span>
                   <span class="ico_together2 ico_dot"></span>
                 </v-btn>
@@ -228,36 +261,80 @@ export default {
   methods: {
     validate() {
       var answers = [];
+      let minus = [1, 2, 4, 8, 10, 11, 19, 21, 22, 27, 28, 29];
       for (var i = 0; i < this.questions.length; i++) {
-        answers.push(this.questions[i].answer);
+        if (this.questions[i].answer == 0) {
+          alert(i + 1 + "번 문항을 체크해주세요!");
+          return;
+        }
+        if (minus.includes(i)) {
+          answers.push(6 - this.questions[i].answer);
+        } else {
+          answers.push(this.questions[i].answer);
+        }
       }
+      let openness = 0;
+      let conscientiousness = 0;
+      let extraversion = 0;
+      let agreeableness = 0;
+      let neuroticism = 0;
+
+      for (var i = 0; i < answers.length; ++i) {
+        var div = Math.floor(i / 6);
+        if (div == 0) {
+          openness += answers[i];
+        } else if (div == 1) {
+          conscientiousness += answers[i];
+        } else if (div == 2) {
+          extraversion += answers[i];
+        } else if (div == 3) {
+          agreeableness += answers[i];
+        } else if (div == 4) {
+          neuroticism += answers[i];
+        }
+      }
+      openness = ((openness / 30) * 100).toFixed(1);
+      conscientiousness = ((conscientiousness / 30) * 100).toFixed(1);
+      extraversion = ((extraversion / 30) * 100).toFixed(1);
+      agreeableness = ((agreeableness / 30) * 100).toFixed(1);
+      neuroticism = ((neuroticism / 30) * 100).toFixed(1);
+
       let data = {
-        answers: answers,
+        openness: openness,
+        conscientiousness: conscientiousness,
+        extraversion: extraversion,
+        agreeableness: agreeableness,
+        neuroticism: neuroticism
+      };
+
+      let config = {
         headers: {
-          Authorization: "JWT " + this.token
+          access_token: this.token
         }
       };
-      http.post(``, data).then(response => {
-        if (response.data.state == 200) {
+
+      console.log(data);
+      http.post(``, data, config).then(response => {
+        if (response.data.status) {
           this.$router.push("/surveyResult");
         }
       });
     },
-    clickDot1(question){
+    clickDot1(question) {
       question.answer = 1;
     },
-    clickDot2(question){
+    clickDot2(question) {
       question.answer = 2;
     },
-    clickDot3(question){
+    clickDot3(question) {
       question.answer = 3;
     },
-    clickDot4(question){
+    clickDot4(question) {
       question.answer = 4;
     },
-    clickDot5(question){
+    clickDot5(question) {
       question.answer = 5;
-    },
+    }
   }
 };
 </script>
@@ -273,13 +350,14 @@ export default {
   }
 }
 .wrap_personality {
-font-size: 14px;
-line-height: 1.5;
-font-family: 'Kakao Light','Malgun Gothic','맑은 고딕','Apple SD Gothic Neo',dotum,'돋움',sans-serif;
-color: #444;
-margin: 0;
-padding: 0;
-margin-bottom: 92px;
+  font-size: 14px;
+  line-height: 1.5;
+  font-family: "Kakao Light", "Malgun Gothic", "맑은 고딕",
+    "Apple SD Gothic Neo", dotum, "돋움", sans-serif;
+  color: #444;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 92px;
 }
 .wrap_personality .group_question {
   width: 700px;
@@ -295,21 +373,21 @@ margin-bottom: 92px;
   text-align: center;
 }
 .group_cover .tit_cover {
-    display: inline-block;
-    font-size: 40px;
-    font-weight: normal;
-    font-family: 'Kakao Bold',sans-serif;
-    vertical-align: top;
+  display: inline-block;
+  font-size: 40px;
+  font-weight: normal;
+  font-family: "Kakao Bold", sans-serif;
+  vertical-align: top;
 }
 .group_cover .tit_cover .tit_refer {
-    display: block;
-    font-size: 16px;
+  display: block;
+  font-size: 16px;
 }
 .group_cover .desc_cover {
-    margin-top: 19px;
-    font-size: 15px;
-    line-height: 25px;
-    word-break: keep-all;
+  margin-top: 19px;
+  font-size: 15px;
+  line-height: 25px;
+  word-break: keep-all;
 }
 .screen_out {
   overflow: hidden;
@@ -339,13 +417,14 @@ ol {
   margin-inline-end: 0px;
   padding-inline-start: 40px;
   font-size: 14px;
-line-height: 1.5;
-font-family: 'Kakao Light','Malgun Gothic','맑은 고딕','Apple SD Gothic Neo',dotum,'돋움',sans-serif;
-color: #444;
-text-align: center;
-margin: 0;
-padding: 0;
-list-style: none;
+  line-height: 1.5;
+  font-family: "Kakao Light", "Malgun Gothic", "맑은 고딕",
+    "Apple SD Gothic Neo", dotum, "돋움", sans-serif;
+  color: #444;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .group_question .list_question .tit_question {
@@ -405,7 +484,7 @@ list-style: none;
   margin-top: -38px;
 }
 .group_question .list_quescase .btn_dot2 {
-  width: 60px ;
+  width: 60px;
   height: 60px;
   left: 25%;
   margin: -30px 0 0 -24px;
@@ -429,8 +508,8 @@ list-style: none;
   margin-top: -38px;
 }
 .list_quescase .btn_dot.btn_active {
-  background: #84DC1D;
-  border: 1px solid #84DC1D;
+  background: #84dc1d;
+  border: 1px solid #84dc1d;
 }
 .group_question .list_quescase .ico_dot {
   position: absolute;
@@ -443,11 +522,11 @@ list-style: none;
   background-position: -463px -885px;
 }
 .group_question .list_quescase .btn_dot.btn_active .ico_dot {
-    width: 21px;
-    height: 17px;
-    background-position: -440px -885px;
-    margin-top: -8px;
-    margin-left: -10px;
+  width: 21px;
+  height: 17px;
+  background-position: -440px -885px;
+  margin-top: -8px;
+  margin-left: -10px;
 }
 .ico_together2 {
   display: block;
@@ -458,18 +537,18 @@ list-style: none;
     no-repeat 0 0;
   text-indent: -9999px;
 }
-.group_question .list_question li+li {
-    margin-top: 87px;
+.group_question .list_question li + li {
+  margin-top: 87px;
 }
 .group_question .after_question .tit_question {
-    opacity: 0.3;
+  opacity: 0.3;
 }
 .group_question .list_question .tit_question {
-    font-size: 19px;
-    font-weight: normal;
-    font-family: 'Kakao Bold',sans-serif;
+  font-size: 19px;
+  font-weight: normal;
+  font-family: "Kakao Bold", sans-serif;
 }
 .group_question .after_question .area_auescase {
-    opacity: 0.3;
+  opacity: 0.3;
 }
 </style>
