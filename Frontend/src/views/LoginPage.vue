@@ -65,59 +65,43 @@ export default {
     login() {
       this.clickBtn = true;
       let this_component = this;
-      // Kakao.Auth.login({
-      //   success: function(authObj) {
-      //     let headers = {
-      //       access_token: authObj.access_token,
-      //     };
-      //     http
-      //       .get(`user/login`, {
-      //         headers
-      //       })
-      //       .then(response => {
-      //         if (response.data.status) {
-      //           var username = "";
-      //           Kakao.API.request({
-      //             url: "/v2/user/me",
-      //             success: function(response) {
-      //               username = response.properties.nickname;
-      //             },
-      //             fail: function(error) {
-      //               alert("회원 정보를 가져오는데 실패했습니다!");
-      //             }
-      //           });
-      //           sessionStorage.setItem("token", authObj.access_token);
-      //           sessionStorage.setItem("username", username);
-      //           this_component.$router.go();
-      //         } else {
-      //           this_component.isMember = false;
-      //           this_component.token = authObj.access_token;
-      //         }
-      //       });
-      //   },
-      //   fail: function(err) {
-      //     console.log(err);
-      //     alert("로그인에 실패하였습니다! 다시 시도해주세요!");
-      //     this.clickBtn = false;
-      //     return;
-      //   }
-      // });
-      this.clickBtn = true;
-      let token = "asdfasdfasdfasdfasdf";
-      let username = "대래";
-      let status = 2;
-      // status { 1 : login ok, member ok / 2 : login ok, member : no / 3 : error }
-      if (status == 1) {
-        sessionStorage.setItem("token", token);
-        sessionStorage.setItem("username", username);
-        this.$router.go();
-      } else if (status == 2) {
-        sessionStorage.setItem("username", username);
-        this.token = token;
-        this.isMember = false;
-      } else {
-        this.clickBtn = false;
-      }
+      Kakao.Auth.login({
+        success: function(authObj) {
+          let headers = {
+            access_token: authObj.access_token,
+          };
+          http
+            .get(`user/login`, {
+              headers
+            })
+            .then(response => {
+              if (response.data.status) {
+                var username = "";
+                Kakao.API.request({
+                  url: "/v2/user/me",
+                  success: function(response) {
+                    username = response.properties.nickname;
+                  },
+                  fail: function(error) {
+                    alert("회원 정보를 가져오는데 실패했습니다!");
+                  }
+                });
+                sessionStorage.setItem("token", authObj.access_token);
+                sessionStorage.setItem("username", username);
+                this_component.$router.go();
+              } else {
+                this_component.isMember = false;
+                this_component.token = authObj.access_token;
+              }
+            });
+        },
+        fail: function(err) {
+          console.log(err);
+          alert("로그인에 실패하였습니다! 다시 시도해주세요!");
+          this.clickBtn = false;
+          return;
+        }
+      });
     },
     getImgUrl(img) {
       return require("../assets/" + img);
