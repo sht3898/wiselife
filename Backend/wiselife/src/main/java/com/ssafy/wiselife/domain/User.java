@@ -59,11 +59,6 @@ public class User {
 	@JsonIgnore
 	private List<Review> reviewList = new ArrayList<>();
 	
-//	@OneToOne
-//	@JoinColumn(name="surveyId")
-//	@OnDelete(action = OnDeleteAction.CASCADE)
-//	@JsonIgnore
-//	private Survey survey = new Survey();
 	
 	@OneToMany(mappedBy = "user")
 	@OnDelete(action = OnDeleteAction.CASCADE)

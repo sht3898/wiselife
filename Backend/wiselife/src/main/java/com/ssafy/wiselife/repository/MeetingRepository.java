@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.ssafy.wiselife.domain.Category;
 import com.ssafy.wiselife.domain.Meeting;
 import com.ssafy.wiselife.domain.User;
 
@@ -34,6 +35,6 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer>{
 			+ "MATCH(m.title, m.content, m.tags, m.area1, m.area2) AGAINST(:keywords in boolean mode)", nativeQuery = true)
 	public List<Meeting> findByCategoryAndAllFullText(@Param("category_id") int category_id, @Param("keywords") String keywords);
 
-	public List<Meeting> findByMainCategory(int category_id);
+	public List<Meeting> findByCategory(Category category);
 	
 }

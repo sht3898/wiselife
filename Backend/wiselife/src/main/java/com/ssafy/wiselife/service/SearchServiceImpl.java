@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ssafy.wiselife.domain.Meeting;
 import com.ssafy.wiselife.dto.MeetingDTO.CardMeeting;
 import com.ssafy.wiselife.mapper.EntityMapper;
+import com.ssafy.wiselife.repository.CategoryRepository;
 import com.ssafy.wiselife.repository.MeetingRepository;
 
 @Service
@@ -19,6 +20,9 @@ public class SearchServiceImpl implements ISearchService {
 
 	@Autowired
 	private EntityMapper entityMapper;
+	
+	@Autowired
+	private CategoryRepository categoryrepo;
 
 	//키워드가 있을때
 	@Override
@@ -97,7 +101,7 @@ public class SearchServiceImpl implements ISearchService {
 	@Override
 	public List<CardMeeting> searchByCategory(int category_id) {
 		try {
-			List<Meeting> meetingList = meetingrepo.findByMainCategory(category_id);
+			List<Meeting> meetingList = meetingrepo.findByCategory(categoryrepo.findById(category_id).get());
 			return meetingList.stream().map(e->entityMapper.convertToDomain(e, CardMeeting.class)).collect(Collectors.toList());
 		} catch (Exception e) {
 			return null;
