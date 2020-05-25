@@ -22,14 +22,14 @@ export default {
   },
   data() {
     return {
-      isLogin: "",
+      isLogin: "asdf",
     };
   },
   mounted(){
-    this.isLogin = sessionStorage.getItem("token");
-    if(!this.isLogin){
-      this.$router.push('/login');
-    }
+    // this.isLogin = sessionStorage.getItem("token");
+    // if(!this.isLogin){
+    //   this.$router.push('/login');
+    // }
   }
 };
 </script>

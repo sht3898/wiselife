@@ -17,7 +17,7 @@
 
       <div class="my-1 subtitle-1" style="color:green; font-weight:bold">#태그 #태그 #태그</div>
       <v-row align="center" class="mx-0 my-0">
-        <v-rating :value="4.5" color="amber" dense half-increments readonly size="14"></v-rating>
+        <v-rating :value="4.5" color="amber"  background-color="white" dense half-increments readonly size="14"></v-rating>
 
         <div class="grey--text ml-4">4.5</div>
         

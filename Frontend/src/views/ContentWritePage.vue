@@ -56,7 +56,7 @@
                 outlined
                 v-model="meeting.meeting_date"
                 style="font-size:10pt"
-                label="모임 시간"
+                label="모임 날짜"
                 prepend-icon="mdi-calendar"
                 readonly
                 v-on="on"
@@ -134,6 +134,7 @@
             outlined
             dense
             v-model="image_url"
+            id="files" ref="files" v-on:change="handleFilesUploads()"
           ></v-file-input>
         </v-col>
         <v-col>
@@ -258,7 +259,7 @@ export default {
         writer: "",
         main_category: "",
         title: "",
-        tags: "", // 해시태그 띄어쓰기로 구분 (#붙여서 입력!)
+        tags: "", // 해시태그 띄어쓰기로 구분 (#붙여서 보내기!)
         is_period: 0,
         meeting_date: new Date().toISOString().substr(0, 10),
         period_date: "",
@@ -276,6 +277,7 @@ export default {
       area1: "",
 
       image_url: "",
+      files:"",
 
       categories: [
         "레저/스포츠",
@@ -404,6 +406,31 @@ export default {
             sessionStorage.setItem("token", this.token);
           }
         });
+
+
+        /////////////// 이미지 업로드 
+        // let formData = new FormData();
+
+        // for (var i = 0; i < this.files.length; i++) {
+        //   let file = this.files[i];
+        //   formData.append("files", file);
+        // }
+        // formData.append("budget_num", this.budgetInfo.budget_num);
+        // // alert("budget_num: " + this.budgetInfo.budget_num);
+        // formData.append("review_content", this.content);
+        // // alert("review_content: " + this.content);
+
+        // http
+        //   .post("/review", formData)
+        //   .then(response => {
+        //     // console.log("SUCCESS!!");
+        //     this.$router.push({name:'review'});
+        //     // console.log(response);
+        //     // this.result = response.;
+        //   })
+        //   .catch(ex => {
+        //     // console.log("FAILURE!!");
+        //   });
     },
     edit(index, item) {
       if (!this.editing) {
@@ -446,6 +473,7 @@ export default {
       //     console.log(err);
       //   });
     },
+    
     sample6_execDaumPostcode() {
       new daum.Postcode({
         oncomplete: function(data) {

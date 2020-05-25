@@ -6,18 +6,26 @@
         <v-col>
           <v-row class="filtering">
             <v-col v-for="category in categories" :key="category.name">
-              <v-btn  :class="{bold: category.clicked}" @click="clickCategory(category)" x-small text style="text-align:center; font-size:10pt">{{category.name}}</v-btn>
+              <v-btn
+                :class="{bold: category.clicked}"
+                @click="clickCategory(category)"
+                x-small
+                text
+                style="text-align:center; font-size:10pt"
+              >{{category.name}}</v-btn>
             </v-col>
           </v-row>
         </v-col>
         <v-col class="pl-5" cols="1">
           <span style="font-size:9pt; color:dimgrey">내 지역</span>
           <span class="ma-auto" style="float:center; text-align:center">
-          <v-switch class="my-0 py-0" dense v-model="myarea" inset color="success"></v-switch>      
+            <v-switch class="my-0 py-0" dense v-model="myarea" inset color="success"></v-switch>
           </span>
         </v-col>
       </v-row>
-
+      <v-row>
+        최신순 가나다순 조회수순 좋아요순 평점순
+      </v-row>
     </v-flex>
     <v-flex class="ma-auto" lg10 xs12>
       <contents-list :content="this.content" />
@@ -82,39 +90,55 @@ export default {
         }
       ],
       selctedCategory: 0,
-      myarea: 0,
+      myarea: 0
     };
   },
   methods: {
-    search() {},
+    search() {
+      // http
+      //   .get(`api/area/${this.first_area}`)
+      //   .then(response => {
+      //   })
+      //   .catch(err => {
+      //     console.log(err);
+      //   });
+    },
     clickCategory(category) {
-      for(var i = 0; i < this.categories.length; i++){
-        if(this.categories[i] != category){
+      for (var i = 0; i < this.categories.length; i++) {
+        if (this.categories[i] != category) {
           this.categories[i].clicked = false;
         }
       }
       category.clicked = true;
-      this.$router.push("/result/"+category.key+"/"+this.$route.params.keyword)
+      this.$router.push(
+        "/result/" + category.key + "/" + this.$route.params.keyword
+      );
     },
-    checkURL(){
-      for(var i = 0; i < this.categories.length; i++){
-        if(this.categories[i].key == this.$route.params.category){
-          this.categories[i].clicked =true;
-        } 
+    checkURL() {
+      for (var i = 0; i < this.categories.length; i++) {
+        if (this.categories[i].key == this.$route.params.category) {
+          this.categories[i].clicked = true;
+        }
       }
     }
   },
-  mounted(){
+  mounted() {
     this.checkURL();
+    this.search();
   },
   computed: {
     keyword: function() {
-      this.content = this.$route.params.keyword;
-      return this.content;
+      return this.$route.params.keyword;
     },
-    category: function(){
-      this.selctedCategory=this.$route.params.category;
-      return this.selctedCategory;
+    category: function() {
+      for (var i = 0; i < this.categories.length; i++) {
+        if (this.categories[i].key == this.$route.params.category) {
+          this.categories[i].clicked = true;
+        } else {
+          this.categories[i].clicked = false;
+        }
+      }
+      return this.$route.params.category;
     }
   }
 };
@@ -124,7 +148,7 @@ export default {
   background-color: lightgray;
   border-radius: 12px;
 }
-.bold{
+.bold {
   font-weight: bold;
 }
 </style>
