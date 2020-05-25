@@ -101,7 +101,7 @@ public class SearchServiceImpl implements ISearchService {
 	@Override
 	public List<CardMeeting> searchByCategory(int category_id) {
 		try {
-			List<Meeting> meetingList = meetingrepo.findByCategory(categoryrepo.findById(category_id).get());
+			List<Meeting> meetingList = meetingrepo.findByCategoryOrderByMeetingIdDesc(categoryrepo.findById(category_id).get());
 			return meetingList.stream().map(e->entityMapper.convertToDomain(e, CardMeeting.class)).collect(Collectors.toList());
 		} catch (Exception e) {
 			return null;
