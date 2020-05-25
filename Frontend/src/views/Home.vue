@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-flex class="ma-auto mt-5" lg9>
+    <v-flex class="ma-auto mt-5" lg10>
       <v-container fluid>
         <p class="menu">추천 강좌/모임</p>
         <recommends-list></recommends-list>
@@ -134,5 +134,6 @@ export default {
 .menu {
   font-family: 'Do Hyeon', sans-serif;
   font-size: 23px;
+  padding-left:10px;
 }
 </style>
