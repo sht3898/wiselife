@@ -90,8 +90,4 @@ public class Meeting {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
 	private List<UserMeeting> users = new ArrayList<>();
-	
-	@OneToOne
-	@JoinColumn(name = "meetingImages_id")
-	private MeetingImages meetingImages;
 }

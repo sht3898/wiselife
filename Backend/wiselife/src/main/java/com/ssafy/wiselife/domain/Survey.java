@@ -22,11 +22,13 @@ public class Survey {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int surveyId;
-	private long uid;
 	private int openness;
 	private int conscientiousness ;
 	private int extraversion;
 	private int agreeableness;
 	private int neuroticism;
 	
+	@OneToOne
+	@JoinColumn(name = "uid")
+	private User user;
 }
