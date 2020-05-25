@@ -15,7 +15,7 @@
 
     <v-card-text>
 
-      <div class="my-1 subtitle-1" style="color:green; font-weight:bold">#태그 #태그 #태그</div>
+      <div class=" subtitle-1"><v-chip :color="`orange lighten-4`" class="black--text mr-2" label small>#슬기로운</v-chip></div>
       <v-row align="center" class="mx-0 my-0">
         <v-rating :value="4.5" color="amber"  background-color="white" dense half-increments readonly size="14"></v-rating>
 

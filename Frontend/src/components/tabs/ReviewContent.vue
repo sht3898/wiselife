@@ -15,7 +15,7 @@
         ></v-rating>
     </v-row>
     <v-row height="100px"> 
-        <v-col><v-card width="185" outlined><v-img src="https://cdn.vuetifyjs.com/images/cards/cooking.png" /></v-card></v-col>
+        <v-col><v-card width="180" outlined><v-img src="https://cdn.vuetifyjs.com/images/cards/cooking.png" /></v-card></v-col>
         <v-col cols="9"> <v-card outlined class="pa-3" width="100%" height="100%"> 내용 </v-card></v-col>
     </v-row>
   </v-card>
