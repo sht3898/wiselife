@@ -234,18 +234,17 @@ export default {
           access_token : this.token
         }
       }
-      this.complete = true;
 
-      // http
-      // .post(`user/signup/`,params, config)
-      // .then(response =>{
-      //   console.log(response);
-      //   if(response.data.status){
-      //     this.complete = true;
-      //     sessionStorage.setItem("token",this.token);
-      //     sessionStorage.setItem("username", response.data.info.username);
-      //   }
-      // })
+      http
+      .post(`user/signup/`,params, config)
+      .then(response =>{
+        console.log(response);
+        if(response.data.status){
+          this.complete = true;
+          sessionStorage.setItem("token",this.token);
+          sessionStorage.setItem("username", response.data.info.username);
+        }
+      })
     },
     pass() {
       sessionStorage.setItem("token", this.token);
