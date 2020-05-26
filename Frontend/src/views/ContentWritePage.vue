@@ -133,7 +133,6 @@
             prepend-icon="mdi-camera-enhance"
             outlined
             dense
-            v-model="image_url"
             id="files"
             ref="files"
             v-on:change="handleFilesUploads()"
@@ -344,7 +343,7 @@ export default {
       search: null,
       y: 0,
       rules: [
-        v => !v || v.size < 2000000 || "이미지는 2 MB 이하로 등록해주세요!"
+        value => !value || value.size < 2000000 || "이미지는 2 MB 이하로 등록해주세요!"
       ],
       unitform: ["미정", "회비"],
       first_area: [
