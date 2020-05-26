@@ -65,7 +65,7 @@
 
     <h3>관심 카테고리</h3>
     <v-row justify="space-around">
-      <v-col v-for="category in categories" :key="category.name" class="mt-5" >
+      <v-col v-for="category in categories" :key="category.name" class="mt-5">
         <v-img
           :src="getImgUrl(category.url)"
           width="70px"
@@ -174,11 +174,11 @@ export default {
       second_area: []
     };
   },
-  mounted() {
-    this.getYears();
-  },
   watch: {
     area1: "getSecondArea"
+  },
+  mounted() {
+    this.getYears();
   },
   methods: {
     getYears() {
