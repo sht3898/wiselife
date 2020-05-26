@@ -18,16 +18,14 @@ Router.prototype.push = function push(location) {
 
 Vue.use(Router)
 
-const requireAuth = () => (to, from, next) => {
-	console.log(store.state.accessToken);
-	console.log(sessionStorage.getItem('accessToken'));
-	if (sessionStorage.getItem('accessToken') == null) {	
-		alert("접근하실 수 없습니다. 로그인 해주세요!")	
-		return next('/');
-	}else{
-		return next();
-	}			
-  };
+// const requireAuth = () => (to, from, next) => {
+// 	if (sessionStorage.getItem('accessToken') == null) {	
+// 		alert("접근하실 수 없습니다. 로그인 해주세요!")	
+// 		return next('/');
+// 	}else{
+// 		return next();
+// 	}			
+//   };
 
 export default new Router({
   mode: 'history',
