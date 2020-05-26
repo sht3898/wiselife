@@ -39,5 +39,4 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer>{
 	
 	@Query(value = "SELECT title FROM MEETING m WHERE m.meeting_id = :meeting_id", nativeQuery = true)
 	public String findTitleByMeetingId(@Param("meeting_id") int meeting_id);
-	
 }

@@ -7,10 +7,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Setter;
 
@@ -28,16 +32,25 @@ public class Review {
 	private String writer;
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@CreationTimestamp
 	private Date createdAt;
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@UpdateTimestamp
 	private Date updatedAt;
 	
-	private int score;
+	private Double score;
+	
 	private String imageUrl;
+	
+	@Lob
+	private String content;
 	
 	@ManyToOne
 	@JoinColumn(name = "uid")
 	private User user;
 	
+	@ManyToOne
+	@JoinColumn(name = "meeting_id")
+	private Meeting meeting;
 }

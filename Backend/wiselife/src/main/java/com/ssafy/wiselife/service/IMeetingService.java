@@ -1,5 +1,8 @@
 package com.ssafy.wiselife.service;
 
+import java.util.List;
+
+import com.ssafy.wiselife.dto.MeetingDTO.CardMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
@@ -11,10 +14,10 @@ public interface IMeetingService {
 	
 	DetailMeeting detailMeeting(int meeting_id, long uid);
 	
-	boolean checkAuthentication(long uid);
-
 	int deleteMeeting(int meeting_id, long uid);
 
 	int saveLikeMeeting(int meeting_id, long uid);
+	
+	List<CardMeeting> userOfJoinMeetingList(long uid);
 	
 }
