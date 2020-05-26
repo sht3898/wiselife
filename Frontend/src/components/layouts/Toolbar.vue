@@ -132,7 +132,7 @@
 import http from "../../http-common";
 
 export default {
-  name: "toolbar",
+  name: "Toolbar",
   components: {},
   data: () => ({
     sidebar: false,

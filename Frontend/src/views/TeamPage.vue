@@ -241,7 +241,7 @@
 
 <script>
 export default {
-  name: "teamPage",
+  name: "TeamPage",
   components: {},
   methods: {
     getImgUrl(img) {

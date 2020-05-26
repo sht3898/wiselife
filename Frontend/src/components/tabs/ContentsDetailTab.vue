@@ -19,7 +19,7 @@
 import Review from "./Review";
 import Chatting from "./Chatting";
 export default {
-  name: "contentsDetailTab",
+  name: "ContentsDetailTab",
   components: {
     Review,
     Chatting

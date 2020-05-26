@@ -85,7 +85,7 @@ import http from "../http-common";
 import Survey from "@/components/survey/Survey";
 
 export default {
-  name: "myInfoPage",
+  name: "MyInfoPage",
   props: {
     token: { type: String }
   },

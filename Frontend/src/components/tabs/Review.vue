@@ -15,27 +15,24 @@
             half-increments
             readonly
             medium
-          ></v-rating>
-          
+          />
         </v-col>
         <v-col cols="5">
           <span class="toptitle">참여자 평균 연령대</span>
           <span class="topscore ml-2">20대</span>
         </v-col>
       </v-row>
-
-         
     </v-card>
-     <review-content></review-content>
+    <review-content />
   </v-container>
 </template>
 <script>
-import ReviewContent from "./ReviewContent"
+import ReviewContent from "./ReviewContent";
 export default {
-    name:"review",
-    components:{
-        ReviewContent
-    }
+  name: "Review",
+  components: {
+    ReviewContent
+  }
 };
 </script>
 <style scoped>

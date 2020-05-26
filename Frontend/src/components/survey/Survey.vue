@@ -93,7 +93,7 @@
 import http from "../../http-common.js";
 
 export default {
-  name: "survey",
+  name: "Survey",
   props: {
     token: { type: String }
   },

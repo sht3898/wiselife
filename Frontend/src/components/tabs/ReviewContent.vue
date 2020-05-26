@@ -25,6 +25,6 @@
 </template>
 <script>
 export default {
-  name: "reviewContent"
+  name: "ReviewContent"
 };
 </script>

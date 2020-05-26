@@ -9,6 +9,7 @@ import ContentWritePage from './views/ContentWritePage.vue'
 import ContentDetailPage from './views/ContentDetailPage.vue'
 import MyInfoPage from './views/MyInfoPage.vue'
 import MyPage from './views/MyPage.vue'
+import SurveyResultPage from './views/SurveyResultPage.vue'
 
 const originalPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
@@ -78,6 +79,11 @@ export default new Router({
 			path : '/mypage',
 			name : 'myPage',
 			component: MyPage
+		},
+		{
+			path : '/surveyresult',
+			name : 'surveyResultPage',
+			component : SurveyResultPage
 		}
   ]
 })

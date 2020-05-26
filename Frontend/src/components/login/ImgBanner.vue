@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  name: "imgBanner",
+  name: "ImgBanner",
   props: {
     imgSrc: { type: Array },
     text: { type: String }

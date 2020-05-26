@@ -1,7 +1,7 @@
 <template>
   <v-flex>
     <div class="card-carousel-wrapper">
-      <div class="card-carousel--nav__left" @click="moveCarousel(-1)" :disabled="atHeadOfList"></div>
+      <div class="card-carousel--nav__left" :disabled="atHeadOfList" @click="moveCarousel(-1)"></div>
       <div class="card-carousel">
         <div class="card-carousel--overflow-container">
           <div
@@ -14,14 +14,14 @@
           </div>
         </div>
       </div>
-      <div class="card-carousel--nav__right" @click="moveCarousel(1)" :disabled="atEndOfList"></div>
+      <div class="card-carousel--nav__right" :disabled="atEndOfList" @click="moveCarousel(1)"></div>
     </div>
   </v-flex>
 </template>
 <script>
 import ContentsCard from "./ContentsCard";
 export default {
-  name: "recommendsList",
+  name: "RecommendsList",
   components: {
     ContentsCard
   },

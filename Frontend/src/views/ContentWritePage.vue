@@ -247,7 +247,7 @@
 import http from "../http-common";
 import { VueEditor } from "vue2-editor";
 export default {
-  name: "contentWritePage",
+  name: "ContentWritePage",
   components: {
     VueEditor
   },
