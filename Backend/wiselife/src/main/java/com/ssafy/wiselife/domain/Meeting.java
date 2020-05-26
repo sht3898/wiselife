@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -89,9 +88,10 @@ public class Meeting {
 	@OneToMany(mappedBy = "meeting")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
-	private List<UserMeeting> users = new ArrayList<>();
-
-	@OneToOne(mappedBy = "meeting")
+	private List<Review> reviewList = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "meeting")
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private MeetingImages meetingImages;
+	@JsonIgnore
+	private List<UserMeeting> userList = new ArrayList<>();
 }

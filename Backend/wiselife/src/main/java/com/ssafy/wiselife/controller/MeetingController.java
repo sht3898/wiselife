@@ -1,6 +1,7 @@
 package com.ssafy.wiselife.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.wiselife.dto.MeetingDTO.CardMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
@@ -44,6 +47,7 @@ public class MeetingController {
 			@RequestBody CreateMeeting meeting) {
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
+		
 		String access_token = null;
 		HashMap<String, Object> userInfo = null;
 		long uid = 0;
@@ -75,9 +79,9 @@ public class MeetingController {
 		return new ResponseEntity<>(resultMap, status);
 	}
 
-	@PutMapping("/meeting/update/{meeting_id}")
+	@PutMapping("/meeting/update")
 	@ApiOperation(value = "모임/강좌 수정하기")
-	public ResponseEntity<Map<Object, String>> updateMeeting(@PathVariable int meeting_id, HttpServletRequest req,
+	public ResponseEntity<Map<Object, String>> updateMeeting(@RequestParam int meeting_id, HttpServletRequest req,
 			@RequestBody UpdateMeeting meeting) {
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
@@ -131,7 +135,9 @@ public class MeetingController {
 			userInfo = kakaoservice.getUserInfo(access_token);
 			uid = (long) userInfo.get("id");
 		} catch (Exception e) {
-			uid = 0;
+			status = HttpStatus.UNAUTHORIZED;
+			resultMap.put(status, "로그인을 먼저 진행해주세요");
+			return new ResponseEntity<>(resultMap, status);
 		}
 
 		DetailMeeting meeting = meetingservice.detailMeeting(meeting_id, uid);
@@ -144,9 +150,9 @@ public class MeetingController {
 		}
 	}
 
-	@DeleteMapping("/meeting/delete/{meeting_id}")
+	@DeleteMapping("/meeting/delete")
 	@ApiOperation(value = "모임/강좌 삭제")
-	public ResponseEntity<Map<Object, String>> deleteMeeting(@PathVariable int meeting_id, HttpServletRequest req) {
+	public ResponseEntity<Map<Object, String>> deleteMeeting(@RequestParam int meeting_id, HttpServletRequest req) {
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		
@@ -183,9 +189,9 @@ public class MeetingController {
 		return new ResponseEntity<>(resultMap, status);
 	}
 	
-	@GetMapping("/meeting/like/{meeting_id}")
+	@PostMapping("/meeting/like")
 	@ApiOperation(value = "모임/강좌 좋아요")
-	public ResponseEntity<Map<Object, String>> saveLikeMeeting(int meeting_id, HttpServletRequest req) {
+	public ResponseEntity<Map<Object, String>> saveLikeMeeting(@RequestParam int meeting_id, HttpServletRequest req) {
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		
@@ -222,4 +228,35 @@ public class MeetingController {
 		return new ResponseEntity<>(resultMap, status);
 	}
 	
+	@GetMapping("/meeting/list")
+	@ApiOperation(value = "사용자가 참여한 모임/강좌 목록 조회")
+	@ResponseBody
+	public Object userOfJoinMeetingList(HttpServletRequest req) {
+		Map<Object, String> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		
+		String access_token = null;
+		HashMap<String, Object> userInfo = null;
+		long uid = 0;
+		
+		try {
+			access_token = req.getHeader("access_token");
+			userInfo = kakaoservice.getUserInfo(access_token);
+			uid = (long) userInfo.get("id");
+		} catch (Exception e) {
+			status = HttpStatus.UNAUTHORIZED;
+			resultMap.put(status, "로그인을 먼저 진행해주세요");
+			return new ResponseEntity<>(resultMap, status);
+		}
+		
+		List<CardMeeting> resultList = meetingservice.userOfJoinMeetingList(uid);
+		status = HttpStatus.OK;
+		
+		if(resultList == null) {
+			resultMap.put(status, "NO DATA");
+			return new ResponseEntity<>(resultMap, status);
+		} else {
+			return resultList;
+		}
+	}
 }
