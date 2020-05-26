@@ -2,10 +2,10 @@
   <v-container class="my-5">
     <v-flex class="ma-auto" lg9 xs11>
       <h3 class="mt-5">'{{keyword}}'에 대한 검색 결과입니다. 선택된 카테고리는 '{{category}}'</h3>
-      <v-row>
+      <v-row class="pa-0">
         <v-col>
           <v-row class="filtering">
-            <v-col v-for="category in categories" :key="category.name">
+            <v-col v-for="category in categories" :key="category.key">
               <v-btn
                 :class="{bold: category.clicked}"
                 @click="clickCategory(category)"
@@ -23,16 +23,27 @@
           </span>
         </v-col>
       </v-row>
-      <v-row>
-        최신순 가나다순 조회수순 좋아요순 평점순
-      </v-row>
+      <span class="ma-0 pa-0" v-for="sorting in sortingFilter" :key="sorting.key">
+        <v-chip
+          :color="`yellow lighten-4`"
+          :class="{bold: sorting.clicked}"
+          @click="clickSorting(sorting)"
+          class="black--text mr-2"
+          label
+          small
+        >{{sorting.name}}</v-chip>
+      </span>
     </v-flex>
     <v-flex class="ma-auto" lg10 xs12>
       <contents-list :content="this.content" />
     </v-flex>
+    <div class="text-center">
+      <v-pagination v-model="page" :length="5" circle color="success"></v-pagination>
+    </div>
   </v-container>
 </template>
 <script>
+import http from "../http-common"
 import ContentsList from "@/components/contents/ContentsList";
 export default {
   name: "resultPage",
@@ -41,6 +52,7 @@ export default {
   },
   data() {
     return {
+      page: 1,
       content: "",
       categories: [
         {
@@ -90,18 +102,46 @@ export default {
         }
       ],
       selctedCategory: 0,
-      myarea: 0
+      myarea: 0,
+      sortingFilter: [
+        {
+          key: 1,
+          name: "최신순",
+          clicked: false
+        },
+        {
+          key: 2,
+          name: "가나다순",
+          clicked: false
+        },
+        {
+          key: 3,
+          name: "조회수순",
+          clicked: false
+        },
+        {
+          key: 4,
+          name: "좋아요순",
+          clicked: false
+        },
+        {
+          key: 5,
+          name: "평점순",
+          clicked: false
+        }
+      ]
     };
   },
   methods: {
     search() {
-      // http
-      //   .get(`api/area/${this.first_area}`)
-      //   .then(response => {
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
+      http
+        .get(`area/${this.$route.category}`, { keyword: this.$route.keyword })
+        .then(response => {
+          console.log(response)
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     clickCategory(category) {
       for (var i = 0; i < this.categories.length; i++) {
@@ -113,6 +153,14 @@ export default {
       this.$router.push(
         "/result/" + category.key + "/" + this.$route.params.keyword
       );
+    },
+    clickSorting(sorting) {
+      for (var i = 0; i < this.sortingFilter.length; i++) {
+        if (this.sortingFilter[i] != sorting) {
+          this.sortingFilter[i].clicked = false;
+        }
+      }
+      sorting.clicked = true;
     },
     checkURL() {
       for (var i = 0; i < this.categories.length; i++) {
@@ -150,5 +198,6 @@ export default {
 }
 .bold {
   font-weight: bold;
+  color: darkgreen;
 }
 </style>

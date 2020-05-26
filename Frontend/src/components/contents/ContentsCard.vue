@@ -11,11 +11,11 @@
     </div>
     </v-img>
 
-    <v-card-title style="font-weight:bold" @click="goDetail">강좌명</v-card-title>
+    <v-card-title class="contenttitle" style="font-weight:bold" @click="goDetail">강좌명</v-card-title>
 
     <v-card-text>
 
-      <div class=" subtitle-1"><v-chip :color="`orange lighten-4`" class="black--text mr-2" label small>#슬기로운</v-chip></div>
+      <div class=" subtitle-1"><v-chip :color="`orange lighten-4`" class="black--text mr-2" label small @click="tagSearch(tagname)">#슬기로운</v-chip></div>
       <v-row align="center" class="mx-0 my-0">
         <v-rating :value="4.5" color="amber"  background-color="white" dense half-increments readonly size="14"></v-rating>
 
@@ -37,7 +37,8 @@ export default {
   name:'contentsCard',
   data: () => ({
     loading: false,
-    selection: 1
+    selection: 1,
+    tagname: "태그명"
   }),
 
   methods: {
@@ -48,10 +49,17 @@ export default {
     },
     goDetail(){
       this.$router.push("/contentdetail/"+1)
+    },
+    tagSearch(tagname){
+      this.$router.push("/result/0/"+ tagname)
     }
   }
 };
 </script>
 <style scoped>
-
+@import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
+.contenttitle {
+  font-size: 15pt;
+  font-family: "Jua", sans-serif;
+}
 </style>

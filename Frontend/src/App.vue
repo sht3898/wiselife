@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      isLogin: "asdf",
+      isLogin: "",
     };
   },
   mounted(){
