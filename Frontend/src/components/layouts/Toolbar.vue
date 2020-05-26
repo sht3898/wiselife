@@ -1,52 +1,56 @@
 <template>
   <div>
+    
     <v-app-bar class="toolbar" id="app-toolbar" flat color="white">
-      <!-- 모바일 화면 -->
+       <!-- 모바일 화면 -->
       <v-toolbar-title class="hidden-sm-and-up">
-        <v-img :src="getImgUrl('wiselife.png')" height="55px" width="110px" @click="gohome()" />
+        <v-img :src="getImgUrl('wiselife.png')" height="55px" width="125px" @click="gohome()" />
       </v-toolbar-title>
       <v-toolbar-items class="hidden-sm-and-up">
-        <v-col cols="7">
+          <v-row class="ml-1">
+            <v-col cols="7">
           <v-text-field
             prefix="🔎"
-            placeholder="강좌/모임 검색"
+            placeholder=" 검색"
             @keyup.enter="goSearch(researchValue)"
             filled
             rounded
             dense
             v-model="researchValue"
           ></v-text-field>
-        </v-col>
-        <v-col cols="3">
-          <v-btn rounded class="infotext orange lighten-2" @click="insertContent">글쓰기✒️</v-btn>
-        </v-col>
-        <v-col>
-          <v-btn text v-if="isLogin" class="text-center">
+            </v-col>
+        <v-col class="ma-0 pa-0 mt-3">
+          <v-btn fab small class="infotext orange lighten-2" @click="insertContent">✒️</v-btn>
+        
+          <v-btn text v-if="isLogin" class="text-center ma-0 pa-0">
             <v-menu offset-y open-on-hover>
               <template v-slot:activator="{ on }">
-                <span
-                  class="infotext mt-1"
-                  text
-                  v-on="on"
-                  style="padding-bottom:15px; font-size:18pt; color:dimgrey"
-                >
-                  <span class="mdi mdi-account-circle"></span>
-                  {{name}} 님
-                </span>
+                  
+                <v-avatar size="38px" v-on="on">
+                    <img :src="profile_image"/>
+                  </v-avatar>            
+               
               </template>
 
-              <v-list dense shaped width="150px">
+              <v-list dense shaped width="180px">
+                <v-list-item @click="entermyinfopage">
+                  <v-list-item-action>
+                    <v-list-item-content
+                      style="font-weight:bold; font-size:10pt; color:dimgrey"
+                    >My Information</v-list-item-content>
+                  </v-list-item-action>
+                </v-list-item>
                 <v-list-item @click="entermypage">
                   <v-list-item-action>
                     <v-list-item-content
-                      style="font-weight:bold; font-size:15px; color:dimgrey"
+                      style="font-weight:bold; font-size:10pt; color:dimgrey"
                     >My Page</v-list-item-content>
                   </v-list-item-action>
                 </v-list-item>
                 <v-list-item @click="logout">
                   <v-list-item-action>
                     <v-list-item-content
-                      style="font-weight:bold; font-size:15px; color:dimgrey"
+                      style="font-weight:bold; font-size:10pt; color:dimgrey"
                     >Logout</v-list-item-content>
                   </v-list-item-action>
                 </v-list-item>
@@ -54,6 +58,7 @@
             </v-menu>
           </v-btn>
         </v-col>
+          </v-row>
       </v-toolbar-items>
 
       <!-- 전체화면 -->
@@ -61,7 +66,7 @@
         <v-img :src="getImgUrl('wiselife.png')" height="62px" width="100px" @click="gohome()" />
       </v-toolbar-title>
       <v-toolbar-items class="hidden-xs-only justify-content-around">
-        <v-col cols="12" class="searchbar ml-6 mr-2 pr-2">
+        <v-col cols="11" class="searchbar ml-6 mr-2 pr-2">
           <v-text-field
             prefix="🔎"
             placeholder="강좌/모임 검색"
@@ -92,7 +97,14 @@
                 </span>
               </template>
 
-              <v-list dense shaped width="150px">
+              <v-list dense shaped width="200px">
+                <v-list-item @click="entermyinfopage">
+                  <v-list-item-action>
+                    <v-list-item-content
+                      style="font-weight:bold; font-size:15px; color:dimgrey"
+                    >My Information</v-list-item-content>
+                  </v-list-item-action>
+                </v-list-item>
                 <v-list-item @click="entermypage">
                   <v-list-item-action>
                     <v-list-item-content
@@ -195,6 +207,9 @@ export default {
     /////////////////////////////////////////////////////
     entermypage() {
       this.$router.push("/mypage");
+    },
+    entermyinfopage(){
+      this.$router.push("/myinfopage")
     }
   }
 };
@@ -207,6 +222,13 @@ export default {
 .toolbar {
   min-height: 100px;
   max-width: 1000px;
+  margin: auto;
+  padding-top: 20px;
+  position: absolute;
+}
+.mobiletoolbar{
+  min-height: 100px;
+  max-width: 375px;
   margin: auto;
   padding-top: 20px;
   position: absolute;

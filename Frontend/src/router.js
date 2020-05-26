@@ -7,6 +7,8 @@ import ResultPage from './views/ResultPage.vue'
 import LoginPage from './views/LoginPage.vue'
 import ContentWritePage from './views/ContentWritePage.vue'
 import ContentDetailPage from './views/ContentDetailPage.vue'
+import MyInfoPage from './views/MyInfoPage.vue'
+import MyPage from './views/MyPage.vue'
 
 const originalPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
@@ -66,6 +68,16 @@ export default new Router({
 			name : 'contentDetailPage',
 			component: ContentDetailPage,
 			props : true	
+		},
+		{
+			path:'/myinfopage',
+			name: 'myInfoPage',
+			component: MyInfoPage
+		},
+		{
+			path : '/mypage',
+			name : 'myPage',
+			component: MyPage
 		}
   ]
 })

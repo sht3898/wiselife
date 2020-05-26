@@ -109,7 +109,7 @@ export default {
     };
   },
   mounted(){
-    // this.checkLogin();
+    this.checkLogin();
   },
   methods: {
     getImgUrl(img) {
