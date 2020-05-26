@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,11 +24,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.wiselife.domain.User;
 import com.ssafy.wiselife.dto.SurveyDTO;
 import com.ssafy.wiselife.dto.UserDTO;
 import com.ssafy.wiselife.service.IKakaoService;
 import com.ssafy.wiselife.service.IUserService;
+import com.ssafy.wiselife.service.KakaoServiceImpl;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -35,9 +36,9 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/api")
 @RestController
 public class UserController {
-	
+
 	public static final Logger logger = LoggerFactory.getLogger(UserController.class);
-	
+
 	@Autowired
 	private IUserService userservice;
 
@@ -131,6 +132,38 @@ public class UserController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
+	@DeleteMapping("/user")
+	@ApiOperation(value = "회원 탈퇴하기")
+	public ResponseEntity<Map<String, Object>> deleteUserInfo(HttpServletRequest req) {
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		HttpStatus status = null;
+
+		String access_token = req.getHeader("access_token");
+
+		HashMap<String, Object> userInfo = kakaoservice.getUserInfo(access_token);
+
+		long uid = (long) userInfo.get("id");
+		
+		try {
+			kakaoservice.deleteUserInfo(access_token);
+			
+			userservice.deleteUserInfo(uid);
+			
+			resultMap.put("status", "success");
+			status = HttpStatus.ACCEPTED;
+
+		} catch (RuntimeException e) {
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		
+		
+		
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+
+	}
+
 	@PostMapping("/user/survey")
 	@ApiOperation(value = "성향 설문조사하기")
 	public ResponseEntity<Map<String, Object>> survey(@RequestBody SurveyDTO survey, HttpServletRequest req) {
@@ -160,16 +193,16 @@ public class UserController {
 	}
 
 	@GetMapping("/area/{area}")
-	@ApiOperation(value = "지역 1 선택 -> 지역 2 가져오기")
+	@ApiOperation(value = "지역정보 가져오기")
 	public List<String> area(@PathVariable String area) {
 		return userservice.area(area);
 	}
 
 	@GetMapping("/user/info")
-	@ApiOperation(value="회원정보 가져오기")
-	public ResponseEntity<Map<String, Object>> update(HttpServletRequest req) {
-		logger.info("--------------------update-----------------------------");
-		
+	@ApiOperation(value = "회원정보 가져오기")
+	public ResponseEntity<Map<String, Object>> getUserInfo(HttpServletRequest req) {
+		logger.info("--------------------User Information-----------------------------");
+
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		HttpStatus status = null;
 
@@ -178,14 +211,87 @@ public class UserController {
 		HashMap<String, Object> userInfo = kakaoservice.getUserInfo(access_token);
 
 		long uid = (long) userInfo.get("id");
-		
+
 		try {
-			
+
 			Map<String, Object> userinfo = new HashMap<String, Object>();
-			userinfo=userservice.getUserInfo(uid);
-			
+			userinfo = userservice.getUserInfo(uid);
+
 			resultMap.put("status", "success");
 			resultMap.put("info", userinfo);
+			status = HttpStatus.ACCEPTED;
+
+		} catch (RuntimeException e) {
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@PutMapping("/user/update")
+	@ApiOperation(value = "회원정보 수정하기")
+	public ResponseEntity<Map<String, Object>> updateUserInfo(@RequestBody UserDTO user, HttpServletRequest req) {
+		logger.info("--------------------Update User Information-----------------------------");
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		HttpStatus status = null;
+
+		String access_token = req.getHeader("access_token");
+
+		HashMap<String, Object> userInfo = kakaoservice.getUserInfo(access_token);
+
+		long uid = (long) userInfo.get("id");
+		String nickname = userInfo.get("nickname").toString();
+		String profile_image = userInfo.get("profile_image").toString();
+
+		user.setUid(uid);
+		user.setUsername(nickname);
+		user.setProfileImage(profile_image);
+
+		Calendar cal = Calendar.getInstance();
+
+		int year = cal.get(cal.YEAR);
+
+		int ages = ((year - user.getYear() + 1) / 10) * 10;
+		user.setAges(ages);
+
+		List<Integer> interest_category = user.getInterestCategory();
+
+		try {
+			userservice.signUp(interest_category, user);
+
+			resultMap.put("status", "success");
+			resultMap.put("info", user);
+			status = HttpStatus.ACCEPTED;
+
+		} catch (RuntimeException e) {
+			resultMap.put("message", e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@PutMapping("/user/survey/update")
+	@ApiOperation(value = "설문조사 결과 수정하기")
+	public ResponseEntity<Map<String, Object>> updateUserSurvey(@RequestBody SurveyDTO survey, HttpServletRequest req) {
+		logger.info("--------------------Update Survey-----------------------------");
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		HttpStatus status = null;
+
+		String access_token = req.getHeader("access_token");
+
+		HashMap<String, Object> userInfo = kakaoservice.getUserInfo(access_token);
+
+		long uid = (long) userInfo.get("id");
+
+		try {
+
+			survey = userservice.survey(survey, uid);
+
+			resultMap.put("status", true);
+			resultMap.put("info", survey);
 			status = HttpStatus.ACCEPTED;
 
 		} catch (RuntimeException e) {

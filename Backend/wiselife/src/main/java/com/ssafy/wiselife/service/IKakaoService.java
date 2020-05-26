@@ -7,8 +7,8 @@ public interface IKakaoService {
 
 	HashMap<String, Object> getUserInfo(String access_Token);
 
-	void secession(String access_Token);
-
 	void profile(String access_Token);
+
+	void deleteUserInfo(String access_token);
 
 }
