@@ -293,11 +293,11 @@ export default {
           neuroticism += answers[i];
         }
       }
-      openness = ((openness / 30) * 100).toFixed(1);
-      conscientiousness = ((conscientiousness / 30) * 100).toFixed(1);
-      extraversion = ((extraversion / 30) * 100).toFixed(1);
-      agreeableness = ((agreeableness / 30) * 100).toFixed(1);
-      neuroticism = ((neuroticism / 30) * 100).toFixed(1);
+      openness = ((openness / 30) * 100).toFixed(0);
+      conscientiousness = ((conscientiousness / 30) * 100).toFixed(0);
+      extraversion = ((extraversion / 30) * 100).toFixed(0);
+      agreeableness = ((agreeableness / 30) * 100).toFixed(0);
+      neuroticism = ((neuroticism / 30) * 100).toFixed(0);
 
       let data = {
         openness: openness,
@@ -314,9 +314,9 @@ export default {
       };
 
       console.log(data);
-      http.post(``, data, config).then(response => {
+      http.post(`user/survey`, data, config).then(response => {
         if (response.data.status) {
-          this.$router.push("/surveyResult");
+          this.$router.push("/surveyresult");
         }
       });
     },

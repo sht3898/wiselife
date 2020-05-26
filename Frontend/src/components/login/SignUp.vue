@@ -229,8 +229,9 @@ export default {
         area1: this.area1,
         area2: this.area2,
         is_inst: this.instructor,
-        interest_category: picked,
+        interestCategory: picked,
       };
+      console.log(params);
       let config = {
         headers: {
           access_token : this.token
