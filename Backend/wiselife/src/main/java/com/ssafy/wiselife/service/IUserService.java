@@ -20,5 +20,6 @@ public interface IUserService {
 
 	Map<String, Object> getUserInfo(long uid);
 
+	void deleteUserInfo(long uid);
 
 }

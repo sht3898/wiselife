@@ -97,19 +97,35 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public SurveyDTO survey(SurveyDTO survey, long uid) {
+	public SurveyDTO survey(SurveyDTO surveydto, long uid) {
 		// TODO Auto-generated method stub
-		Survey surveyentity = modelMapper.map(survey, Survey.class);// user(UserDTO)를 User(Entity)타입으로 매핑시킨다
-
 		User user = userrepo.findByUid(uid);
+		Survey survey = surveyrepo.findByUser(user);
 
-		surveyentity.setUser(user);
+		Survey surveyentity = null;
+
+		if (survey!=null) {
+			surveyentity = new Survey();
+
+			surveyentity.setAgreeableness(surveydto.getAgreeableness());
+			surveyentity.setConscientiousness(surveydto.getConscientiousness());
+			surveyentity.setExtraversion(surveydto.getExtraversion());
+			surveyentity.setNeuroticism(surveydto.getNeuroticism());
+			surveyentity.setOpenness(surveydto.getOpenness());
+
+		} else {
+			surveyentity = modelMapper.map(surveydto, Survey.class);
+		}
 
 		try {
+
+			surveyentity.setUser(user);
 			surveyrepo.save(surveyentity);
-			return survey;
+			return surveydto;
+
 		} catch (Exception e) {
-			return survey;
+
+			return surveydto;
 		}
 	}
 
@@ -131,22 +147,30 @@ public class UserServiceImpl implements IUserService {
 	public Map<String, Object> getUserInfo(long uid) {
 		// TODO Auto-generated method stub
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		
+
 		User user = userrepo.findByUid(uid);
-		
+
 		List<InterestCategory> interest_category = interestcategoryrepo.findByUser(user);
 		List<Category> category = new ArrayList<Category>();
 		for (int i = 0; i < interest_category.size(); i++) {
 			category.add(categoryrepo.findBycategoryId(interest_category.get(i).getCategory().getCategoryId()));
 		}
-		
+
 		Survey survey = surveyrepo.findByUser(user);
-		
+
 		resultMap.put("userinfo", user);
 		resultMap.put("interest_category", category);
-		resultMap.put("survey",survey);
-		
+		resultMap.put("survey", survey);
+
 		return resultMap;
+	}
+
+	@Override
+	public void deleteUserInfo(long uid) {
+		// TODO Auto-generated method stub
+		User user = userrepo.findByUid(uid);
+		
+		userrepo.delete(user);
 	}
 
 }
