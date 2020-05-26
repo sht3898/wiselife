@@ -9,4 +9,6 @@ import com.ssafy.wiselife.domain.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
 	public int countByuid(long uid);
+	
+	public User findByUid(long uid);
 }

@@ -1,14 +1,15 @@
 package com.ssafy.wiselife.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ssafy.wiselife.domain.Area;
 import com.ssafy.wiselife.domain.Category;
 import com.ssafy.wiselife.domain.InterestCategory;
 import com.ssafy.wiselife.domain.Survey;
@@ -37,7 +38,7 @@ public class UserServiceImpl implements IUserService {
 
 	@Autowired
 	private CategoryRepository categoryrepo;
-	
+
 	@Autowired
 	private InterestCategoryRepository interestcategoryrepo;
 
@@ -51,28 +52,36 @@ public class UserServiceImpl implements IUserService {
 
 	// uid, username, profile_image, is_inst, gender, year, ages, area1, area2
 	@Override
-	public UserDTO signUp(UserDTO user) {
+	public void signUp(List<Integer> interest_category, UserDTO user) {
 		User userentity = null;
 		try {
 			userentity = modelMapper.map(user, User.class);// user(UserDTO)를 User(Entity)타입으로 매핑시킨다
 		} catch (Exception e) {
-			System.out.println("에러남");
+			System.out.println("message:" + e.getMessage());
 		}
 
+		userrepo.save(userentity);
+
+		InterestCategory interestcategoryentity = new InterestCategory();
+
+		interestcategoryentity.setUser(userentity);
+
 		try {
-			userrepo.save(userentity); // 지금은 response해줄 값이 없지만 만약 있을 때에는 처음 req받을때와 똑같이 DTO타입으로 mapping해주고
-										// return해줘야한다.
-			// mapping 예시
-			/*
-			 * List<ReviewDTO> reviewList =
-			 * reviewrepo.findAllByLanguageId(language_id).stream() .map(e ->
-			 * entityMapper.convertToDomain(e,
-			 * ReviewDTO.class)).collect(Collectors.toList());
-			 */
-			return user;
+			for (int i = 0; i < interest_category.size(); i++) {
+
+//				System.out.println("관심카테고리 번호: " + interest_category.get(i));
+
+				Category category = categoryrepo.findBycategoryId(interest_category.get(i));
+
+//				System.out.println(category.toString());
+
+				interestcategoryentity.setCategory(category);
+
+				interestcategoryrepo.save(interestcategoryentity);
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			return user;
 
 		}
 	}
@@ -88,9 +97,13 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public SurveyDTO survey(SurveyDTO survey) {
+	public SurveyDTO survey(SurveyDTO survey, long uid) {
 		// TODO Auto-generated method stub
 		Survey surveyentity = modelMapper.map(survey, Survey.class);// user(UserDTO)를 User(Entity)타입으로 매핑시킨다
+
+		User user = userrepo.findByUid(uid);
+
+		surveyentity.setUser(user);
 
 		try {
 			surveyrepo.save(surveyentity);
@@ -115,29 +128,25 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public void signUpInterestCategory(List<Integer> interest_category, UserDTO user) {
+	public Map<String, Object> getUserInfo(long uid) {
 		// TODO Auto-generated method stub
-
-		InterestCategory interestcategoryentity = new InterestCategory();
-		User userentity = modelMapper.map(user, User.class);
-
-		System.out.println("----------------------여기까지는 오케이----------------------------");
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
-		interestcategoryentity.setUser(userentity);
+		User user = userrepo.findByUid(uid);
 		
+		List<InterestCategory> interest_category = interestcategoryrepo.findByUser(user);
+		List<Category> category = new ArrayList<Category>();
 		for (int i = 0; i < interest_category.size(); i++) {
-			
-			System.out.println("관심카테고리 번호: " +interest_category.get(i));
-			
-			Category category=categoryrepo.findBycategoryId(interest_category.get(i));
-			
-			System.out.println(category.toString());
-			
-			interestcategoryentity.setCategory(category);
-
-			interestcategoryrepo.save(interestcategoryentity);
+			category.add(categoryrepo.findBycategoryId(interest_category.get(i).getCategory().getCategoryId()));
 		}
-
+		
+		Survey survey = surveyrepo.findByUser(user);
+		
+		resultMap.put("userinfo", user);
+		resultMap.put("interest_category", category);
+		resultMap.put("survey",survey);
+		
+		return resultMap;
 	}
 
 }
