@@ -68,7 +68,7 @@ import http from "../http-common";
 import ContentsDetailTab from "@/components/tabs/ContentsDetailTab";
 
 export default {
-  name: "contentDetailPage",
+  name: "ContentDetailPage",
   components: {
     ContentsDetailTab
   },

@@ -17,7 +17,7 @@
 
 <script>
 export default {
-  name:'goTop',
+  name:'GoTop',
   data: () => ({
     fab: false
   }),

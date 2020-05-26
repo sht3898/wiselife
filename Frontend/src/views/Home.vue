@@ -50,7 +50,7 @@
 <script>
 import RecommendsList from "@/components/contents/RecommendsList";
 export default {
-  name: 'home',
+  name: 'Home',
   components: {
     RecommendsList
   },

@@ -43,7 +43,7 @@ import ImgBanner from "@/components/login/ImgBanner";
 Kakao.init("c2d9f09a902e77b8550b754cdb90d407");
 
 export default {
-  name: "loginPage",
+  name: "LoginPage",
   components: {
     SignUp,
     ImgBanner

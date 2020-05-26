@@ -12,7 +12,7 @@
 </template>
 <script>
 export default {
-  name: "errorPage",
+  name: "ErrorPage",
   components: {},
   methods: {
     getImgUrl(img) {

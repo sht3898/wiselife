@@ -36,7 +36,7 @@ import http from "../../http-common.js";
 import VueApexCharts from "vue-apexcharts";
 
 export default {
-  name: "surveyResult",
+  name: "SurveyResult",
   components: {
     apexchart: VueApexCharts
   },

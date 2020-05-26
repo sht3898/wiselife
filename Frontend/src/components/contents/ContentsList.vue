@@ -12,7 +12,7 @@
 <script>
 import ContentsCard from "./ContentsCard";
 export default {
-  name: "contentsList",
+  name: "ContentsList",
   props: {
     content: {
       type: String

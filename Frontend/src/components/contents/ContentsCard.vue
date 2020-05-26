@@ -34,7 +34,7 @@
 
 <script>
 export default {
-  name:'contentsCard',
+  name:'ContentsCard',
   data: () => ({
     loading: false,
     selection: 1,

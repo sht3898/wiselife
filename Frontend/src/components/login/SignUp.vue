@@ -9,10 +9,10 @@
       </v-col>
       <v-radio-group v-model="gender" row class="ml-3">
         <v-col>
-          <v-radio label=" 남" value="1"></v-radio>
+          <v-radio label=" 남" value="1" />
         </v-col>
         <v-col style="padding-left:90px">
-          <v-radio label=" 여" value="2"></v-radio>
+          <v-radio label=" 여" value="2" />
         </v-col>
       </v-radio-group>
     </v-row>
@@ -24,7 +24,7 @@
       </v-col>
       <v-col class="px-0 py-0">
         <v-container id="dropdown-example-2">
-          <v-overflow-btn v-model="birth" :items="years" label="연도" dense></v-overflow-btn>
+          <v-overflow-btn v-model="birth" :items="years" label="연도" dense />
         </v-container>
       </v-col>
     </v-row>
@@ -37,12 +37,12 @@
       </v-col>
       <v-col class="px-0 py-0">
         <v-container id="dropdown-example-2" class="py-0">
-          <v-overflow-btn v-model="area1" :items="first_area" label="도/시" dense></v-overflow-btn>
+          <v-overflow-btn v-model="area1" :items="first_area" label="도/시" dense />
         </v-container>
       </v-col>
       <v-col class="px-0 py-0">
         <v-container id="dropdown-example-2" class="py-0">
-          <v-overflow-btn v-model="area2" :items="second_area" label="시/군/구" dense></v-overflow-btn>
+          <v-overflow-btn v-model="area2" :items="second_area" label="시/군/구" dense />
         </v-container>
       </v-col>
     </v-row>
@@ -55,25 +55,25 @@
       </v-col>
       <v-radio-group v-model="instructor" row class="ml-3">
         <v-col>
-          <v-radio label=" 강사" value="1"></v-radio>
+          <v-radio label=" 강사" value="1" />
         </v-col>
         <v-col style="padding-left:60px">
-          <v-radio label=" 일반 회원" value="0"></v-radio>
+          <v-radio label=" 일반 회원" value="0" />
         </v-col>
       </v-radio-group>
     </v-row>
 
     <h3>관심 카테고리</h3>
     <v-row justify="space-around">
-      <v-col class="mt-5" v-for="category in categories" :key="category.name">
+      <v-col v-for="category in categories" :key="category.name" class="mt-5" >
         <v-img
           :src="getImgUrl(category.url)"
           width="70px"
-          @click="category.clicked = !category.clicked"
-          :class="{green: category.clicked}"
           style="border-radius:12px; margin:auto"
-        ></v-img>
-        <div class="subheading" style="text-align:center;">{{category.name}}</div>
+          :class="{green: category.clicked}"
+          @click="category.clicked = !category.clicked"
+        />
+        <div class="subheading" style="text-align:center;">{{ category.name }}</div>
       </v-col>
     </v-row>
 
@@ -93,12 +93,12 @@ import http from "../../http-common";
 import Survey from "@/components/survey/Survey";
 
 export default {
-  name: "signUp",
-  props: {
-    token: { type: String }
-  },
+  name: "SignUp",
   components: {
     Survey
+  },
+  props: {
+    token: { type: String, default: "" }
   },
   data() {
     return {
@@ -174,6 +174,12 @@ export default {
       second_area: []
     };
   },
+  mounted() {
+    this.getYears();
+  },
+  watch: {
+    area1: "getSecondArea"
+  },
   methods: {
     getYears() {
       const now = new Date().getUTCFullYear();
@@ -197,13 +203,12 @@ export default {
       http
         .get(`area/${this.area1}`)
         .then(response => {
-          console.log(response.data);
-          for(var i = 0 ; i < response.data.length; i++){
+          for (var i = 0; i < response.data.length; i++) {
             this.second_area.push(response.data[i]);
           }
         })
         .catch(err => {
-          console.log(err);
+          alert(err);
         });
     },
     validate() {
@@ -229,37 +234,27 @@ export default {
         area1: this.area1,
         area2: this.area2,
         is_inst: this.instructor,
-        interestCategory: picked,
+        interestCategory: picked
       };
-      console.log(params);
       let config = {
         headers: {
-          access_token : this.token
+          access_token: this.token
         }
-      }
+      };
 
-      http
-      .post(`user/signup/`,params, config)
-      .then(response =>{
-        console.log(response);
-        if(response.data.status){
+      http.post(`user/signup/`, params, config).then(response => {
+        if (response.data.status) {
           this.complete = true;
-          sessionStorage.setItem("token",this.token);
+          sessionStorage.setItem("token", this.token);
           sessionStorage.setItem("username", response.data.info.username);
         }
-      })
+      });
     },
     pass() {
       sessionStorage.setItem("token", this.token);
       this.$router.push("/");
       location.reload();
     }
-  },
-  watch: {
-    area1: "getSecondArea"
-  },
-  mounted() {
-    this.getYears();
   }
 };
 </script>

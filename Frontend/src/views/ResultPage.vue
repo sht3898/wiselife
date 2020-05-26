@@ -46,7 +46,7 @@
 import http from "../http-common"
 import ContentsList from "@/components/contents/ContentsList";
 export default {
-  name: "resultPage",
+  name: "ResultPage",
   components: {
     ContentsList
   },
