@@ -4,11 +4,11 @@
       <v-row>
         <v-col style="text-align:right">
           <span class="toptitle">평균 평점</span>
-          <span class="topscore ml-2">3.2</span>
+          <span class="topscore ml-2">{{ score }}</span>
         </v-col>
         <v-col>
           <v-rating
-            :value="3.2"
+            :value="score"
             background-color="white"
             color="amber"
             dense
@@ -19,7 +19,7 @@
         </v-col>
         <v-col cols="5">
           <span class="toptitle">참여자 평균 연령대</span>
-          <span class="topscore ml-2">20대</span>
+          <span class="topscore ml-2">{{ avg_age }}0대</span>
         </v-col>
       </v-row>
     </v-card>
@@ -27,11 +27,40 @@
   </v-container>
 </template>
 <script>
+import http from "../../http-common.js";
 import ReviewContent from "./ReviewContent";
+
 export default {
   name: "Review",
   components: {
     ReviewContent
+  },
+  props: {
+    seq: { type: String, default: "" },
+    score: { type: Number, default: 0.0 }
+  },
+  data() {
+    return {
+      avg_age: ""
+    };
+  },
+  mounted() {
+    this.getAttendant();
+  },
+  methods: {
+    getAttendant() {
+      http.get(`meeting/${this.seq}/attendant`).then(response => {
+        let attendants = response.data.length;
+        var sum_ages = 0;
+        for (var i = 0; i < attendants; i++) {
+          var date = new Date();
+          var year = date.getFullYear();
+          sum_ages += year - response.data[i].year + 1;
+        }
+        let avg_ages = sum_ages / attendants;
+        this.avg_age = Math.floor(avg_ages);
+      });
+    }
   }
 };
 </script>
