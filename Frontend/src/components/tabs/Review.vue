@@ -49,7 +49,12 @@ export default {
   },
   methods: {
     getAttendant() {
-      http.get(`meeting/${this.seq}/attendant`).then(response => {
+      let config = {
+        headers: {
+          access_token: sessionStorage.getItem("token")
+        }
+      };
+      http.get(`meeting/${this.seq}/attendant`, config).then(response => {
         let attendants = response.data.length;
         var sum_ages = 0;
         for (var i = 0; i < attendants; i++) {
