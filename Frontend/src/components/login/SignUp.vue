@@ -9,10 +9,10 @@
       </v-col>
       <v-radio-group v-model="gender" row class="ml-3">
         <v-col>
-          <v-radio label=" 남" value="1" />
+          <v-radio color="green" label=" 남" value="1" />
         </v-col>
         <v-col style="padding-left:90px">
-          <v-radio label=" 여" value="2" />
+          <v-radio color="green" label=" 여" value="2" />
         </v-col>
       </v-radio-group>
     </v-row>
@@ -55,10 +55,10 @@
       </v-col>
       <v-radio-group v-model="instructor" row class="ml-3">
         <v-col>
-          <v-radio label=" 강사" value="1" />
+          <v-radio color="green" label=" 강사" value="1" />
         </v-col>
         <v-col style="padding-left:60px">
-          <v-radio label=" 일반 회원" value="0" />
+          <v-radio color="green" label=" 일반 회원" value="0" />
         </v-col>
       </v-radio-group>
     </v-row>

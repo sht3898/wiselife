@@ -2,7 +2,7 @@
   <div>
     {{content}}
     <v-layout mt-1 wrap>
-    <v-flex v-for="item in items" :key="item.name" xs6 sm4 lg3 >
+    <v-flex v-for="content in contents" :key="content.name" xs6 sm4 lg3 >
        <contents-card />
     </v-flex>
   </v-layout>
@@ -14,8 +14,8 @@ import ContentsCard from "./ContentsCard";
 export default {
   name: "ContentsList",
   props: {
-    content: {
-      type: String
+    contentslist: {
+      type: Array
     }
   },
   components: {
@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      items: [
+      contents: [
         { name: "Kin Khao", tag: ["Thai"] },
         { name: "Jū-Ni", tag: ["Sushi", "Japanese", "$$$$"] },
         { name: "Delfina", tag: ["Pizza", "Casual"] },
