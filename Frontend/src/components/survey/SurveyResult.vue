@@ -1,16 +1,16 @@
 <template>
-  <v-content>
     <v-container>
-      <v-flex class="ma-auto" lg10>
+      <v-flex class="ma-auto">
         <v-row>
-          <v-col>
-            <v-card class="ma-auto">
-              <apexchart v-if="chk" type="radar" :options="options" :series="series"></apexchart>
-            </v-card>
+          <v-col cols="12" sm="6">
+            <apexchart v-if="chk" type="radar" :options="options" :series="series" />
           </v-col>
-          <v-col class="ma-auto">
+          <v-col cols="12" sm="5" class="ml-3">
             <v-row>
-              <h3 style="color:Green;">{{username}}</h3><h3> 님은 [</h3><h3 style="color:orange">{{keyword}}</h3><h3>] 사람입니다.</h3>
+              <h3 style="color:Green;">{{ username }}</h3>
+              <h3>님은 [</h3>
+              <h3 style="color:orange">{{ myKeyword }}</h3>
+              <h3>] 사람입니다.</h3>
             </v-row>
             <v-row>
               <h4>결과분석</h4>
@@ -22,13 +22,12 @@
                 :color="`green lighten-4 mr-1`"
                 class="black--text"
                 label
-              >#{{keyword}}</v-chip>
+              >#{{ keyword }}</v-chip>
             </v-row>
           </v-col>
         </v-row>
       </v-flex>
     </v-container>
-  </v-content>
 </template>
 
 <script>
@@ -45,7 +44,7 @@ export default {
       chk: false,
       username: sessionStorage.getItem("username"),
       keywords: [],
-      keyword:"",
+      myKeyword: "",
       random_keywords: [],
       openness_keywords: [
         "전통적인",
@@ -156,22 +155,24 @@ export default {
             this.survey.agreeableness,
             this.survey.neuroticism
           ];
-          let key_index = this.series[0].data.indexOf(Math.max(...this.series[0].data));
+          let key_index = this.series[0].data.indexOf(
+            Math.max(...this.series[0].data)
+          );
           switch (key_index) {
             case 0:
-                this.keyword = "개방적인";
+              this.myKeyword = "개방적인";
               break;
             case 1:
-                this.keyword = "부지런한";
+              this.myKeyword = "부지런한";
               break;
             case 2:
-                this.keyword = "활동적인";
+              this.myKeyword = "활동적인";
               break;
             case 3:
-                this.keyword = "신사적인";
-                break;
+              this.myKeyword = "신사적인";
+              break;
             case 4:
-                this.keyword = "날카로운";
+              this.myKeyword = "날카로운";
               break;
           }
           if (this.survey.openness < this.avg.openness) {

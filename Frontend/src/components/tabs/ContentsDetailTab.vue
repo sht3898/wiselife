@@ -7,7 +7,7 @@
 
     <div class="content">
       <div v-if="activetab === 1" class="tabcontent">
-        <review></review>
+        <review :seq="this.seq" :score="this.score"></review>
       </div>
       <div v-if="activetab === 2" class="tabcontent">
         <chatting></chatting>
@@ -16,22 +16,27 @@
   </div>
 </template>
 <script>
+import http from "../../http-common.js";
 import Review from "./Review";
 import Chatting from "./Chatting";
+
 export default {
   name: "ContentsDetailTab",
   components: {
     Review,
     Chatting
-  },  
+  },
+  props: {
+    seq: { type: String, default: "" },
+    score: { type: Number, default: 0.0 }
+  },
   data() {
     return { activetab: 1 };
   },
-  
   methods: {
     reRendering() {
       this.activetab = 1;
-    }
+    },
   }
 };
 </script>
