@@ -1,5 +1,6 @@
 package com.ssafy.wiselife.dto;
 
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,15 +9,16 @@ import lombok.ToString;
 @Setter
 public class ReviewDTO {
 	
-	@Getter @Setter @ToString
+	@Getter @Setter
 	public static class WriteReview {
+		private int meetingId;
 		private String content;
-		private String imageUrl;
 		private double score;
 	}
 	
 	@Getter @Setter @ToString
 	public static class DetailReview {
+		private int reviewId;
 		private String profileImage;
 		private String username;
 		private double score;

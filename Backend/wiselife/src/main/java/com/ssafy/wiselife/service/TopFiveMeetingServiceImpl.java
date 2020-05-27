@@ -27,7 +27,7 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 
 	@Override
 	public Map<String, List<ShortMeeting>> findGenderTopLank() {
-		List<Integer> topFiveMeeting = null;
+		List<Integer> topFiveMeeting = new ArrayList<>();
 		String title = "";
 		int meeting_id = 0;
 		ShortMeeting topMeeting = new ShortMeeting();
@@ -62,7 +62,7 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 
 	@Override
 	public Map<String, List<ShortMeeting>> findAgesTopLank(long uid) {
-		List<Integer> topFiveMeeting = null;
+		List<Integer> topFiveMeeting = new ArrayList<>();
 		String title = "";
 		int meeting_id = 0;
 		ShortMeeting topMeeting = new ShortMeeting();
@@ -91,7 +91,7 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 
 	@Override
 	public Map<String, List<ShortMeeting>> findAreaTopLank(long uid) {
-		List<Integer> topFiveMeeting = null;
+		List<Integer> topFiveMeeting = new ArrayList<>();
 		String title = "";
 		int meeting_id = 0;
 		ShortMeeting topMeeting = new ShortMeeting();

@@ -1,5 +1,7 @@
 package com.ssafy.wiselife.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +17,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer>{
 	
 	@Query(value = "SELECT avg(r.score) FROM REVIEW r WHERE r.meeting_id = :meeting_id", nativeQuery = true)
 	public int avgScoreMeeting(@Param("meeting_id") int meeting_id);
+	
+	@Query(value = "SELECT * FROM REVIEW r WHERE r.meeting_id = :meeting_id", nativeQuery = true)
+	public List<Review> findByMeetingId(@Param("meeting_id") int meeting_id);
 }

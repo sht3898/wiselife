@@ -1,7 +1,10 @@
 package com.ssafy.wiselife.service;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +15,10 @@ import com.ssafy.wiselife.domain.LikeMeeting;
 import com.ssafy.wiselife.domain.Meeting;
 import com.ssafy.wiselife.domain.User;
 import com.ssafy.wiselife.domain.UserMeeting;
-import com.ssafy.wiselife.dto.MeetingDTO.CardMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
+import com.ssafy.wiselife.dto.UserDTO;
 import com.ssafy.wiselife.mapper.EntityMapper;
 import com.ssafy.wiselife.repository.CategoryRepository;
 import com.ssafy.wiselife.repository.LikeMeetingRepository;
@@ -45,7 +48,7 @@ public class MeetingServiceImpl implements IMeetingService {
 	private ModelMapper modelMapper; // DTO -> Entity
 
 	@Autowired
-	private EntityMapper entityMapper;
+	private EntityMapper entityMapper; // Entity -> DTO
 
 	@Override
 	public int createMeeting(long uid, CreateMeeting meeting) {
@@ -62,6 +65,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingEntity.setNowPerson(1);
 			meetingEntity.setUser(user);
 			meetingEntity.setCategory(category);
+			meetingEntity.setUpdatedAt(new Date());
 
 			String[] tags = meetingEntity.getTags().split(" ");
 			String new_tags = "";
@@ -123,6 +127,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingEntity.setIsActive(meeting.getIsActive());
 			meetingEntity.setTags(meeting.getTags());
 			meetingEntity.setPhone(meeting.getPhone());
+			meetingEntity.setUpdatedAt(new Date());
 			meetingrepo.save(meetingEntity);
 
 			// UserMeeting테이블 isActive 값도 변경
@@ -142,20 +147,16 @@ public class MeetingServiceImpl implements IMeetingService {
 		// 리뷰도 같이 보여줘야함
 		Meeting meetingEntity = null;
 		User user = null;
-		UserMeeting userMeeting = null;
 
 		try {
-			// 조회수 증가
 			meetingEntity = meetingrepo.findById(meeting_id).get();
+			// 조회수 증가
 			int preViewCnt = meetingEntity.getViewCnt();
 			meetingEntity.setViewCnt(preViewCnt + 1);
 			meetingrepo.save(meetingEntity);
-
-			meetingEntity = meetingrepo.findById(meeting_id).get();
 			
 			DetailMeeting meeting = entityMapper.convertToDomain(meetingEntity, DetailMeeting.class);
-			
-			System.out.println("디테일:"+meeting.toString());
+
 			// 좋아요 확인
 			user = userrepo.findById(uid).get();
 
@@ -167,11 +168,10 @@ public class MeetingServiceImpl implements IMeetingService {
 			}
 
 			// 참가자인지 확인
-			userMeeting = usermeetingrepo.findByUserAndMeeting(user, meetingEntity);
-
-			if (userMeeting != null) {
+			try {
+				usermeetingrepo.findByUserAndMeeting(user, meetingEntity);
 				meeting.setCheckUser(2); // 참가자
-			} else {
+			} catch (Exception e) {
 				meeting.setCheckUser(1);
 			}
 
@@ -240,16 +240,75 @@ public class MeetingServiceImpl implements IMeetingService {
 	}
 
 	@Override
-	public List<CardMeeting> userOfJoinMeetingList(long uid) {
+	public Map<String, List<DetailMeeting>> userOfJoinMeetingList(long uid) {
 		User user = userrepo.findById(uid).get();
-		List<UserMeeting> userMeetingList = null;
-
+		List<UserMeeting> userMeetingList = new ArrayList<>();
 		userMeetingList = usermeetingrepo.findByUser(user);
+		Meeting meetingEntity = null;
+		DetailMeeting meeting = null;
+		LikeMeeting likeMeeting = null;
+		Map<String, List<DetailMeeting>> resultMap = new HashMap<>();
 
-		if (userMeetingList.size() != 0)
-			return userMeetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class))
-					.collect(Collectors.toList());
-		else
+		if (userMeetingList.size() != 0) {
+			ArrayList<DetailMeeting> attendList = new ArrayList<>();
+			ArrayList<DetailMeeting> postList = new ArrayList<>();
+
+			for (int i = 0; i < userMeetingList.size(); i++) {
+				long writer_id = userMeetingList.get(i).getMeeting().getUser().getUid();
+				int meeting_id = userMeetingList.get(i).getMeeting().getMeetingId();
+				meetingEntity = meetingrepo.findById(meeting_id).get();
+
+				meeting = modelMapper.map(meetingEntity, DetailMeeting.class);
+				int value = writer_id == uid ? 0 : 2;
+				meeting.setCheckUser(value); // 작성자
+
+				// 좋아요 유무
+				likeMeeting = likemeetingrepo.findByUserAndMeeting(user, meetingEntity);
+				if (likeMeeting == null) {
+					meeting.setIsLike(0);
+				} else {
+					meeting.setIsLike(1);
+				}
+
+				// 참여/모집 나누기
+				if (value == 0) {
+					postList.add(meeting);
+				} else {
+					attendList.add(meeting);
+				}
+			}
+
+			if (postList.size() == 0)
+				postList = null;
+
+			if (attendList.size() == 0)
+				attendList = null;
+
+			resultMap.put("등록", postList);
+			resultMap.put("참여", attendList);
+
+			return resultMap;
+		} else
 			return null;
+	}
+
+	@Override
+	public List<UserDTO> getMeetingOfAttendantList(int meeting_id) {
+		try {
+			List<UserMeeting> userMeetingList = usermeetingrepo.findByMeeting(meetingrepo.findById(meeting_id).get());
+
+			UserDTO user = null;
+			List<UserDTO> userList = new ArrayList<>();
+
+			for (int i = 0; i < userMeetingList.size(); i++) {
+				user = entityMapper.convertToDomain(userrepo.findById(userMeetingList.get(i).getUser().getUid()).get(),
+						UserDTO.class);
+				userList.add(user);
+			}
+
+			return userList;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }
