@@ -51,6 +51,6 @@ public class Review {
 	private User user;
 	
 	@ManyToOne
-	@JoinColumn(name = "meeting_id")
+	@JoinColumn(name = "meetingId")
 	private Meeting meeting;
 }

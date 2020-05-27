@@ -23,6 +23,6 @@ public class MeetingImages {
 	private String imageUrl;
 	
 	@OneToOne
-	@JoinColumn(name = "meeting_id")
+	@JoinColumn(name = "meetingId")
 	private Meeting meeting;
 }

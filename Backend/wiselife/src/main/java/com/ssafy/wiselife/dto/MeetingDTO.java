@@ -11,6 +11,7 @@ public class MeetingDTO {
 	@Getter @Setter @ToString
 	public static class CreateMeeting {
 		private String writer;
+		private String title;
 		private int isPeriod;
 		private Date meetingDate;
 		private String periodDate;
@@ -31,6 +32,7 @@ public class MeetingDTO {
 	@Getter @Setter
 	public static class UpdateMeeting {
 		private int isPeriod;
+		private String title;
 		private Date meetingDate;
 		private String periodDate;
 		private int isClass;
@@ -43,11 +45,14 @@ public class MeetingDTO {
 		private int mainCategory;
 		private String tags;
 		private String phone;
+		private String area1;
+		private String area2;
 	}
 	
-	@Getter @Setter
+	@Getter @Setter @ToString
 	public static class DetailMeeting {
 		private String writer;
+		private String title;
 		private Date updatedAt;
 		private int isPeriod;
 		private Date meetingDate;
@@ -69,6 +74,8 @@ public class MeetingDTO {
 		private String phone;
 		private int isLike;
 		private int checkUser; // 0-작성자, 1-일반사용자, 2-참가자
+		private String area1;
+		private String area2;
 	}
 	
 	@Getter @Setter @ToString
