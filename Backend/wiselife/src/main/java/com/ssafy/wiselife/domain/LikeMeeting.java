@@ -24,6 +24,6 @@ public class LikeMeeting {
 
 	@Id
 	@ManyToOne
-	@JoinColumn(name = "meeting_id")
+	@JoinColumn(name = "meetingId")
 	private Meeting meeting;
 }

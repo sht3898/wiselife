@@ -152,10 +152,10 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingrepo.save(meetingEntity);
 
 			meetingEntity = meetingrepo.findById(meeting_id).get();
-
-			DetailMeeting meeting = entityMapper.convertToDomain(meetingrepo.findById(meeting_id).get(),
-					DetailMeeting.class);
-
+			
+			DetailMeeting meeting = entityMapper.convertToDomain(meetingEntity, DetailMeeting.class);
+			
+			System.out.println("디테일:"+meeting.toString());
 			// 좋아요 확인
 			user = userrepo.findById(uid).get();
 

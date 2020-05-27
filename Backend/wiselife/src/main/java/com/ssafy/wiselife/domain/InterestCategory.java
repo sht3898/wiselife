@@ -24,6 +24,6 @@ public class InterestCategory {
 
 	@Id
 	@ManyToOne
-	@JoinColumn(name = "category_id")
+	@JoinColumn(name = "categoryId")
 	private Category category;
 }
