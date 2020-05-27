@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.wiselife.dto.MeetingDTO.CardMeeting;
+import com.ssafy.wiselife.dto.UserDTO;
 import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
@@ -37,7 +37,7 @@ public class MeetingController {
 
 	@Autowired
 	private IMeetingService meetingservice;
-	
+
 	@Autowired
 	private IKakaoService kakaoservice;
 
@@ -45,13 +45,14 @@ public class MeetingController {
 	@ApiOperation(value = "모임/강좌 개설하기")
 	public ResponseEntity<Map<Object, String>> createMeeting(HttpServletRequest req,
 			@RequestBody CreateMeeting meeting) {
+		System.out.println("-----모임/강좌 개설-----");
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		
+
 		String access_token = null;
 		HashMap<String, Object> userInfo = null;
 		long uid = 0;
-		
+
 		try {
 			access_token = req.getHeader("access_token");
 			userInfo = kakaoservice.getUserInfo(access_token);
@@ -61,7 +62,7 @@ public class MeetingController {
 			resultMap.put(status, "로그인을 먼저 진행해주세요");
 			return new ResponseEntity<>(resultMap, status);
 		}
-		
+
 		int result = meetingservice.createMeeting(uid, meeting);
 
 		// meeting_id 값을 return
@@ -81,15 +82,16 @@ public class MeetingController {
 
 	@PutMapping("/meeting/update")
 	@ApiOperation(value = "모임/강좌 수정하기")
-	public ResponseEntity<Map<Object, String>> updateMeeting(@RequestParam int meeting_id, HttpServletRequest req,
+	public ResponseEntity<Map<Object, String>> updateMeeting(@RequestParam String meeting_id, HttpServletRequest req,
 			@RequestBody UpdateMeeting meeting) {
+		System.out.println("-----모임/강좌 수정-----");
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		
+
 		String access_token = null;
 		HashMap<String, Object> userInfo = null;
 		long uid = 0;
-		
+
 		try {
 			access_token = req.getHeader("access_token");
 			userInfo = kakaoservice.getUserInfo(access_token);
@@ -99,8 +101,8 @@ public class MeetingController {
 			resultMap.put(status, "로그인을 먼저 진행해주세요");
 			return new ResponseEntity<>(resultMap, status);
 		}
-
-		int result = meetingservice.updateMeeting(meeting_id, uid, meeting);
+		
+		int result = meetingservice.updateMeeting(Integer.parseInt(meeting_id), uid, meeting);
 
 		if (result > 0) {
 			status = HttpStatus.OK;
@@ -119,17 +121,18 @@ public class MeetingController {
 		return new ResponseEntity<>(resultMap, status);
 	}
 
-	@GetMapping("/meeting/detail/{meeting_id}")
+	@GetMapping("/meeting/{meeting_id}")
 	@ApiOperation(value = "모임/강좌 상세 조회")
 	@ResponseBody
-	public Object detailMeeting(@PathVariable int meeting_id, HttpServletRequest req) {
+	public Object detailMeeting(@PathVariable String meeting_id, HttpServletRequest req) {
+		System.out.println("-----모임/강좌 상세 조회-----");
 		Map<Object, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		
+
 		String access_token = null;
 		HashMap<String, Object> userInfo = null;
 		long uid = 0;
-		
+
 		try {
 			access_token = req.getHeader("access_token");
 			userInfo = kakaoservice.getUserInfo(access_token);
@@ -140,7 +143,8 @@ public class MeetingController {
 			return new ResponseEntity<>(resultMap, status);
 		}
 
-		DetailMeeting meeting = meetingservice.detailMeeting(meeting_id, uid);
+		DetailMeeting meeting = meetingservice.detailMeeting(Integer.parseInt(meeting_id), uid);
+		
 		if (meeting == null) {
 			status = HttpStatus.NOT_FOUND;
 			resultMap.put(status, "삭제되었거나 존재하지 않는 게시물");
@@ -152,14 +156,15 @@ public class MeetingController {
 
 	@DeleteMapping("/meeting/delete")
 	@ApiOperation(value = "모임/강좌 삭제")
-	public ResponseEntity<Map<Object, String>> deleteMeeting(@RequestParam int meeting_id, HttpServletRequest req) {
+	public ResponseEntity<Map<Object, String>> deleteMeeting(@RequestParam String meeting_id, HttpServletRequest req) {
+		System.out.println("-----모임/강좌 삭제-----");
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		
+
 		String access_token = null;
 		HashMap<String, Object> userInfo = null;
 		long uid = 0;
-		
+
 		try {
 			access_token = req.getHeader("access_token");
 			userInfo = kakaoservice.getUserInfo(access_token);
@@ -169,36 +174,37 @@ public class MeetingController {
 			resultMap.put(status, "로그인을 먼저 진행해주세요");
 			return new ResponseEntity<>(resultMap, status);
 		}
-		
-		int result = meetingservice.deleteMeeting(meeting_id, uid);
-		
-		if(result > 0) {
+
+		int result = meetingservice.deleteMeeting(Integer.parseInt(meeting_id), uid);
+
+		if (result > 0) {
 			status = HttpStatus.OK;
 			resultMap.put(status, "SUCCESS");
-		} else if(result == -1) {
+		} else if (result == -1) {
 			status = HttpStatus.BAD_REQUEST;
 			resultMap.put(status, "FAIL");
-		} else if(result == -2) {
+		} else if (result == -2) {
 			status = HttpStatus.NOT_FOUND;
 			resultMap.put(status, "삭제되었거나 존재하지 않는 게시물");
 		} else {
 			status = HttpStatus.UNAUTHORIZED;
 			resultMap.put(status, "NOT PERMISSION");
 		}
-		
+
 		return new ResponseEntity<>(resultMap, status);
 	}
-	
+
 	@PostMapping("/meeting/like")
 	@ApiOperation(value = "모임/강좌 좋아요")
-	public ResponseEntity<Map<Object, String>> saveLikeMeeting(@RequestParam int meeting_id, HttpServletRequest req) {
+	public ResponseEntity<Map<Object, String>> saveLikeMeeting(@RequestParam String meeting_id, HttpServletRequest req) {
+		System.out.println("-----모임/강좌 좋아요 요청-----");
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		
+
 		String access_token = null;
 		HashMap<String, Object> userInfo = null;
 		long uid = 0;
-		
+
 		try {
 			access_token = req.getHeader("access_token");
 			userInfo = kakaoservice.getUserInfo(access_token);
@@ -208,37 +214,38 @@ public class MeetingController {
 			resultMap.put(status, "로그인을 먼저 진행해주세요");
 			return new ResponseEntity<>(resultMap, status);
 		}
-		
-		int result = meetingservice.saveLikeMeeting(meeting_id, uid);
-		
-		if(result == 1) {
+
+		int result = meetingservice.saveLikeMeeting(Integer.parseInt(meeting_id), uid);
+
+		if (result == 1) {
 			status = HttpStatus.OK;
 			resultMap.put(status, "좋아요 추가");
-		} else if(result == 0) {
+		} else if (result == 0) {
 			status = HttpStatus.OK;
 			resultMap.put(status, "좋아요 취소");
-		} else if(result == -1) {
+		} else if (result == -1) {
 			status = HttpStatus.NOT_FOUND;
 			resultMap.put(status, "삭제되었거나 존재하지 않는 모임/강좌");
 		} else {
 			status = HttpStatus.BAD_REQUEST;
 			resultMap.put(status, "FAIL");
 		}
-		
+
 		return new ResponseEntity<>(resultMap, status);
 	}
-	
+
 	@GetMapping("/meeting/list")
 	@ApiOperation(value = "사용자가 참여한 모임/강좌 목록 조회")
 	@ResponseBody
 	public Object userOfJoinMeetingList(HttpServletRequest req) {
+		System.out.println("-----사용자가 참여한 모임/강좌 목록 조회-----");
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		
+
 		String access_token = null;
 		HashMap<String, Object> userInfo = null;
 		long uid = 0;
-		
+
 		try {
 			access_token = req.getHeader("access_token");
 			userInfo = kakaoservice.getUserInfo(access_token);
@@ -248,12 +255,45 @@ public class MeetingController {
 			resultMap.put(status, "로그인을 먼저 진행해주세요");
 			return new ResponseEntity<>(resultMap, status);
 		}
-		
-		List<CardMeeting> resultList = meetingservice.userOfJoinMeetingList(uid);
+
+		Map<String, List<DetailMeeting>> result = meetingservice.userOfJoinMeetingList(uid);
+
 		status = HttpStatus.OK;
-		
-		if(resultList == null) {
+		if (result == null) {
 			resultMap.put(status, "NO DATA");
+			return new ResponseEntity<>(resultMap, status);
+		} else {
+			return result;
+		}
+	}
+
+	@GetMapping("/meeting/{meeting_id}/attendant")
+	@ApiOperation(value = "모임/강좌의 참여자 목록 조회")
+	@ResponseBody
+	public Object meetingOfAttendantList(HttpServletRequest req, String meeting_id) {
+		System.out.println("-----모임/강좌의 참여자 목록 조회-----");
+		Map<Object, String> resultMap = new HashMap<>();
+		HttpStatus status = null;
+
+		String access_token = null;
+		HashMap<String, Object> userInfo = null;
+		long uid = 0;
+
+		try {
+			access_token = req.getHeader("access_token");
+			userInfo = kakaoservice.getUserInfo(access_token);
+			uid = (long) userInfo.get("id");
+		} catch (Exception e) {
+			status = HttpStatus.UNAUTHORIZED;
+			resultMap.put(status, "로그인을 먼저 진행해주세요");
+			return new ResponseEntity<>(resultMap, status);
+		}
+
+		List<UserDTO> resultList = meetingservice.getMeetingOfAttendantList(Integer.parseInt(meeting_id));
+
+		if (resultList == null) {
+			status = HttpStatus.BAD_REQUEST;
+			resultMap.put(status, "FAIL");
 			return new ResponseEntity<>(resultMap, status);
 		} else {
 			return resultList;

@@ -27,10 +27,12 @@ public class SearchController {
 	@Autowired
 	private ISearchService searchservice;
 	
+	//category = 0, keyword = "" 는 빅데이터에서 처리해야함
 	@GetMapping("/search/{category_id}")
-	@ApiOperation(value = "메인페이지에서 검색")
+	@ApiOperation(value = "검색")
 	@ResponseBody
 	public Object searchKeyword(@PathVariable int category_id, String keyword) {
+		System.out.println("-----검색-----");
 		List<CardMeeting> meetingList = null;
 		Map<Object, Object> resultMap = new HashMap<>();
 		
