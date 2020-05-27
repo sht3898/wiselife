@@ -62,6 +62,7 @@
           <v-chip v-else :color="`red lighten-4`" class="black--text" label small>마감</v-chip>
         </v-col>
       </v-row>
+      <v-divider></v-divider>
       <v-row>
         <v-col>
           <p class="contentstitle">{{ meeting.title }}</p>
@@ -73,7 +74,7 @@
           </v-btn>
         </v-col>
         <v-col>
-          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>작성자</v-chip>
+          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>호스트</v-chip>
           {{ meeting.writer }}
         </v-col>
         <v-col>
@@ -231,7 +232,7 @@ export default {
         }
       };
       http
-        .get(`meeting/detail/${this.$route.params.seq}`, config)
+        .get(`meeting/${this.$route.params.seq}`, config)
         .then(response => {
           let this_component = this;
           this.meeting = response.data;
