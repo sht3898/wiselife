@@ -149,15 +149,14 @@ public class ReviewController {
 		return new ResponseEntity<>(resultMap, status);
 	}
 	
-//	@GetMapping("/review/list")
-//	@ApiOperation(value = "하나의 모임/강좌에 대한 리뷰 목록 조회")
-//	@ResponseBody
-//	public Object showMeetingOfReviewList(@RequestParam int meeting_id) {
-//		Map<HttpStatus, String> resultMap = new HashMap<>();
-//		HttpStatus status = null;
-//		
-//		List<DetailReview> resultList = reviewservice.showMeetingOfReviewList(meeting_id);
-//		
-//		
-//	}
+	@GetMapping("/review/list")
+	@ApiOperation(value = "하나의 모임/강좌에 대한 리뷰 목록 조회")
+	@ResponseBody
+	public Object showMeetingOfReviewList(@RequestParam int meeting_id) {
+		Map<HttpStatus, String> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		
+		List<DetailReview> resultList = reviewservice.showMeetingOfReviewList(meeting_id);
+		return null;
+	}
 }

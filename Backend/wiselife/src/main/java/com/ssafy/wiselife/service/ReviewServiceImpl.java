@@ -123,11 +123,10 @@ public class ReviewServiceImpl implements IReviewService {
 
 	@Override
 	public List<DetailReview> showMeetingOfReviewList(int meeting_id) {
-//		if(!meetingrepo.existsById(meeting_id)) {
-//			return null;
-//		} else {
-//			
-//		}
-		return null;
+		if(!meetingrepo.existsById(meeting_id)) {
+			return null;
+		} else {
+			return null;
+		}
 	}
 }
