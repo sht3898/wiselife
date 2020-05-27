@@ -35,10 +35,10 @@
       </span>
     </v-flex>
     <v-flex class="ma-auto" lg10 xs12>
-      <contents-list :content="this.content" />
+      <contents-list :contentslist="this.contentslist" />
     </v-flex>
     <div class="text-center">
-      <v-pagination v-model="page" :length="5" circle color="success"></v-pagination>
+      <v-pagination v-model="page" :length="pagelength" circle color="success"></v-pagination>
     </div>
   </v-container>
 </template>
@@ -53,7 +53,8 @@ export default {
   data() {
     return {
       page: 1,
-      content: "",
+      pagelength: 1,
+      contentslist: [],
       categories: [
         {
           key: 0,
@@ -135,9 +136,13 @@ export default {
   methods: {
     search() {
       http
-        .get(`area/${this.$route.category}`, { keyword: this.$route.keyword })
+        .get(`search/${this.$route.params.category}`, { keyword: this.$route.params.keyword })
         .then(response => {
           console.log(response)
+          this.contentslist=response.data;
+          console.log(this.contentslist);
+          this.pagelength=Math.floor(this.contentslist.length/12) + 1;
+          console.log(this.pagelength)
         })
         .catch(err => {
           console.log(err);
@@ -176,7 +181,7 @@ export default {
   },
   computed: {
     keyword: function() {
-      return this.$route.params.keyword;
+      return this.$route.params.keyword;      
     },
     category: function() {
       for (var i = 0; i < this.categories.length; i++) {
