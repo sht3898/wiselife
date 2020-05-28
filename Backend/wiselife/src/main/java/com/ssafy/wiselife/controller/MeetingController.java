@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.ssafy.wiselife.dto.UserDTO;
+import com.ssafy.wiselife.dto.UserDTO.MeetingOfJoinAttendant;
 import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
@@ -292,7 +293,7 @@ public class MeetingController {
 			return new ResponseEntity<>(resultMap, status);
 		}
 
-		List<UserDTO> resultList = meetingservice.getMeetingOfAttendantList(Integer.parseInt(meeting_id));
+		List<MeetingOfJoinAttendant> resultList = meetingservice.getMeetingOfAttendantList(Integer.parseInt(meeting_id));
 
 		if (resultList == null) {
 			status = HttpStatus.BAD_REQUEST;

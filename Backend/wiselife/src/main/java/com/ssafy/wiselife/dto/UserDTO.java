@@ -28,5 +28,19 @@ public class UserDTO {
 		private String email;
 		private String password;
 	}
+	
+	@Getter @Setter
+	public static class MeetingOfJoinAttendant {
+		private long uid;
+		private String username;
+		private String profileImage;
+		private int isInst;
+		private int gender;
+		private int year;
+		private int ages;
+		private String area1;
+		private String area2;
+		private int checkUser;
+	}
 		
 }

@@ -25,7 +25,7 @@ import com.ssafy.wiselife.domain.UserMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
-import com.ssafy.wiselife.dto.UserDTO;
+import com.ssafy.wiselife.dto.UserDTO.MeetingOfJoinAttendant;
 import com.ssafy.wiselife.mapper.EntityMapper;
 import com.ssafy.wiselife.repository.CategoryRepository;
 import com.ssafy.wiselife.repository.LikeMeetingRepository;
@@ -292,7 +292,8 @@ public class MeetingServiceImpl implements IMeetingService {
 	public Map<String, List<DetailMeeting>> userOfJoinMeetingList(long uid) {
 		User user = userrepo.findById(uid).get();
 		List<UserMeeting> userMeetingList = new ArrayList<>();
-		userMeetingList = usermeetingrepo.findByUser(user);
+		userMeetingList = user.getUserMeetings();
+		
 		Meeting meetingEntity = null;
 		DetailMeeting meeting = null;
 		LikeMeeting likeMeeting = null;
@@ -342,16 +343,21 @@ public class MeetingServiceImpl implements IMeetingService {
 	}
 
 	@Override
-	public List<UserDTO> getMeetingOfAttendantList(int meeting_id) {
+	public List<MeetingOfJoinAttendant> getMeetingOfAttendantList(int meeting_id) {
 		try {
 			List<UserMeeting> userMeetingList = usermeetingrepo.findByMeeting(meetingrepo.findById(meeting_id).get());
 
-			UserDTO user = null;
-			List<UserDTO> userList = new ArrayList<>();
+			MeetingOfJoinAttendant user = null;
+			List<MeetingOfJoinAttendant> userList = new ArrayList<>();
+			User userEntity = null;
+			Meeting meeting = null;
 
 			for (int i = 0; i < userMeetingList.size(); i++) {
-				user = entityMapper.convertToDomain(userrepo.findById(userMeetingList.get(i).getUser().getUid()).get(),
-						UserDTO.class);
+				userEntity = userMeetingList.get(i).getUser();
+				user = entityMapper.convertToDomain(userEntity, MeetingOfJoinAttendant.class);
+				meeting = userMeetingList.get(i).getMeeting();
+				int value = meeting.getUser().getUid() == user.getUid() ? 0 : 1;
+				user.setCheckUser(value);
 				userList.add(user);
 			}
 
