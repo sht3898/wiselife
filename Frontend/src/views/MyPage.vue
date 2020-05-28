@@ -1,68 +1,84 @@
 <template>
-  <v-container>
-    <v-flex class="ma-auto mt-5" lg10>
-      <v-container fluid>
-        <p class="menu">
-          참여한 강좌/모임
-          <span style="float:right">
-            <v-btn rounded class="reviewbtn green lighten-1" @click="insertReview">리뷰 작성 ✒️</v-btn>
-          </span>
-        </p>
-      </v-container>
-      <!-- 리뷰 modal -->
-      <v-dialog v-model="dialog" max-width="800">
-        <v-card>
-          <v-toolbar width="800" style="position:absolute; z-index:2">
-              
-            <v-row class="menu py-4 px-3">
-                <v-col>
-              강좌/모임 Review
-                </v-col>
-                <v-col>
-              <span style="text-align:right; float:right">
-                <v-btn color="green darken-1" text @click="dialog = false">Close</v-btn>
-              </span>
-                </v-col>
-            </v-row>
-          </v-toolbar>
-          <review-modal style="padding-top:70px;" />
-        </v-card>
-      </v-dialog>
+<v-container>
+  <v-flex  class="ma-auto  mt-5 pt-5" lg10 sm12>
+<v-card>
+    <v-toolbar flat color="green" dark>
+      <v-toolbar-title>MY PAGE</v-toolbar-title>
+    </v-toolbar>
+    <v-tabs vertical color="green"  class="hidden-xs-only justify-content-around">
+      <v-tab>
+        <v-icon left>mdi-account</v-icon>
+        My Infomation
+      </v-tab>
+      <v-tab>
+        <v-icon left>mdi-pentagon-outline</v-icon>
+        Big FIVE
+      </v-tab>
+      <v-tab>
+        <v-icon left>mdi-timetable</v-icon>
+        My meeting
+      </v-tab>
+     
 
-      <v-container fluid mb-12>
-        <p class="menu">등록한 강좌/모임</p>
-      </v-container>
-    </v-flex>
-  </v-container>
+      <v-tab-item>
+        <v-card flat>
+          <my-info-tab/>
+        </v-card>
+      </v-tab-item>
+      <v-tab-item>
+        <v-card flat>
+          <my-survey-tab/>
+        </v-card>
+      </v-tab-item>
+      <v-tab-item>
+        <v-card flat>
+          <my-meeting-tab/>
+        </v-card>
+      </v-tab-item>
+      
+    </v-tabs>
+
+    <v-tabs color="green" class="hidden-sm-and-up">
+      <v-tab>
+        <v-icon left>mdi-account</v-icon>
+        My Infomation
+      </v-tab>
+      <v-tab>
+        <v-icon left>mdi-timetable</v-icon>
+        My meeting
+      </v-tab>
+     
+
+      <v-tab-item>
+        <v-card flat>
+          <my-info-tab/>
+        </v-card>
+      </v-tab-item>
+      <v-tab-item>
+        <v-card flat>
+          <my-meeting-tab style="width=80%"/>
+        </v-card>
+      </v-tab-item>
+      
+    </v-tabs>
+  </v-card>
+  </v-flex>
+</v-container>
+
 </template>
 <script>
-import ReviewModal from "@/components/myreview/ReviewModal";
+import MyInfoTab from "@/components/mypage/MyInfoTab";
+import MyMeetingTab from "@/components/mypage/MyMeetingTab";
+import MySurveyTab from "@/components/mypage/MySurveyTab";
 export default {
-  name: "MyPage",
-  components: {
-    ReviewModal
-  },
-  data() {
-    return {
-      dialog: false
-    };
-  },
-  methods: {
-    insertReview() {
-      this.dialog = true;
-    }
+  name:"MyPage",
+  components:{
+    MyInfoTab,
+    MyMeetingTab,
+    MySurveyTab
   }
-};
+}
 </script>
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap");
-.menu {
-  font-family: "Do Hyeon", sans-serif;
-  font-size: 23px;
-  padding-left: 10px;
-}
-@import url("https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap");
-.reviewbtn {
-  font-family: "Nanum Pen Script", cursive;
-}
+
 </style>
