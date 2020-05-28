@@ -1,33 +1,25 @@
 <template>
-    <v-container>
-      <v-flex class="ma-auto">
-        <v-row>
-          <v-col cols="12" sm="6">
-            <apexchart v-if="chk" type="radar" :options="options" :series="series" />
-          </v-col>
-          <v-col cols="12" sm="5" class="ml-3">
-            <v-row>
-              <h3 style="color:Green;">{{ username }}</h3>
-              <h3>님은 [</h3>
-              <h3 style="color:orange">{{ myKeyword }}</h3>
-              <h3>] 사람입니다.</h3>
-            </v-row>
-            <v-row>
-              <h4>결과분석</h4>
-            </v-row>
-            <v-row>
-              <v-chip
-                v-for="keyword in random_keywords"
-                :key="keyword"
-                :color="`green lighten-4 mr-1`"
-                class="black--text"
-                label
-              >#{{ keyword }}</v-chip>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-flex>
-    </v-container>
+  <v-container>
+    <v-flex class="ma-auto mb-10">
+      <apexchart v-if="chk" type="radar" :options="options" :series="series" height="400px" />
+      <div class="resultcomment" style="text-align:center; float:center">
+        <h3 style="color:Green;">
+          {{ username }}
+          <span style="color:dimgrey">님은 [</span>
+          <span style="color:orange"> {{ myKeyword }} </span>
+          <span style="color:dimgrey">] 사람입니다.</span>
+        </h3>
+        <h4 class="mt-2">결과분석</h4>
+        <v-chip
+          v-for="keyword in random_keywords"
+          :key="keyword"
+          :color="`green lighten-4 mr-1`"
+          class="black--text mt-2"
+          label
+        >#{{ keyword }}</v-chip>
+      </div>
+    </v-flex>
+  </v-container>
 </template>
 
 <script>
@@ -112,9 +104,10 @@ export default {
         stroke: {
           show: true,
           width: 2,
-          colors: [],
+          colors: ["orange"],
           dashArray: 0
         },
+        colors: ["orange"],
         markers: {
           size: 5,
           hover: {

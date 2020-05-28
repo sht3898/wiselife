@@ -32,14 +32,8 @@
                
               </template>
 
-              <v-list dense shaped width="180px">
-                <v-list-item @click="entermyinfopage">
-                  <v-list-item-action>
-                    <v-list-item-content
-                      style="font-weight:bold; font-size:10pt; color:dimgrey"
-                    >My Information</v-list-item-content>
-                  </v-list-item-action>
-                </v-list-item>
+              <v-list dense shaped width="150px">
+                
                 <v-list-item @click="entermypage">
                   <v-list-item-action>
                     <v-list-item-content
@@ -97,14 +91,8 @@
                 </span>
               </template>
 
-              <v-list dense shaped width="200px">
-                <v-list-item @click="entermyinfopage">
-                  <v-list-item-action>
-                    <v-list-item-content
-                      style="font-weight:bold; font-size:15px; color:dimgrey"
-                    >My Information</v-list-item-content>
-                  </v-list-item-action>
-                </v-list-item>
+              <v-list dense shaped width="150px">
+                
                 <v-list-item @click="entermypage">
                   <v-list-item-action>
                     <v-list-item-content
@@ -207,10 +195,7 @@ export default {
     /////////////////////////////////////////////////////
     entermypage() {
       this.$router.push("/mypage");
-    },
-    entermyinfopage(){
-      this.$router.push("/myinfopage")
-    }
+    },    
   }
 };
 </script>
