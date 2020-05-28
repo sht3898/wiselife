@@ -89,8 +89,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingrepo.save(meetingEntity);
 			int meeting_id = meetingrepo.findLastMeetingId();
 			Meeting findMeeting = meetingrepo.findById(meeting_id).get();
-			
-			
+
 			// 미팅 이미지 저장 과정
 			System.out.println("미팅 이미지 파일:" + files);
 			List<String> fileUrlList = null;
@@ -123,28 +122,28 @@ public class MeetingServiceImpl implements IMeetingService {
 	}
 
 	@Override
-	public int updateMeeting(int meeting_id, long uid, UpdateMeeting meeting, MultipartHttpServletRequest files) {
+	public int updateMeeting(int meeting_id, long uid, UpdateMeeting meeting) {
 		User user = userrepo.findById(uid).get();
-		try {
-			meetingrepo.findByMeetingIdAndUser(meeting_id, user);
-		} catch (Exception e) {
+		Meeting meetingEntity = null;
+
+		meetingEntity = meetingrepo.findById(meeting_id).get();
+
+		if (meetingEntity == null) {
 			return 0;
 		}
 
 		try {
-			Category category = new Category();
+			Category category = null;
+			category = categoryrepo.findById(meeting.getMainCategory()).get();
 
-			try {
-				category = categoryrepo.findById(meeting.getMainCategory()).get();
-			} catch (Exception e) {
+			if (category == null) {
 				return -2;
 			}
 
-			Meeting meetingEntity = meetingrepo.findById(meeting_id).get();
 			List<UserMeeting> userMeetingList = usermeetingrepo.findByMeeting(meetingEntity);
 			meetingEntity.setUser(user);
 			meetingEntity.setCategory(category);
-			meetingEntity.setMeetingId(meeting_id);
+			meetingEntity.setTitle(meeting.getTitle());
 			meetingEntity.setIsPeriod(meeting.getIsPeriod());
 			meetingEntity.setMeetingDate(meeting.getMeetingDate());
 			meetingEntity.setPeriodDate(meeting.getPeriodDate());
@@ -159,27 +158,27 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingEntity.setPhone(meeting.getPhone());
 			meetingEntity.setUpdatedAt(new Date());
 			meetingrepo.save(meetingEntity);
-			
-			// 미팅 이미지 저장 과정
-			System.out.println("미팅 이미지 파일:" + files);
-			List<String> fileUrlList = null;
-			if (files != null) {
-				try {
-					fileUrlList = meetingImgConversion(files, uid);
-				} catch (Exception e) {
-					System.out.println("미팅 이미지 파일 업로드 실패");
-				}
-			}
 
-			for (String fileUrl : fileUrlList) {
-				MeetingImages meetingImage = new MeetingImages();
-				meetingImage.setImageUrl(fileUrl);
-				meetingImage.setMeeting(meetingEntity);
-				meetingimagesrepo.save(meetingImage);
-			}
-			
+			// 미팅 이미지 저장 과정
+//			System.out.println("미팅 이미지 파일:" + files);
+//			List<String> fileUrlList = null;
+//			if (files != null) {
+//				try {
+//					fileUrlList = meetingImgConversion(files, uid);
+//				} catch (Exception e) {
+//					System.out.println("미팅 이미지 파일 업로드 실패");
+//				}
+//			}
+//
+//			for (String fileUrl : fileUrlList) {
+//				MeetingImages meetingImage = new MeetingImages();
+//				meetingImage.setImageUrl(fileUrl);
+//				meetingImage.setMeeting(meetingEntity);
+//				meetingimagesrepo.save(meetingImage);
+//			}
+
 			// UserMeeting테이블 isActive 값도 변경
-			if(meetingEntity.getIsActive() != meeting.getIsActive()) {
+			if (meetingEntity.getIsActive() != meeting.getIsActive()) {
 				for (int i = 0; i < userMeetingList.size(); i++) {
 					userMeetingList.get(i).setIsActive(meeting.getIsActive());
 				}
@@ -205,7 +204,8 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingrepo.save(meetingEntity);
 
 			DetailMeeting meeting = entityMapper.convertToDomain(meetingEntity, DetailMeeting.class);
-
+			meeting.setMainCategory(meetingEntity.getCategory().getCategoryId());
+			
 			// 좋아요 확인
 			user = userrepo.findById(uid).get();
 
@@ -224,14 +224,14 @@ public class MeetingServiceImpl implements IMeetingService {
 				meeting.setCheckUser(1);
 			}
 
-			try {
+			LikeMeeting likemeeting = null;
+			likemeeting = likemeetingrepo.findByUserAndMeeting(user, meetingEntity);
+			if (likemeeting != null) {
 				// LikeMeeting 테이블에 저장된 사용자라면
-				likemeetingrepo.findByUserAndMeeting(user, meetingEntity);
 				meeting.setIsLike(1);
-			} catch (Exception e) {
+			} else {
 				meeting.setIsLike(0);
 			}
-
 			return meeting;
 		} catch (Exception e) {
 			return null;
@@ -275,14 +275,19 @@ public class MeetingServiceImpl implements IMeetingService {
 			return -1;
 		}
 
-		try {
-			likeMeeting = likemeetingrepo.findByUserAndMeeting(user, meeting);
+		likeMeeting = likemeetingrepo.findByUserAndMeeting(user, meeting);
+
+		if (likeMeeting != null) {
 			likemeetingrepo.delete(likeMeeting);
+			meeting.setLikeCnt(meeting.getLikeCnt() - 1);
+			meetingrepo.save(meeting);
 			return 0;
-		} catch (Exception e) {
+		} else {
 			likeMeeting = new LikeMeeting();
 			likeMeeting.setMeeting(meeting);
 			likeMeeting.setUser(user);
+			meeting.setLikeCnt(meeting.getLikeCnt() + 1);
+			meetingrepo.save(meeting);
 			likemeetingrepo.save(likeMeeting);
 			return 1;
 		}
@@ -293,7 +298,7 @@ public class MeetingServiceImpl implements IMeetingService {
 		User user = userrepo.findById(uid).get();
 		List<UserMeeting> userMeetingList = new ArrayList<>();
 		userMeetingList = user.getUserMeetings();
-		
+
 		Meeting meetingEntity = null;
 		DetailMeeting meeting = null;
 		LikeMeeting likeMeeting = null;
@@ -401,33 +406,32 @@ public class MeetingServiceImpl implements IMeetingService {
 		}
 		return resultFileList;
 	}
-	
+
 	@Override
 	public int joinMeeting(long uid, int meeting_id) {
 		Meeting meeting = null;
 		User user = userrepo.findByUid(uid);
-		
+
 		try {
 			meeting = meetingrepo.findById(meeting_id).get();
 		} catch (Exception e) {
-			return -1; //존재하지 않는 Meeting
+			return -1; // 존재하지 않는 Meeting
 		}
-		
+
 		try {
 			UserMeeting userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
 			usermeetingrepo.delete(userMeeting);
-			return 0; //미팅참여취소
+			return 0; // 미팅참여취소
 		} catch (Exception e) {
-			if(meeting.getNowPerson() == meeting.getMaxPerson()) {
-				return -2; //모집인원 초과
+			if (meeting.getNowPerson() == meeting.getMaxPerson()) {
+				return -2; // 모집인원 초과
 			} else {
 				meeting.setNowPerson(meeting.getNowPerson() + 1);
 				meetingrepo.save(meeting);
 			}
-			
+
 			UserMeeting userMeeting = new UserMeeting();
 			userMeeting.setIsActive(1);
-			userMeeting.setMeeting(meeting);
 			userMeeting.setMeeting(meeting);
 			userMeeting.setUser(user);
 			usermeetingrepo.save(userMeeting);
