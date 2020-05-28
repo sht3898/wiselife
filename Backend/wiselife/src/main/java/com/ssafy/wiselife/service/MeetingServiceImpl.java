@@ -1,14 +1,20 @@
 package com.ssafy.wiselife.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.ssafy.wiselife.domain.Category;
 import com.ssafy.wiselife.domain.LikeMeeting;
@@ -51,7 +57,7 @@ public class MeetingServiceImpl implements IMeetingService {
 	private EntityMapper entityMapper; // Entity -> DTO
 
 	@Override
-	public int createMeeting(long uid, CreateMeeting meeting) {
+	public int createMeeting(long uid, CreateMeeting meeting, MultipartHttpServletRequest files) {
 		try {
 			User user = userrepo.findById(uid).get();
 			Category category = new Category();
@@ -84,6 +90,20 @@ public class MeetingServiceImpl implements IMeetingService {
 			usermeeting.setMeeting(findMeeting);
 			usermeeting.setUser(meetingEntity.getUser());
 			usermeeting.setIsActive(1); // 모집중
+			
+			
+			// 미팅 이미지 저장 과정
+			System.out.println("미팅 이미지 파일:"+files);
+			List<String> fileUrlList = null;
+			if(files != null) {
+				try {
+					fileUrlList = meetingImgConversion(files, uid);
+				} catch (Exception e) {
+					System.out.println("미팅 이미지 파일 업로드 실패");
+				}
+			}
+			
+			
 			usermeetingrepo.save(usermeeting);
 
 			return meeting_id;
@@ -310,5 +330,41 @@ public class MeetingServiceImpl implements IMeetingService {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	
+	//리뷰 이미지 저장 함수
+	public static List<String> meetingImgConversion(MultipartHttpServletRequest files, long uid) throws IOException {
+		System.out.println("-----Save Meeting Image-----");
+		List<MultipartFile> fileList = files.getFiles("file");
+		String fileName = "";
+		String originFileName = "";
+		String url = "";
+		String fileUrl = "";
+		FileOutputStream fileOutputStream = null;
+		List<String> resultFileList = new ArrayList<>();
+		
+		String path = "C:/Users/multicampus/Desktop/test/meeting/";
+		
+		for (MultipartFile mf : fileList) {
+			byte[] imageData = mf.getBytes();
+			originFileName = mf.getOriginalFilename(); // 원본 파일명
+			
+			try {
+				fileName = uid + RandomStringUtils.randomAlphanumeric(32) + "." + originFileName;
+				url = path + fileName;
+				File newfile = new File(url);
+				fileOutputStream = new FileOutputStream(newfile);
+				fileOutputStream.write(imageData);
+			} catch (Throwable e) {
+				e.printStackTrace(System.out);
+				System.out.println("-----Fail Save Meeting Image-----");
+			} finally {
+				fileOutputStream.close();
+				fileUrl = path + fileName;
+				resultFileList.add(fileUrl);
+			}
+		}
+		
+		return resultFileList;
 	}
 }
