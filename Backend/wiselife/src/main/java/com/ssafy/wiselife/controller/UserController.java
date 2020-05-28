@@ -28,7 +28,6 @@ import com.ssafy.wiselife.dto.SurveyDTO;
 import com.ssafy.wiselife.dto.UserDTO;
 import com.ssafy.wiselife.service.IKakaoService;
 import com.ssafy.wiselife.service.IUserService;
-import com.ssafy.wiselife.service.KakaoServiceImpl;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -58,20 +57,24 @@ public class UserController {
 		HashMap<String, Object> userInfo = kakaoservice.getUserInfo(access_token);
 
 		long uid = (long) userInfo.get("id");
-
-		System.out.println(uid);
+		String nickname = userInfo.get("nickname").toString();
+		String profile_image = userInfo.get("profile_image").toString();
 
 		try {
 			UserDTO user = new UserDTO();
 			user.setUid(uid);
-
+			user.setUsername(nickname);
+			user.setProfileImage(profile_image);
+			
+			//이미 가입된 회원
 			if (userservice.uidDuplicateCheck(uid)) {
+				
 				resultMap.put("status", true);
 				status = HttpStatus.ACCEPTED;
 				System.out.println("login");
 
 			} else {
-				// 카카오 계정으로 회원가입
+			//가입 안된 사용자 카카오 계정으로 회원가입
 				resultMap.put("status", false);
 				resultMap.put("log", "회원가입이 필요합니다.");
 				status = HttpStatus.ACCEPTED;
