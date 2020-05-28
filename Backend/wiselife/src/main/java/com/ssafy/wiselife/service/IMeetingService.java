@@ -13,7 +13,7 @@ import com.ssafy.wiselife.dto.UserDTO;
 public interface IMeetingService {
 	int createMeeting(long uid, CreateMeeting meeting, MultipartHttpServletRequest files);
 	
-	int updateMeeting(int meeting_id, long uid, UpdateMeeting meeting);
+	int updateMeeting(int meeting_id, long uid, UpdateMeeting meeting, MultipartHttpServletRequest files);
 	
 	DetailMeeting detailMeeting(int meeting_id, long uid);
 	

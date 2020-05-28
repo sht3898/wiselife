@@ -68,7 +68,7 @@ public class ReviewServiceImpl implements IReviewService {
 	}
 
 	@Override
-	public int saveReview(long uid, WriteReview review, MultipartFile files) {
+	public int saveReview(long uid, WriteReview review) {
 		// 리뷰 작성가능한 사람인지 먼저 확인
 		User user = userrepo.findById(uid).get();
 		Meeting meeting = null;
@@ -100,9 +100,9 @@ public class ReviewServiceImpl implements IReviewService {
 		
 		// 리뷰 이미지 저장 과정
 		String fileUrl = "";
-		if(files != null) {
+		if(!review.getImageFile().isEmpty()) {
 			try {
-				fileUrl = reviewImgConversion(files);
+				fileUrl = reviewImgConversion(review.getImageFile());
 			} catch (Exception e) {
 				System.out.println("리뷰 이미지 파일 업로드 실패");
 			}

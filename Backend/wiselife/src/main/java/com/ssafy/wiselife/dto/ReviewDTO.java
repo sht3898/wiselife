@@ -1,6 +1,8 @@
 package com.ssafy.wiselife.dto;
 
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,6 +16,7 @@ public class ReviewDTO {
 		private int meetingId;
 		private String content;
 		private double score;
+		private MultipartFile imageFile;
 	}
 	
 	@Getter @Setter @ToString

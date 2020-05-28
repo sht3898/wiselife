@@ -91,7 +91,7 @@ public class ReviewController {
 			return new ResponseEntity<>(resultMap, status);
 		}
 		
-		int result = reviewservice.saveReview(uid, review, files);
+		int result = reviewservice.saveReview(uid, review);
 
 		if (result == 1) {
 			status = HttpStatus.BAD_REQUEST;
