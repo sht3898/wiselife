@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.ssafy.wiselife.dto.UserDTO;
 import com.ssafy.wiselife.dto.UserDTO.MeetingOfJoinAttendant;
 import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
@@ -86,9 +84,9 @@ public class MeetingController {
 	}
 
 	@PutMapping("/meeting/update")
-	@ApiOperation(value = "모임/강좌 수정하기")
+	@ApiOperation(value = "모임/강좌 수정하기")//, MultipartHttpServletRequest files
 	public ResponseEntity<Map<Object, String>> updateMeeting(@RequestParam String meeting_id, HttpServletRequest req,
-			@RequestBody UpdateMeeting meeting, MultipartHttpServletRequest files) {
+			@RequestBody UpdateMeeting meeting) {
 		System.out.println("-----모임/강좌 수정-----");
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
@@ -107,7 +105,7 @@ public class MeetingController {
 			return new ResponseEntity<>(resultMap, status);
 		}
 
-		int result = meetingservice.updateMeeting(Integer.parseInt(meeting_id), uid, meeting, files);
+		int result = meetingservice.updateMeeting(Integer.parseInt(meeting_id), uid, meeting);
 
 		if (result > 0) {
 			status = HttpStatus.OK;
@@ -204,6 +202,7 @@ public class MeetingController {
 	public ResponseEntity<Map<Object, String>> saveLikeMeeting(@RequestParam String meeting_id,
 			HttpServletRequest req) {
 		System.out.println("-----모임/강좌 좋아요 요청-----");
+		System.out.println("좋아요 누를 Meeting Id : "+meeting_id);
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
 
