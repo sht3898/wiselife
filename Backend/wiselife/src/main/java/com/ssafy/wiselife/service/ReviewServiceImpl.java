@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ public class ReviewServiceImpl implements IReviewService {
 	@Autowired
 	private EntityMapper entityMapper;
 
-	@Override
+	@Override // Review 작성 가능한 Meeting 목록 조회
 	public List<ShortMeeting> userOfJoinMeetingList(long uid) {
 		List<UserMeeting> userMeeting = new ArrayList<>();
 		User user = userrepo.findById(uid).get();
@@ -74,7 +73,7 @@ public class ReviewServiceImpl implements IReviewService {
 		Meeting meeting = null;
 		Review reviewEntity = null;
 		UserMeeting userMeeting = null;
-		
+
 		try {
 			meeting = meetingrepo.findById(review.getMeetingId()).get();
 		} catch (Exception e) {
@@ -97,10 +96,10 @@ public class ReviewServiceImpl implements IReviewService {
 			reviewEntity.setMeeting(meeting);
 			reviewEntity.setWriter(user.getUsername());
 		}
-		
+
 		// 리뷰 이미지 저장 과정
 		String fileUrl = "";
-		if(!review.getImageFile().isEmpty()) {
+		if (!review.getImageFile().isEmpty()) {
 			try {
 				fileUrl = reviewImgConversion(review.getImageFile());
 			} catch (Exception e) {
@@ -113,12 +112,12 @@ public class ReviewServiceImpl implements IReviewService {
 		reviewEntity.setContent(review.getContent());
 		reviewEntity.setImageUrl(fileUrl);
 		reviewrepo.save(reviewEntity);
-		
+
 		// 별점 평균 저장
 		int avgScore = reviewrepo.avgScoreMeeting(review.getMeetingId());
 		meeting.setScore(avgScore);
 		meetingrepo.save(meeting);
-		
+
 		return userMeeting.getIsActive();
 
 	}
@@ -146,12 +145,33 @@ public class ReviewServiceImpl implements IReviewService {
 		if (!meetingrepo.existsById(meeting_id)) {
 			return null;
 		} else {
-			return reviewrepo.findByMeetingId(meeting_id).stream()
-					.map(e -> entityMapper.convertToDomain(e, DetailReview.class)).collect(Collectors.toList());
+			try {
+				List<Review> reviewEntityList = reviewrepo.findByMeetingId(meeting_id);
+				List<DetailReview> resultList = new ArrayList<>();
+				Review reviewEntity = null;
+				DetailReview review = null;
+				Meeting meeting = null;
+				User user = null;
+				
+				for (int i = 0; i < reviewEntityList.size(); i++) {
+					reviewEntity = reviewEntityList.get(i);
+					review = entityMapper.convertToDomain(reviewEntity, DetailReview.class);
+					user = reviewEntity.getUser();
+					review.setProfileImage(user.getProfileImage());
+					review.setUsername(user.getUsername());
+					meeting = reviewEntity.getMeeting();
+					int value = meeting.getUser().getUid() == user.getUid() ? 0 : 1;
+					review.setCheckUser(value); //작성자
+					resultList.add(review);
+				}
+				return resultList;
+			} catch (Exception e) {
+				return null;
+			}
 		}
 	}
-	
-	//리뷰 이미지 저장 함수
+
+	// 리뷰 이미지 저장 함수
 	public static String reviewImgConversion(MultipartFile files) throws IOException {
 		System.out.println("-----Save Review Images-----");
 		String path = "C:/Users/multicampus/Desktop/test/review/";
@@ -174,7 +194,7 @@ public class ReviewServiceImpl implements IReviewService {
 			fileOutputStream.close();
 			fileUrl = path + fileName;
 		}
-		
+
 		return fileUrl;
 	}
 }
