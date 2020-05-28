@@ -8,41 +8,33 @@
             :color="`green lighten-4 mr-1`"
             class="black--text"
             label
-            small
           >강좌</v-chip>
-          <v-chip v-else :color="`green lighten-4 mr-1`" class="black--text" label small>모임</v-chip>
+          <v-chip v-else :color="`green lighten-4 mr-1`" class="black--text" label>모임</v-chip>
           <v-chip
             :color="`green lighten-4 mr-1`"
             class="black--text"
             label
-            small
           >{{ categories[meeting.mainCategory] }}</v-chip>
           <v-chip
             v-if="meeting.isPeriod == 0"
             :color="`green lighten-4 mr-1`"
             class="black--text"
             label
-            small
           >비정기</v-chip>
-          <v-chip v-else :color="`green lighten-4 mr-1`" class="black--text" label small>정기</v-chip>
-          <v-chip
-            :color="`green lighten-4`"
-            class="black--text"
-            label
-            small
-          >인원 {{ meeting.nowPerson }}/{{ meeting.maxPerson }}</v-chip>
+          <v-chip v-else :color="`green lighten-4 mr-1`" class="black--text" label>정기</v-chip>
         </v-col>
         <v-col cols="3" v-if="meeting.isPeriod == 0">
-          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>모임날짜</v-chip>
+          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임날짜</v-chip>
           {{ meeting.meetingDate }}
         </v-col>
         <v-col cols="3" v-else>
-          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>모임주기</v-chip>
+          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임주기</v-chip>
           {{ meeting.periodDate }}
         </v-col>
         <v-col cols="3">
-          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>모임비</v-chip>
-          {{ meeting.fee }} {{ meeting.unit }}
+          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임비</v-chip>
+          <span v-if="meeting.unit == '원'">{{ meeting.fee }}</span>
+          {{ meeting.unit }}
         </v-col>
         <v-col cols="2" style="text-align:right">
           <v-chip
@@ -50,16 +42,14 @@
             :color="`blue lighten-4`"
             class="black--text"
             label
-            small
           >모집중</v-chip>
           <v-chip
             v-else-if="meeting.isActive == 2"
             :color="`green lighten-4`"
             class="black--text"
             label
-            small
           >진행중</v-chip>
-          <v-chip v-else :color="`red lighten-4`" class="black--text" label small>마감</v-chip>
+          <v-chip v-else :color="`red lighten-4`" class="black--text" label>마감</v-chip>
         </v-col>
       </v-row>
       <v-divider></v-divider>
@@ -68,17 +58,52 @@
           <p class="contentstitle">{{ meeting.title }}</p>
         </v-col>
         <v-col cols="2" style="text-align:right">
-          <v-btn icon v-if="meeting.checkUser != 0">
-            <span v-if="meeting.isLike == 0" style="font-size:20pt" class="mdi mdi-heart-outline"></span>
-            <span v-else class="mdi mdi-heart" style="font-size:20pt; color:red;"></span>
+          <v-btn icon v-if="meeting.checkUser != 0" @click="btnLike()">
+            <v-icon v-if="meeting.isLike == 0">mdi-heart-outline</v-icon>
+            <v-icon v-else color="red">mdi-heart</v-icon>
           </v-btn>
+          <span class="topscore ma-auto">{{ meeting.likeCnt }}</span>
         </v-col>
         <v-col>
-          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>호스트</v-chip>
-          {{ meeting.writer }}
+          <v-menu v-model="menu" bottom right transition="scale-transition" origin="top left">
+            <template v-slot:activator="{ on }">
+              <v-chip :color="`green lighten-4`" class="black--text" label pill v-on="on">
+                <v-icon left color="orange">mdi-human-greeting</v-icon>
+                인원 {{ meeting.nowPerson }}/{{ meeting.maxPerson }}
+              </v-chip>
+            </template>
+            <v-card width="300">
+              <v-list>
+                <v-list-item>
+                  <v-list-item-avatar>
+                    <v-img :src="writer.profileImage"></v-img>
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title>호스트 : {{ writer.username }}</v-list-item-title>
+                    <v-list-item-subtitle>문의 : {{ meeting.phone }}</v-list-item-subtitle>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-btn icon @click="menu = false">
+                      <v-icon>mdi-close-circle</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list>
+              <v-divider />
+              <v-list>
+                <v-list-item-subtitle class="ml-3">참여자 목록</v-list-item-subtitle>
+                <v-list-item v-for="attendant in attendants" :key="attendant.uid">
+                  <v-list-item-avatar>
+                    <v-img :src="attendant.profileImage"></v-img>
+                  </v-list-item-avatar>
+                  <v-list-item-subtitle>{{ attendant.username }} ({{ attendant.gender }} / {{ attendant.ages }}대)</v-list-item-subtitle>
+                </v-list-item>
+              </v-list>
+            </v-card>
+          </v-menu>
         </v-col>
         <v-col>
-          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>작성일</v-chip>
+          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>작성일</v-chip>
           {{ meeting.createdAt }}
         </v-col>
       </v-row>
@@ -139,6 +164,7 @@ export default {
   },
   data() {
     return {
+      menu: false,
       chk: false,
       seq: this.$route.params.seq,
       colors: ["lime", "amber", "orange", "teal", "indigo"],
@@ -147,6 +173,7 @@ export default {
       map: "",
       marker: "",
       is_writer: false,
+      writer: {},
       categories: [
         "전체",
         "레저/스포츠",
@@ -158,39 +185,51 @@ export default {
         "축제/행사",
         "기타"
       ],
-      meeting: {
-        title: "",
-        writer: "",
-        updatedAt: "",
-        isPeriod: 0,
-        meetingDate: "",
-        periodDate: "",
-        isClass: 0,
-        maxPerson: 10,
-        nowPerson: 5,
-        content: "",
-        refUrl: "",
-        address: "",
-        fee: 0,
-        unit: "",
-        isActive: 0,
-        likeCnt: 0,
-        viewCnt: 0,
-        mainCategory: 0,
-        tags: "",
-        score: 0,
-        phone: "",
-        isLike: 0,
-        checkUser: 0,
-        area1: "",
-        area2: ""
-      }
+      meeting: {},
+      attendants: []
     };
   },
   mounted() {
     this.init();
+    this.getAttendant();
   },
   methods: {
+    btnLike() {
+      let params = new URLSearchParams();
+      params.append("meeting_id", this.seq);
+      let config = {
+        headers: { access_token: sessionStorage.getItem("token") }
+      };
+      http.post(`meeting/like`, params, config).then(response => {
+        if (response.data.OK == "좋아요 취소") {
+          this.meeting.isLike = 0;
+          this.meeting.likeCnt--;
+        } else {
+          this.meeting.isLike = 1;
+          this.meeting.likeCnt++;
+        }
+      });
+    },
+    getAttendant() {
+      let config = {
+        headers: {
+          access_token: sessionStorage.getItem("token")
+        }
+      };
+      http.get(`meeting/${this.seq}/attendant`, config).then(response => {
+        for (var i = 0; i < response.data.length; i++) {
+          if (response.data[i].checkUser == 0) {
+            this.writer = response.data[i];
+          }
+          this.attendants.push(response.data[i]);
+          if (this.attendants[i].gender == 1) {
+            this.attendants[i].gender = "남";
+          } else {
+            this.attendants[i].gender = "여";
+          }
+        }
+      });
+    },
     dateParsing(beforeParsing) {
       const t = beforeParsing.indexOf("T");
       const afterParsing = beforeParsing.substring(0, t);
@@ -202,7 +241,6 @@ export default {
         "월 " +
         (Number(afterParsing.substring(8, 11)) + 1) +
         "일";
-      console.log("realdate: " + realdate);
       return realdate;
     },
     init() {
@@ -231,63 +269,54 @@ export default {
           access_token: sessionStorage.getItem("token")
         }
       };
-      http
-        .get(`meeting/${this.$route.params.seq}`, config)
-        .then(response => {
-          let this_component = this;
-          this.meeting = response.data;
-          this.chk = true;
+      http.get(`meeting/${this.$route.params.seq}`, config).then(response => {
+        let this_component = this;
+        this.meeting = response.data;
+        this.chk = true;
+        //주소 있으면 지도 찍자!
+        if (this.meeting.address != null) {
+          this.geocoder.addressSearch(this.meeting.address, function(
+            results,
+            status
+          ) {
+            // 정상적으로 검색이 완료됐으면
+            if (status === daum.maps.services.Status.OK) {
+              var result = results[0]; //첫번째 결과의 값을 활용
 
-          //주소 있으면 지도 찍자!
-          if (this.meeting.address != null) {
-            this.geocoder.addressSearch(this.meeting.address, function(
-              results,
-              status
-            ) {
-              // 정상적으로 검색이 완료됐으면
-              if (status === daum.maps.services.Status.OK) {
-                var result = results[0]; //첫번째 결과의 값을 활용
-
-                // 해당 주소에 대한 좌표를 받아서
-                var coords = new daum.maps.LatLng(result.y, result.x);
-                // 지도를 보여준다.
-                this_component.mapContainer.style.display = "block";
-                this_component.map.relayout();
-                // 지도 중심을 변경한다.
-                this_component.map.setCenter(coords);
-                // 마커를 결과값으로 받은 위치로 옮긴다.
-                this_component.marker.setPosition(coords);
-              }
-            });
-          } else {
-            this.mapContainer = null;
-          }
-
-          ///////데이터 정제////////
-          if (this.meeting.fee != null) {
-            this.meeting.fee = this.meeting.fee.toLocaleString();
-          }
-          if (this.meeting.meetingDate != null) {
-            this.meeting.meetingDate = this.meeting.meetingDate.substring(
-              0,
-              10
-            );
-          }
-          this.meeting.createdAt = "2020-05-27T04:43:07.024+00:00";
-          if (this.meeting.createdAt != null) {
-            let date = this.meeting.createdAt.substring(0, 10);
-            let time = this.meeting.createdAt.substring(11, 16);
-            this.meeting.createdAt = date + " " + time;
-          }
-          if (this.meeting.tags != null) {
-            let split_tags = this.meeting.tags.split(" ");
-            let tags = [];
-            for (var i in split_tags) {
-              tags.push(split_tags[i]);
+              // 해당 주소에 대한 좌표를 받아서
+              var coords = new daum.maps.LatLng(result.y, result.x);
+              // 지도를 보여준다.
+              this_component.mapContainer.style.display = "block";
+              this_component.map.relayout();
+              // 지도 중심을 변경한다.
+              this_component.map.setCenter(coords);
+              // 마커를 결과값으로 받은 위치로 옮긴다.
+              this_component.marker.setPosition(coords);
             }
-            this.meeting.tags = tags;
+          });
+        } else {
+          this.mapContainer = null;
+        }
+
+        ///////데이터 정제////////
+        if (this.meeting.fee != null) {
+          this.meeting.fee = this.meeting.fee.toLocaleString();
+        }
+        if (this.meeting.meetingDate != null) {
+          this.meeting.meetingDate = this.dateParsing(this.meeting.meetingDate);
+        }
+        if (this.meeting.createdAt != null) {
+          this.meeting.createdAt = this.dateParsing(this.meeting.createdAt);
+        }
+        if (this.meeting.tags != null) {
+          let split_tags = this.meeting.tags.split(" ");
+          let tags = [];
+          for (var i in split_tags) {
+            tags.push(split_tags[i]);
           }
-        });
+          this.meeting.tags = tags;
+        }
+      });
     }
   }
 };
