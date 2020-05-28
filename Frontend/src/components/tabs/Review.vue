@@ -18,12 +18,12 @@
           />
         </v-col>
         <v-col cols="5">
-          <span class="toptitle">참여자 평균 연령대</span>
-          <span class="topscore ml-2">{{ avg_age }}0대</span>
+          <span class="toptitle">참여자 평균 연령</span>
+          <span class="topscore ml-2">{{ avg_age }} 세</span>
         </v-col>
       </v-row>
     </v-card>
-    <review-content />
+    <review-content v-for="review in reviews" :key="review.key" :review="review" />
   </v-container>
 </template>
 <script>
@@ -41,11 +41,13 @@ export default {
   },
   data() {
     return {
-      avg_age: ""
+      avg_age: "",
+      reviews:[],
     };
   },
   mounted() {
     this.getAttendant();
+    this.getReviews();
   },
   methods: {
     getAttendant() {
@@ -65,6 +67,13 @@ export default {
         let avg_ages = sum_ages / attendants;
         this.avg_age = Math.floor(avg_ages);
       });
+    },
+    getReviews(){
+      http
+      .get(`review/list?meeting_id=`+this.seq)
+      .then(response=>{
+        this.reviews = response.data;
+      })
     }
   }
 };
