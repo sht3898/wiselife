@@ -302,4 +302,44 @@ public class MeetingController {
 			return resultList;
 		}
 	}
+	
+	@PostMapping("/meeting/attend")
+	@ApiOperation(value = "모임/강좌에 참여하기")
+	public ResponseEntity<Map<Object, String>> joinMeeting(@RequestParam int meeting_id, HttpServletRequest req) {
+		System.out.println("-----모임/강좌에 참여하가-----");
+		Map<Object, String> resultMap = new HashMap<>();
+		HttpStatus status = null;
+
+		String access_token = null;
+		HashMap<String, Object> userInfo = null;
+		long uid = 0;
+
+		try {
+			access_token = req.getHeader("access_token");
+			userInfo = kakaoservice.getUserInfo(access_token);
+			uid = (long) userInfo.get("id");
+		} catch (Exception e) {
+			status = HttpStatus.UNAUTHORIZED;
+			resultMap.put(status, "로그인을 먼저 진행해주세요");
+			return new ResponseEntity<>(resultMap, status);
+		}
+		
+		int result = meetingservice.joinMeeting(uid, meeting_id);
+		
+		if(result == 1) {
+			status = HttpStatus.OK;
+			resultMap.put(status, "참가 신청 완료");
+		} else if(result == -1) {
+			status = HttpStatus.NOT_FOUND;
+			resultMap.put(status, "삭제되었거나 존재하지 않는 모임/강좌");
+		} else if(result == -2) {
+			status = HttpStatus.BAD_REQUEST;
+			resultMap.put(status, "모집인원 초과");
+		} else {
+			status = HttpStatus.OK;
+			resultMap.put(status, "참가 취소");
+		}
+		
+		return new ResponseEntity<>(resultMap, status);
+	}
 }

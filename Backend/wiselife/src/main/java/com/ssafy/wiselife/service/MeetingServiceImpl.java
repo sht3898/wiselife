@@ -395,4 +395,37 @@ public class MeetingServiceImpl implements IMeetingService {
 		}
 		return resultFileList;
 	}
+	
+	@Override
+	public int joinMeeting(long uid, int meeting_id) {
+		Meeting meeting = null;
+		User user = userrepo.findByUid(uid);
+		
+		try {
+			meeting = meetingrepo.findById(meeting_id).get();
+		} catch (Exception e) {
+			return -1; //존재하지 않는 Meeting
+		}
+		
+		try {
+			UserMeeting userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
+			usermeetingrepo.delete(userMeeting);
+			return 0; //미팅참여취소
+		} catch (Exception e) {
+			if(meeting.getNowPerson() == meeting.getMaxPerson()) {
+				return -2; //모집인원 초과
+			} else {
+				meeting.setNowPerson(meeting.getNowPerson() + 1);
+				meetingrepo.save(meeting);
+			}
+			
+			UserMeeting userMeeting = new UserMeeting();
+			userMeeting.setIsActive(1);
+			userMeeting.setMeeting(meeting);
+			userMeeting.setMeeting(meeting);
+			userMeeting.setUser(user);
+			usermeetingrepo.save(userMeeting);
+			return 1;
+		}
+	}
 }
