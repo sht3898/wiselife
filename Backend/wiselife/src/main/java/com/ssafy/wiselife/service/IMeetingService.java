@@ -24,4 +24,6 @@ public interface IMeetingService {
 	Map<String, List<DetailMeeting>> userOfJoinMeetingList(long uid);
 
 	List<UserDTO> getMeetingOfAttendantList(int meeting_id);
+	
+	int joinMeeting(long uid, int meeting_id);
 }
