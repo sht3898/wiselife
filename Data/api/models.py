@@ -1,11 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import UserManager
+from .managers import CustomUserManager
+
+
 
 
 # Create your models here.
 class User(AbstractBaseUser):
     uid = models.AutoField(primary_key=True)
-    username = models.TextField()
+    username = models.TextField(unique=True)
     profile_image = models.TextField()
     is_inst = models.IntegerField(default=0)
     gender = models.IntegerField()
@@ -13,8 +17,10 @@ class User(AbstractBaseUser):
     ages = models.IntegerField()
     area1 = models.TextField()
     area2 = models.TextField()
+
+    objects = CustomUserManager()
     
-    USERNAME_FIELD = 'uid'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
     def __str__(self):
