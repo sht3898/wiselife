@@ -48,8 +48,6 @@ public class UserServiceImpl implements IUserService {
 	@Autowired
 	private EntityMapper entityMapper; // Entity를 DTO타입으로 mapping할때 사용
 
-	private String IP = "http://localhost:8080";
-
 	// uid, username, profile_image, is_inst, gender, year, ages, area1, area2
 	@Override
 	public void signUp(List<Integer> interest_category, UserDTO user) {
@@ -62,18 +60,25 @@ public class UserServiceImpl implements IUserService {
 
 		userrepo.save(userentity);
 
+		List<InterestCategory> interestcategory = interestcategoryrepo.findByUser(userentity);
+
 		InterestCategory interestcategoryentity = new InterestCategory();
+
+		//회원정보수정할 때
+		if (interestcategory != null) {
+
+			for (int i = 0; i < interestcategory.size(); i++) {
+
+				interestcategoryrepo.delete(interestcategory.get(i));
+			}
+		}
 
 		interestcategoryentity.setUser(userentity);
 
 		try {
 			for (int i = 0; i < interest_category.size(); i++) {
 
-//				System.out.println("관심카테고리 번호: " + interest_category.get(i));
-
 				Category category = categoryrepo.findBycategoryId(interest_category.get(i));
-
-//				System.out.println(category.toString());
 
 				interestcategoryentity.setCategory(category);
 
@@ -104,7 +109,7 @@ public class UserServiceImpl implements IUserService {
 
 		Survey surveyentity = null;
 
-		if (survey!=null) {
+		if (survey != null) {
 			surveyentity = new Survey();
 
 			surveyentity.setAgreeableness(surveydto.getAgreeableness());
@@ -169,7 +174,7 @@ public class UserServiceImpl implements IUserService {
 	public void deleteUserInfo(long uid) {
 		// TODO Auto-generated method stub
 		User user = userrepo.findByUid(uid);
-		
+
 		userrepo.delete(user);
 	}
 
