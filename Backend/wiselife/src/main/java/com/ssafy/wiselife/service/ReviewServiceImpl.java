@@ -104,7 +104,7 @@ public class ReviewServiceImpl implements IReviewService {
 			try {
 				fileUrl = reviewImgConversion(files);
 			} catch (Exception e) {
-				System.out.println("이미지 파일 업로드 실패");
+				System.out.println("리뷰 이미지 파일 업로드 실패");
 			}
 		}
 
@@ -153,7 +153,8 @@ public class ReviewServiceImpl implements IReviewService {
 	
 	//리뷰 이미지 저장 함수
 	public static String reviewImgConversion(MultipartFile files) throws IOException {
-		String path = "C:/Users/multicampus/Desktop/test/";
+		System.out.println("-----Save Review Images-----");
+		String path = "C:/Users/multicampus/Desktop/test/review/";
 		String fileName = files.getOriginalFilename();
 		byte[] imageData = files.getBytes();
 		String fileUrl = "";
@@ -167,10 +168,11 @@ public class ReviewServiceImpl implements IReviewService {
 			fileOutputStream = new FileOutputStream(newfile);
 			fileOutputStream.write(imageData);
 		} catch (Throwable e) {
+			System.out.println("-----Fail Save Review Images-----");
 			e.printStackTrace(System.out);
 		} finally {
 			fileOutputStream.close();
-			fileUrl = "C:/Users/multicampus/Desktop/test/" + fileName;
+			fileUrl = path + fileName;
 		}
 		
 		return fileUrl;
