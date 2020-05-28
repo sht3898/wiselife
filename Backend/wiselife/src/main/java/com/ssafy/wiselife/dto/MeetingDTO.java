@@ -54,6 +54,7 @@ public class MeetingDTO {
 		private String writer;
 		private String title;
 		private Date updatedAt;
+		private Date createdAt;
 		private int isPeriod;
 		private Date meetingDate;
 		private String periodDate;
@@ -87,6 +88,8 @@ public class MeetingDTO {
 		private int isLike; //0 : 좋아요(X), 1 : 좋아요(O)
 		private String area1;
 		private String area2;
+		private int likeCnt;
+		private int viewCnt;
 	}
 	
 	

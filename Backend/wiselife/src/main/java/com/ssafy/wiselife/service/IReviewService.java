@@ -9,7 +9,7 @@ import com.ssafy.wiselife.dto.ReviewDTO.WriteReview;
 public interface IReviewService {
 	List<ShortMeeting> userOfJoinMeetingList(long uid);
 	
-	int saveReview(long uid, int meeting_id, WriteReview review);
+	int saveReview(long uid, WriteReview review);
 
 	int deleteReview(int review_id, long uid);
 

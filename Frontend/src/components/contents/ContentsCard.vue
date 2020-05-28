@@ -22,9 +22,15 @@
         <div class="grey--text ml-4">4.5</div>
         
       </v-row>
-      <v-row align="center" class="mx-1 my-0">
+      <v-row class="mx-0 my-0">
+        <v-col>
           <span class="mdi mdi-eye-outline" style="color:#e9c04c"></span>
-          <div class="grey--text ml-4">36 views</div>
+          <span class="grey--text ml-4">36</span>
+        </v-col>
+        <v-col>
+           <span class="mdi mdi-heart" style="color:red"></span>
+          <span class="grey--text ml-4">12</span>
+        </v-col>
       </v-row>
     
 

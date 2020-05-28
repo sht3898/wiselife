@@ -132,6 +132,7 @@
             placeholder="이미지 첨부"
             prepend-icon="mdi-camera-enhance"
             outlined
+            multiple
             dense
             id="files"
             ref="files"
@@ -237,8 +238,8 @@
         </v-col>
       </v-row>
       <v-row class="mb-5" style="text-align:right; float:right">
-        <v-btn rounded class="mr-2">취소</v-btn>
-        <v-btn rounded class="mr-3" color="orange lighten-1" @click="validate()">등록</v-btn>
+        <v-btn rounded class="mr-2 submitbtn">취소</v-btn>
+        <v-btn rounded class="mr-3 submitbtn" color="orange lighten-1" @click="validate()">등록</v-btn>
       </v-row>
     </v-flex>
   </v-container>
@@ -343,7 +344,7 @@ export default {
       search: null,
       y: 0,
       rules: [
-        value => !value || value.size < 2000000 || "이미지는 2 MB 이하로 등록해주세요!"
+        value => !value || value.size > 100000000 || "이미지는 10 MB 이하로 등록해주세요!"
       ],
       unitform: ["미정", "회비"],
       first_area: [
@@ -500,4 +501,9 @@ export default {
 };
 </script>
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap");
+.submitbtn {
+  font-size:13pt;
+  font-family: "Nanum Pen Script", cursive;
+}
 </style>

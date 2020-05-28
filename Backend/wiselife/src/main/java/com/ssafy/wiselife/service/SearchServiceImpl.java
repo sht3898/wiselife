@@ -1,5 +1,6 @@
 package com.ssafy.wiselife.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class SearchServiceImpl implements ISearchService {
 	@Override
 	public List<CardMeeting> searchByKeyword(int category_id, String keyword) {
 		System.out.println(keyword);
-		List<Meeting> meetingList = null;
+		List<Meeting> meetingList = new ArrayList<>();
 		String keywords = "";
 		// 메인페이지에서 검색
 		if (category_id == 0) {

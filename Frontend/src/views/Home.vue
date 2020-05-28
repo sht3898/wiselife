@@ -7,7 +7,7 @@
       </v-container>
 
       <v-container fluid mb-12>
-        <p class="menu">전체 카테고리 <v-btn @click="searchByCategory(0)" small rounded color="green lighten-2">이동</v-btn></p>
+        <p class="menu">전체 카테고리 <v-btn class="gobtn" @click="searchByCategory(0)" rounded small color="green lighten-2">이동</v-btn></p>
         <v-row justify="space-around">
           <v-col class="mt-3" v-for="category in categories" :key="category.key">
             <v-img
@@ -24,6 +24,7 @@
       <v-container fluid mb-12>
         <p class="menu">인기 컨텐츠 TOP 5</p>
         <v-row class="ma-auto pa-1 mt-5" style="background-color:#e9ffe0; border-radius: 10px;">
+          🥇🥈🥉
           <v-col>
             <h4>성별</h4>
             <v-flex xs12 sm6 lg3>
@@ -135,5 +136,9 @@ export default {
   font-family: 'Do Hyeon', sans-serif;
   font-size: 23px;
   padding-left:10px;
+}
+.gobtn {
+  font-size:12pt;
+  font-family: "Nanum Pen Script", cursive;
 }
 </style>
