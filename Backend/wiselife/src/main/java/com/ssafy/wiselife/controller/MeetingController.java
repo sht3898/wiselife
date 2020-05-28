@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,6 +35,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @CrossOrigin(origins = ("*"), maxAge = 6000)
 @RequestMapping("/api")
+
 public class MeetingController {
 
 	@Autowired
@@ -43,10 +45,11 @@ public class MeetingController {
 	private IKakaoService kakaoservice;
 
 	@PostMapping("/meeting/create")
-	@ApiOperation(value = "모임/강좌 개설하기")
+	@ApiOperation(value = "모임/강좌 개설하기", consumes = "multipart/form-data", produces="application/text;charset=utf-8")//bigfat.tistory.com/103 [Bigfat])//HttpServletRequest req,
 	public ResponseEntity<Map<Object, String>> createMeeting(HttpServletRequest req,
 			@RequestBody CreateMeeting meeting, MultipartHttpServletRequest files) {
 		System.out.println("-----모임/강좌 개설-----");
+		System.out.println("개설 Meeting Data : " + meeting.toString());
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
 
@@ -84,7 +87,7 @@ public class MeetingController {
 	@PutMapping("/meeting/update")
 	@ApiOperation(value = "모임/강좌 수정하기")
 	public ResponseEntity<Map<Object, String>> updateMeeting(@RequestParam String meeting_id, HttpServletRequest req,
-			@RequestBody UpdateMeeting meeting) {
+			@RequestBody UpdateMeeting meeting, MultipartHttpServletRequest files) {
 		System.out.println("-----모임/강좌 수정-----");
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
@@ -103,7 +106,7 @@ public class MeetingController {
 			return new ResponseEntity<>(resultMap, status);
 		}
 
-		int result = meetingservice.updateMeeting(Integer.parseInt(meeting_id), uid, meeting);
+		int result = meetingservice.updateMeeting(Integer.parseInt(meeting_id), uid, meeting, files);
 
 		if (result > 0) {
 			status = HttpStatus.OK;
