@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
-import com.ssafy.wiselife.dto.UserDTO;
+import com.ssafy.wiselife.dto.UserDTO.MeetingOfJoinAttendant;
 
 public interface IMeetingService {
 	int createMeeting(long uid, CreateMeeting meeting, MultipartHttpServletRequest files);
@@ -23,7 +23,7 @@ public interface IMeetingService {
 	
 	Map<String, List<DetailMeeting>> userOfJoinMeetingList(long uid);
 
-	List<UserDTO> getMeetingOfAttendantList(int meeting_id);
+	List<MeetingOfJoinAttendant> getMeetingOfAttendantList(int meeting_id);
 	
 	int joinMeeting(long uid, int meeting_id);
 }
