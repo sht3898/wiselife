@@ -38,14 +38,18 @@
       
     </v-tabs>
 
-    <v-tabs color="green" class="hidden-sm-and-up">
+    <v-tabs grow color="green" class="hidden-sm-and-up">
       <v-tab>
         <v-icon left>mdi-account</v-icon>
-        My Infomation
+        
+      </v-tab>
+       <v-tab>
+        <v-icon left>mdi-pentagon-outline</v-icon>
+        
       </v-tab>
       <v-tab>
         <v-icon left>mdi-timetable</v-icon>
-        My meeting
+        
       </v-tab>
      
 
@@ -56,7 +60,12 @@
       </v-tab-item>
       <v-tab-item>
         <v-card flat>
-          <my-meeting-tab style="width=80%"/>
+          <my-survey-tab/>
+        </v-card>
+      </v-tab-item>
+      <v-tab-item>
+        <v-card flat>
+          <my-meeting-tab/>
         </v-card>
       </v-tab-item>
       

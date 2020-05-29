@@ -1,5 +1,5 @@
 <template>
-  <v-flex>
+  <v-flex class="ma-auto">
     <div class="card-carousel-wrapper">
       <div class="card-carousel--nav__left" :disabled="atHeadOfList" @click="moveCarousel(-1)" />
       <div class="card-carousel">
@@ -84,7 +84,7 @@ body {
 .card-carousel {
   display: flex;
   justify-content: center;
-  width: 40vw;
+  width: 42vw;
 }
 .card-carousel--overflow-container {
   overflow: hidden;
@@ -99,7 +99,7 @@ body {
   border-top: 2px solid #42b883;
   border-right: 2px solid #42b883;
   cursor: pointer;
-  margin: 0 20px;
+  margin: 0 10px;
   transition: transform 150ms linear;
 }
 .card-carousel--nav__left[disabled],

@@ -1,6 +1,6 @@
 <template>
-  <v-container  class="ma-auto">
-    <v-flex class="ma-auto mt-5" lg12>
+  
+    <v-flex class="ma-auto mt-5" lg11 xs12>
       <v-container fluid>
         <p class="menu">
           참여한 강좌/모임
@@ -35,7 +35,6 @@
         <create-meeting-list/>
       </v-container>
     </v-flex>
-  </v-container>
 </template>
 <script>
 import ReviewModal from "./ReviewModal";

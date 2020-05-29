@@ -1,5 +1,5 @@
 <template>
- <v-container class="ma-auto mt-5">
+ <v-container class="ma-auto mt-5 pb-12">
       
         <v-flex v-if="!reSurvey" class="ma-auto" lg10>
         <p class="infotitle" >성향 검사 결과 <span class="blinking" style="float:right">
@@ -9,7 +9,7 @@
         </v-flex>
 
         <v-flex v-else>
-            <survey/>
+            <survey :token="token"/>
         </v-flex>
  </v-container>
 </template>
@@ -25,6 +25,7 @@ export default {
   },
   data(){
       return{
+          token:sessionStorage.getItem('token'),
           reSurvey:false
       }
   },
