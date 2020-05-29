@@ -211,9 +211,7 @@ public class MeetingServiceImpl implements IMeetingService {
 
 			// 로그인 안 한 사용자거나 사용자가 작성자라면
 			if (uid == meetingEntity.getUser().getUid()) {
-				meeting.setIsLike(0);
 				meeting.setCheckUser(0); // 작성자
-				return meeting;
 			}
 
 			// 참가자인지 확인
