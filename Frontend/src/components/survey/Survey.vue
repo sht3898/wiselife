@@ -26,6 +26,7 @@
                 <span class="screen_out">텍스트 선택지</span>
                 <v-btn
                   text
+                   min-width="0"
                   class="btn_dot btn_dot1"
                   :class="{btn_active: (question.answer==1)}"
                   @click="clickDot1(question)"
@@ -69,6 +70,7 @@
                 </v-btn>
                 <v-btn
                   text
+                   min-width="0"
                   class="btn_dot btn_dot5"
                   :class="{btn_active: (question.answer==5)}"
                   @click="clickDot5(question)"
@@ -83,7 +85,7 @@
         </ol>
       </div>
     </div>
-    <div class="btn py-3" style="float:right;">
+    <div class="btn pb-5" style="float:right;">
       <v-btn color="success" class="mr-4" @click="validate()">결과 확인</v-btn>
     </div>
   </div>
@@ -279,18 +281,18 @@ export default {
       let agreeableness = 0;
       let neuroticism = 0;
 
-      for (var i = 0; i < answers.length; ++i) {
-        var div = Math.floor(i / 6);
+      for (var j = 0; j < answers.length; ++j) {
+        var div = Math.floor(j / 6);
         if (div == 0) {
-          openness += answers[i];
+          openness += answers[j];
         } else if (div == 1) {
-          conscientiousness += answers[i];
+          conscientiousness += answers[j];
         } else if (div == 2) {
-          extraversion += answers[i];
+          extraversion += answers[j];
         } else if (div == 3) {
-          agreeableness += answers[i];
+          agreeableness += answers[j];
         } else if (div == 4) {
-          neuroticism += answers[i];
+          neuroticism += answers[j];
         }
       }
       openness = ((openness / 30) * 100).toFixed(0);
@@ -362,21 +364,26 @@ export default {
 .wrap_personality .group_question {
   width: 700px;
   margin: 0 auto;
-  padding: 90px 0 150px 0;
+  padding: 50px 0 0 0;
   text-align: center;
 }
 
 .wrap_personality .group_cover {
   width: 700px;
   margin: 0 auto;
-  padding-top: 55px;
   text-align: center;
+}
+@import url("https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap");
+.infotitle {
+  font-family: "Do Hyeon", sans-serif;
+  font-size: 23px;
+  padding-left: 10px;
 }
 .group_cover .tit_cover {
   display: inline-block;
   font-size: 40px;
   font-weight: normal;
-  font-family: "Kakao Bold", sans-serif;
+  font-family: "Do Hyeon", sans-serif;
   vertical-align: top;
 }
 .group_cover .tit_cover .tit_refer {
@@ -550,5 +557,115 @@ ol {
 }
 .group_question .after_question .area_auescase {
   opacity: 0.3;
+}
+
+@media (max-width: 767px) {
+  .wrap_personality {
+    margin-bottom: 51px;
+  }
+  .wrap_personality .group_cover {
+    width: auto;
+    padding-top: 38px;
+  }
+  .wrap_personality .group_question {
+    width: auto;
+    margin: 60px auto 100px;
+    padding: 0 25px;
+  }
+  .group_question .list_question .tit_question {
+    font-size: 16px;
+  }
+  .group_question .area_auescase {
+    width: 232px;
+    height: 54px;
+    margin: 17px auto 0;
+  }
+  .group_question .area_auescase .standard_negative {
+    left: -38px;
+  }
+  .group_question .area_auescase .standard_positive {
+    right: -41px;
+  }
+  .group_question .area_auescase .indicate_standard {
+    width: auto;
+    top: auto;
+    bottom: -26px;
+    font-size: 13px;
+  }
+  .group_question .list_quescase {
+    width: 232px;
+    height: 54px;
+  }
+
+  .group_question .list_quescase .ico_dot {
+    width: 8px;
+    height: 8px;
+    margin-top: -4px;
+    margin-left: -4px;
+    background-position: -130px -690px;
+  }
+
+  .group_question .list_quescase .btn_dot.btn_active .ico_dot {
+    width: 16px;
+    height: 13px;
+    background-position: -130px -708px;
+    margin-top: -6px;
+    margin-left: -8px;
+  }
+
+  .group_question .list_quescase .btn_dot1 {
+    width: 54px;
+    height: 54px;
+    margin-top: -27px;
+    left: -27px;
+  }
+
+  .group_question .list_quescase .btn_dot2 {
+    width: 44px;
+    height: 44px;
+    margin-left: -17px;
+    margin-top: -22px;
+  }
+  .group_question .list_quescase .btn_dot3 {
+    width: 38px;
+    height: 38px;
+    margin-left: -18px;
+    margin-top: -19px;
+  }
+  .group_question .list_quescase .btn_dot4 {
+    width: 44px;
+    height: 44px;
+    margin-left: -25px;
+    margin-top: -22px;
+  }
+  .group_question .list_quescase .btn_dot5 {
+    width: 54px;
+    height: 54px;
+    margin-top: -27px;
+    right: -27px;
+  }
+  .ico_together2 {
+    display: block;
+    overflow: hidden;
+    font-size: 0;
+    line-height: 0;
+    background: url(//t1.kakaocdn.net/together_image/common/ico_together2_191106.png)
+      no-repeat 0 0;
+    text-indent: -9999px;
+  }
+  .group_question .list_question li + li {
+    margin-top: 87px;
+  }
+  .group_question .after_question .tit_question {
+    opacity: 0.3;
+  }
+  .group_question .list_question .tit_question {
+    font-size: 19px;
+    font-weight: normal;
+    font-family: "Kakao Bold", sans-serif;
+  }
+  .group_question .after_question .area_auescase {
+    opacity: 0.3;
+  }
 }
 </style>

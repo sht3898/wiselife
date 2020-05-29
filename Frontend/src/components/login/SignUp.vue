@@ -1,5 +1,6 @@
 <template>
-  <v-container v-if="!complete" class="signUp mt-15">
+  <v-container v-if="!complete" class="signUp">
+    <v-flex class="ma-auto" lg8 sm12>
     <h3>회원정보 입력</h3>
     <v-row>
       <v-col cols="2" class="mt-5">
@@ -73,19 +74,21 @@
           :class="{green: category.clicked}"
           @click="category.clicked = !category.clicked"
         />
-        <div class="subheading" style="text-align:center;">{{ category.name }}</div>
+        <div class="subheading" style="font-size:11pt; text-align:center;">{{ category.name }}</div>
       </v-col>
     </v-row>
 
     <div class="btn py-3" style="float:right">
       <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">가입!</v-btn>
     </div>
+    </v-flex>
   </v-container>
   <v-container v-else>
     <survey :token="token" style="text-align:center; margin:auto; width:85%" />
-    <div class="btn py-3" style="float:right">
+    <div class="btn pb-5" style="float:right">
       <v-btn color="grey lighten-3" class="mr-4" @click="pass()">건너뛰기</v-btn>
     </div>
+    
   </v-container>
 </template>
 <script>
@@ -261,7 +264,6 @@ export default {
 <style scoped>
 .signUp {
   margin: auto;
-  width: 60%;
 }
 .green {
   background-color: green;

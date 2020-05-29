@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <div v-if="!clickBtn">
-      <v-card class="mx-auto" max-width="75%">
+      <div class="mx-auto">
         <v-row>
           <v-col class="hidden-sm-and-down">
             <img-banner :imgSrc="bannerImg" />
@@ -29,7 +29,7 @@
             </div>
           </v-col>
         </v-row>
-      </v-card>
+      </div>
     </div>
     <sign-up v-if="!isMember" :token="token" />
   </v-container>

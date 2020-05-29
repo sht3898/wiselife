@@ -293,9 +293,9 @@ export default {
             if (response.data.status == "success") {
               console.log(response);
               alert("탈퇴 하였습니다.");
-              // this.logout();
-              //   this.$router.push("/");
-              //   location.reload();
+                sessionStorage.clear();
+                this.$router.push("/");
+                location.reload();
             } else {
               alert("오류가 발생했습니다. 다시 시도해 주세요.");
               this.$router.push("/mypage");

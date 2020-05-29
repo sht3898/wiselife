@@ -2,7 +2,7 @@
   <div>
     {{content}}
     <v-layout mt-1 wrap>
-    <v-flex v-for="content in contents" :key="content.name" xs6 sm4 lg3 >
+    <v-flex v-for="content in contents" :key="content.name" xs12 sm4 lg3 >
        <contents-card />
     </v-flex>
   </v-layout>
