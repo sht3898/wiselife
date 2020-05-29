@@ -92,5 +92,15 @@ public class Meeting {
 	@OneToMany(mappedBy = "meeting")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
-	private List<UserMeeting> userList = new ArrayList<>();
+	private List<UserMeeting> userMeetingList = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "meeting")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JsonIgnore
+	private List<LikeMeeting> likeMeetingList = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "meeting")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JsonIgnore
+	private List<MeetingImages> meetingImagesList;
 }

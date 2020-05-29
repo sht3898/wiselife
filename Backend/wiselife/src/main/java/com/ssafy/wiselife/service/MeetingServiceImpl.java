@@ -297,7 +297,7 @@ public class MeetingServiceImpl implements IMeetingService {
 	public Map<String, List<DetailMeeting>> userOfJoinMeetingList(long uid) {
 		User user = userrepo.findById(uid).get();
 		List<UserMeeting> userMeetingList = new ArrayList<>();
-		userMeetingList = user.getUserMeetings();
+		userMeetingList = user.getUserMeetingList();
 
 		Meeting meetingEntity = null;
 		DetailMeeting meeting = null;

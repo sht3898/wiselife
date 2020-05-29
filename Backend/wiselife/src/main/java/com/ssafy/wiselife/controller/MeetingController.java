@@ -158,25 +158,25 @@ public class MeetingController {
 	}
 
 	@DeleteMapping("/meeting/delete")
-	@ApiOperation(value = "모임/강좌 삭제")
-	public ResponseEntity<Map<Object, String>> deleteMeeting(@RequestParam String meeting_id, HttpServletRequest req) {
+	@ApiOperation(value = "모임/강좌 삭제")// HttpServletRequest req
+	public ResponseEntity<Map<Object, String>> deleteMeeting(@RequestParam String meeting_id, long uid) {
 		System.out.println("-----모임/강좌 삭제-----");
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
 
-		String access_token = null;
-		HashMap<String, Object> userInfo = null;
-		long uid = 0;
-
-		try {
-			access_token = req.getHeader("access_token");
-			userInfo = kakaoservice.getUserInfo(access_token);
-			uid = (long) userInfo.get("id");
-		} catch (Exception e) {
-			status = HttpStatus.UNAUTHORIZED;
-			resultMap.put(status, "로그인을 먼저 진행해주세요");
-			return new ResponseEntity<>(resultMap, status);
-		}
+//		String access_token = null;
+//		HashMap<String, Object> userInfo = null;
+//		long uid = 0;
+//
+//		try {
+//			access_token = req.getHeader("access_token");
+//			userInfo = kakaoservice.getUserInfo(access_token);
+//			uid = (long) userInfo.get("id");
+//		} catch (Exception e) {
+//			status = HttpStatus.UNAUTHORIZED;
+//			resultMap.put(status, "로그인을 먼저 진행해주세요");
+//			return new ResponseEntity<>(resultMap, status);
+//		}
 
 		int result = meetingservice.deleteMeeting(Integer.parseInt(meeting_id), uid);
 
