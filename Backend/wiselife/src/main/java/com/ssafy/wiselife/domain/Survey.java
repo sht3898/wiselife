@@ -8,6 +8,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.Setter;
 import lombok.ToString;
 import lombok.Getter;
@@ -29,5 +32,6 @@ public class Survey {
 	
 	@OneToOne
 	@JoinColumn(name = "uid")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 }

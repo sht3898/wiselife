@@ -38,7 +38,7 @@ public class Category {
 	@OneToMany(mappedBy = "category")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
-	private List<InterestCategory> users = new ArrayList<>();
+	private List<InterestCategory> interestCategoryList = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "category")
 	@OnDelete(action = OnDeleteAction.CASCADE)

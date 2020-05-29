@@ -59,7 +59,7 @@ public class KakaoServiceImpl implements IKakaoService {
 			// Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
 			JsonParser parser = new JsonParser();
 			JsonElement element = parser.parse(result);
-
+			System.out.println("어디냐 : "+element.toString());
 			access_token = element.getAsJsonObject().get("access_token").getAsString();
 			refresh_token = element.getAsJsonObject().get("refresh_token").getAsString();
 

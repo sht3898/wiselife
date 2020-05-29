@@ -2,7 +2,7 @@
   <v-container>
     <v-flex class="ma-auto my-5" lg9>
       <v-row v-if="chk">
-        <v-col cols="4">
+        <v-row>
           <v-chip
             v-if="meeting.isClass == 1"
             :color="`green lighten-4 mr-1`"
@@ -22,21 +22,23 @@
             label
           >비정기</v-chip>
           <v-chip v-else :color="`green lighten-4 mr-1`" class="black--text" label>정기</v-chip>
-        </v-col>
-        <v-col cols="3" v-if="meeting.isPeriod == 0">
-          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임날짜</v-chip>
-          {{ meeting.meetingDate }}
-        </v-col>
-        <v-col cols="3" v-else>
-          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임주기</v-chip>
-          {{ meeting.periodDate }}
-        </v-col>
-        <v-col cols="3">
-          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임비</v-chip>
-          <span v-if="meeting.unit == '원'">{{ meeting.fee }}</span>
-          {{ meeting.unit }}
-        </v-col>
-        <v-col cols="2" style="text-align:right">
+        </v-row>
+        <v-row>
+          <v-col cols="4" v-if="meeting.isPeriod == 0">
+            <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임날짜</v-chip>
+            {{ meeting.meetingDate }}
+          </v-col>
+          <v-col cols="4" v-else>
+            <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임주기</v-chip>
+            {{ meeting.periodDate }}
+          </v-col>
+          <v-col cols="2">
+            <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임비</v-chip>
+            <span v-if="meeting.unit == '원'">{{ meeting.fee }}</span>
+            {{ meeting.unit }}
+          </v-col>
+        </v-row>
+        <v-col cols="3" style="text-align:right">
           <v-chip
             v-if="meeting.isActive == 1"
             :color="`blue lighten-4`"
@@ -55,12 +57,85 @@
       <v-divider></v-divider>
       <v-row>
         <v-col>
+          <v-card class="ma-auto">
+            <v-list-item>
+              <v-row>
+                <v-col>
+                  <v-list-item-content>
+                    <v-list-item-title class="headline">{{ meeting.title }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-chip
+                    v-for="(tag, index) in meeting.tags"
+                    :key="tag"
+                    :color="colors[index]"
+                    class="black--text mr-2"
+                    label
+                    small
+                  >#{{ tag }}</v-chip>
+                </v-col>
+              </v-row>
+            </v-list-item>
+
+            <v-img src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg" height="194"></v-img>
+
+            <v-card-text class="text--primary">
+              <span v-html="meeting.content" />
+            </v-card-text>
+
+            <v-card-actions>
+              <v-chip
+                v-if="meeting.isPeriod == 0"
+                :color="`green lighten-4 mr-1`"
+                class="black--text"
+                label
+              >비정기</v-chip>
+              <v-chip v-else :color="`green lighten-4 mr-1`" class="black--text" label>정기</v-chip>
+              <span v-if="meeting.isPeriod == 0">
+                <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임날짜</v-chip>
+                {{ meeting.meetingDate }}
+              </span>
+              <span v-else>
+                <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임주기</v-chip>
+                {{ meeting.periodDate }}
+              </span>
+              <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임비</v-chip>
+              <span v-if="meeting.unit == '원'">{{ meeting.fee }}</span>
+              {{ meeting.unit }}
+              <v-spacer></v-spacer>
+              <v-btn icon @click="btnLike()">
+                <v-icon v-if="meeting.isLike == 0">mdi-heart-outline</v-icon>
+                <v-icon v-else color="red">mdi-heart</v-icon>
+              </v-btn>
+              <span class="topscore ma-auto">{{ meeting.likeCnt }}</span>
+              <span class="mdi mdi-eye-outline" style="color:#e9c04c"></span>
+              <span class="grey--text ml-4">{{ meeting.viewCnt }}</span>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+        <v-col>
+          <v-row class="my-2">
+            <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>지역</v-chip>
+            {{ meeting.area1 }} {{ meeting.area2 }}
+          </v-row>
+          <v-row v-if="meeting.address" class="my-2">
+            <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>상세 주소</v-chip>
+            {{ meeting.address }}
+          </v-row>
+          <div id="map" style="width:300px;height:300px;margin-top:10px;display:none"></div>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
           <p class="contentstitle">{{ meeting.title }}</p>
         </v-col>
         <v-col cols="2" style="text-align:right">
-          <v-btn icon v-if="meeting.checkUser != 0" @click="btnLike()">
-            <v-icon v-if="meeting.isLike == 0">mdi-heart-outline</v-icon>
-            <v-icon v-else color="red">mdi-heart</v-icon>
+          <v-btn icon @click="btnLike()">
+            <v-icon v-if="meeting.isLike == 1" color="red">mdi-heart</v-icon>
+            <v-icon v-else>mdi-heart-outline</v-icon>
           </v-btn>
           <span class="topscore ma-auto">{{ meeting.likeCnt }}</span>
         </v-col>
@@ -68,7 +143,7 @@
           <v-menu v-model="menu" bottom right transition="scale-transition" origin="top left">
             <template v-slot:activator="{ on }">
               <v-chip :color="`green lighten-4`" class="black--text" label pill v-on="on">
-                <v-icon left color="orange">mdi-human-greeting</v-icon>
+                <v-icon left color="dim-grey">mdi-human-greeting</v-icon>
                 인원 {{ meeting.nowPerson }}/{{ meeting.maxPerson }}
               </v-chip>
             </template>
