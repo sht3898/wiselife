@@ -2,7 +2,7 @@
   <v-container>
     <v-flex class="ma-auto my-5" lg9>
       <v-row v-if="chk">
-        <v-row>
+        <v-col>
           <v-chip
             v-if="meeting.isClass == 1"
             :color="`green lighten-4 mr-1`"
@@ -15,205 +15,188 @@
             class="black--text"
             label
           >{{ categories[meeting.mainCategory] }}</v-chip>
-          <v-chip
-            v-if="meeting.isPeriod == 0"
-            :color="`green lighten-4 mr-1`"
-            class="black--text"
-            label
-          >비정기</v-chip>
-          <v-chip v-else :color="`green lighten-4 mr-1`" class="black--text" label>정기</v-chip>
-        </v-row>
-        <v-row>
-          <v-col cols="4" v-if="meeting.isPeriod == 0">
-            <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임날짜</v-chip>
-            {{ meeting.meetingDate }}
-          </v-col>
-          <v-col cols="4" v-else>
-            <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임주기</v-chip>
-            {{ meeting.periodDate }}
-          </v-col>
-          <v-col cols="2">
-            <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임비</v-chip>
-            <span v-if="meeting.unit == '원'">{{ meeting.fee }}</span>
-            {{ meeting.unit }}
-          </v-col>
-        </v-row>
-        <v-col cols="3" style="text-align:right">
+        </v-col>
+        <v-col style="text-align:right">
           <v-chip
             v-if="meeting.isActive == 1"
             :color="`blue lighten-4`"
-            class="black--text"
+            class="black--text mr-3"
             label
           >모집중</v-chip>
           <v-chip
             v-else-if="meeting.isActive == 2"
             :color="`green lighten-4`"
-            class="black--text"
+            class="black--text mr-3"
             label
           >진행중</v-chip>
-          <v-chip v-else :color="`red lighten-4`" class="black--text" label>마감</v-chip>
+          <v-chip v-else :color="`red lighten-4`" class="black--text mr-3" label>마감</v-chip>
+          <v-chip
+            v-if="meeting.checkUser==1"
+            color="primary"
+            class="black--text"
+            label
+            @click="attendMeeting()"
+          >신청하기</v-chip>
+          <v-chip
+            v-if="meeting.checkUser==2"
+            color="warning"
+            class="black--text"
+            label
+            @click="attendMeeting()"
+          >탈퇴하기</v-chip>
         </v-col>
       </v-row>
       <v-divider></v-divider>
       <v-row>
-        <v-col>
-          <v-card class="ma-auto">
+        <v-col cols="12">
+          <v-card outlined class="ma-auto">
             <v-list-item>
-              <v-row>
-                <v-col>
-                  <v-list-item-content>
-                    <v-list-item-title class="headline">{{ meeting.title }}</v-list-item-title>
-                  </v-list-item-content>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <v-chip
-                    v-for="(tag, index) in meeting.tags"
-                    :key="tag"
-                    :color="colors[index]"
-                    class="black--text mr-2"
-                    label
-                    small
-                  >#{{ tag }}</v-chip>
-                </v-col>
-              </v-row>
-            </v-list-item>
-
-            <v-img src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg" height="194"></v-img>
-
-            <v-card-text class="text--primary">
-              <span v-html="meeting.content" />
-            </v-card-text>
-
-            <v-card-actions>
-              <v-chip
-                v-if="meeting.isPeriod == 0"
-                :color="`green lighten-4 mr-1`"
-                class="black--text"
-                label
-              >비정기</v-chip>
-              <v-chip v-else :color="`green lighten-4 mr-1`" class="black--text" label>정기</v-chip>
-              <span v-if="meeting.isPeriod == 0">
-                <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임날짜</v-chip>
-                {{ meeting.meetingDate }}
-              </span>
-              <span v-else>
-                <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임주기</v-chip>
-                {{ meeting.periodDate }}
-              </span>
-              <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>모임비</v-chip>
-              <span v-if="meeting.unit == '원'">{{ meeting.fee }}</span>
-              {{ meeting.unit }}
-              <v-spacer></v-spacer>
+              <v-list-item-content>
+                <v-list-item-title class="headline">{{ meeting.title }}</v-list-item-title>
+              </v-list-item-content>
               <v-btn icon @click="btnLike()">
                 <v-icon v-if="meeting.isLike == 0">mdi-heart-outline</v-icon>
                 <v-icon v-else color="red">mdi-heart</v-icon>
               </v-btn>
               <span class="topscore ma-auto">{{ meeting.likeCnt }}</span>
-              <span class="mdi mdi-eye-outline" style="color:#e9c04c"></span>
-              <span class="grey--text ml-4">{{ meeting.viewCnt }}</span>
-            </v-card-actions>
+              <span class="mdi mdi-eye-outline ml-4" style="color:#e9c04c"></span>
+              <span class="grey--text ml-2">{{ meeting.viewCnt }}</span>
+            </v-list-item>
+
+            <v-img src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg" height="194"></v-img>
+            <v-card-text class="text--primary">
+              <v-row class="ml-2">
+                <v-chip
+                  v-for="(tag, index) in meeting.tags"
+                  :key="tag"
+                  :color="colors[index]"
+                  class="black--text mr-2 my-1"
+                  label
+                  small
+                >#{{ tag }}</v-chip>
+                <v-col style="text-align:right; color:LightGrey">
+                  <span class="mdi mdi-pencil ml-4" style="color:Grey">작성일</span>
+                  <span class="grey--text ml-2">{{ meeting.createdAt }}</span>
+                </v-col>
+              </v-row>
+              <v-row class="ml-2">
+                <v-col cols="6">
+                  <v-row class="my-3">
+                    <v-chip :color="`grey lighten-4`" class="black--text mr-3" label small>
+                      <span class="mdi mdi-dark mdi-clock mr-1" style="font-size:15pt;" />
+                      날짜/주기
+                    </v-chip>
+                    <span v-if="meeting.isPeriod == 1" style="font-size:15pt;">
+                      <span style="color:grey;">(정기)</span>
+                      <span class="ml-2" style="font-weight:bold;">{{ meeting.periodDate }}</span>
+                    </span>
+                    <span v-else>
+                      <span style="color:grey;">(비정기)</span>
+                      <span class="ml-2" style="font-weight:bold;">{{ meeting.meetingDate }}</span>
+                    </span>
+                  </v-row>
+                  <v-row class="my-3">
+                    <v-chip :color="`grey lighten-4`" class="black--text mr-3" label small>
+                      <span class="mdi mdi-dark mdi-cash-100 mr-1" style="font-size:15pt;" />
+                      &ensp;모임비&ensp;
+                    </v-chip>
+                    <span v-if="meeting.unit == '원'" style="font-weight:bold;">{{ meeting.fee }}</span>
+                    <span class="ml-1" style="font-weight:bold;">{{ meeting.unit }}</span>
+                  </v-row>
+                  <v-row class="my-3">
+                    <v-chip :color="`grey lighten-4`" class="black--text mr-3" label small>
+                      <span class="mdi mdi-dark mdi-face mr-1" style="font-size:15pt;" />
+                      모임 정원
+                    </v-chip>
+                    <span class="ml-2" style="font-weight:bold;">총</span>
+                    <span
+                      class="ml-1"
+                      style="font-weight:bold; color:CornflowerBlue;"
+                    >{{ meeting.maxPerson }}</span>
+                    <span style="font-weight:bold;">명 |</span>
+                    <span
+                      class="ml-1"
+                      style="font-weight:bold; color:CornflowerBlue;"
+                    >{{ (meeting.maxPerson - meeting.nowPerson) }}</span>
+                    <span v-if="meeting.isActive == 1" style="font-weight:bold;">명 신청가능</span>
+                    <span v-else-if="meeting.isActive == 2" style="font-weight:bold;">명 진행 중</span>
+                    <span v-else style="font-weight:bold;">명 참여 중</span>
+                    <v-menu
+                      v-model="menu"
+                      bottom
+                      right
+                      transition="scale-transition"
+                      origin="top left"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-chip
+                          :color="`green lighten-4`"
+                          class="black--text ml-3"
+                          label
+                          small
+                          pill
+                          v-on="on"
+                        >목록 보기</v-chip>
+                      </template>
+                      <v-card width="300">
+                        <v-list>
+                          <v-list-item>
+                            <v-list-item-avatar>
+                              <v-img :src="writer.profileImage"></v-img>
+                            </v-list-item-avatar>
+                            <v-list-item-content>
+                              <v-list-item-title>호스트 : {{ writer.username }}</v-list-item-title>
+                              <v-list-item-subtitle>문의 : {{ meeting.phone }}</v-list-item-subtitle>
+                            </v-list-item-content>
+                            <v-list-item-action>
+                              <v-btn icon @click="menu = false">
+                                <v-icon>mdi-close-circle</v-icon>
+                              </v-btn>
+                            </v-list-item-action>
+                          </v-list-item>
+                        </v-list>
+                        <v-divider />
+                        <v-list>
+                          <v-list-item-subtitle class="ml-3">참여자 목록</v-list-item-subtitle>
+                          <v-list-item v-for="attendant in attendants" :key="attendant.uid">
+                            <v-list-item-avatar>
+                              <v-img :src="attendant.profileImage"></v-img>
+                            </v-list-item-avatar>
+                            <v-list-item-subtitle>{{ attendant.username }} ({{ attendant.gender }} / {{ attendant.ages }}대)</v-list-item-subtitle>
+                          </v-list-item>
+                        </v-list>
+                      </v-card>
+                    </v-menu>
+                  </v-row>
+                  <v-row>
+                    <v-chip :color="`grey lighten-4`" class="black--text mr-3" label small>
+                      <span class="mdi mdi-dark mdi-link mr-1" style="font-size:15pt;" />참고 URL
+                    </v-chip>
+                    <a :href="meeting.refUrl">link</a>
+                  </v-row>
+                  <v-row class="mt-12">
+                    <span v-html="meeting.content" />
+                  </v-row>
+                </v-col>
+                <v-col cols="6">
+                  <v-row class="my-1">
+                    <v-chip :color="`grey lighten-4`" class="black--text mx-2" label small>지역</v-chip>
+                    <span
+                      style="font-weight:bold; font-size:1em;"
+                    >{{ meeting.area1 }} {{ meeting.area2 }}</span>
+                  </v-row>
+                  <v-row class="my-1">
+                    <v-chip :color="`grey lighten-4`" class="black--text mx-2" label small>상세 주소</v-chip>
+                    <span style="font-weight:bold; font-size:1em;">{{ meeting.address }}</span>
+                  </v-row>
+                  <div
+                    id="map"
+                    style="max-width:300px; max-height:300px; width:25vw;height:25vw;margin-top:10px;display:none"
+                  ></div>
+                </v-col>
+              </v-row>
+            </v-card-text>
           </v-card>
-        </v-col>
-        <v-col>
-          <v-row class="my-2">
-            <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>지역</v-chip>
-            {{ meeting.area1 }} {{ meeting.area2 }}
-          </v-row>
-          <v-row v-if="meeting.address" class="my-2">
-            <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>상세 주소</v-chip>
-            {{ meeting.address }}
-          </v-row>
-          <div id="map" style="width:300px;height:300px;margin-top:10px;display:none"></div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <p class="contentstitle">{{ meeting.title }}</p>
-        </v-col>
-        <v-col cols="2" style="text-align:right">
-          <v-btn icon @click="btnLike()">
-            <v-icon v-if="meeting.isLike == 1" color="red">mdi-heart</v-icon>
-            <v-icon v-else>mdi-heart-outline</v-icon>
-          </v-btn>
-          <span class="topscore ma-auto">{{ meeting.likeCnt }}</span>
-        </v-col>
-        <v-col>
-          <v-menu v-model="menu" bottom right transition="scale-transition" origin="top left">
-            <template v-slot:activator="{ on }">
-              <v-chip :color="`green lighten-4`" class="black--text" label pill v-on="on">
-                <v-icon left color="dim-grey">mdi-human-greeting</v-icon>
-                인원 {{ meeting.nowPerson }}/{{ meeting.maxPerson }}
-              </v-chip>
-            </template>
-            <v-card width="300">
-              <v-list>
-                <v-list-item>
-                  <v-list-item-avatar>
-                    <v-img :src="writer.profileImage"></v-img>
-                  </v-list-item-avatar>
-                  <v-list-item-content>
-                    <v-list-item-title>호스트 : {{ writer.username }}</v-list-item-title>
-                    <v-list-item-subtitle>문의 : {{ meeting.phone }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                  <v-list-item-action>
-                    <v-btn icon @click="menu = false">
-                      <v-icon>mdi-close-circle</v-icon>
-                    </v-btn>
-                  </v-list-item-action>
-                </v-list-item>
-              </v-list>
-              <v-divider />
-              <v-list>
-                <v-list-item-subtitle class="ml-3">참여자 목록</v-list-item-subtitle>
-                <v-list-item v-for="attendant in attendants" :key="attendant.uid">
-                  <v-list-item-avatar>
-                    <v-img :src="attendant.profileImage"></v-img>
-                  </v-list-item-avatar>
-                  <v-list-item-subtitle>{{ attendant.username }} ({{ attendant.gender }} / {{ attendant.ages }}대)</v-list-item-subtitle>
-                </v-list-item>
-              </v-list>
-            </v-card>
-          </v-menu>
-        </v-col>
-        <v-col>
-          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label>작성일</v-chip>
-          {{ meeting.createdAt }}
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-img height="150" src="https://cdn.vuetifyjs.com/images/cards/cooking.png" />
-        </v-col>
-        <v-col>
-          <v-row class="my-2">
-            <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>지역</v-chip>
-            {{ meeting.area1 }} {{ meeting.area2 }}
-          </v-row>
-          <v-row v-if="meeting.address" class="my-2">
-            <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>상세 주소</v-chip>
-            {{ meeting.address }}
-          </v-row>
-          <div id="map" style="width:300px;height:300px;margin-top:10px;display:none"></div>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <div>
-            <v-chip
-              v-for="(tag, index) in meeting.tags"
-              :key="tag"
-              :color="colors[index]"
-              class="black--text mr-2"
-              label
-              small
-            >#{{ tag }}</v-chip>
-          </div>
-        </v-col>
-        <v-col>
-          <v-chip :color="`grey lighten-4`" class="black--text mr-2" label small>참고 URL</v-chip>
-          <a :href="meeting.refUrl">link</a>
         </v-col>
       </v-row>
       <v-row>
@@ -269,21 +252,36 @@ export default {
     this.getAttendant();
   },
   methods: {
+    attendMeeting() {
+      let params = new URLSearchParams();
+      params.append("meeting_id", this.seq);
+      let config = {
+        headers: { access_token: sessionStorage.getItem("token") }
+      };
+      http
+        .post(`meeting/attend`, params, config)
+        .then(response => {
+          console.log(response);
+          this.init();
+        })
+        .catch(error => {
+          alert(error);
+        });
+    },
     btnLike() {
       let params = new URLSearchParams();
       params.append("meeting_id", this.seq);
       let config = {
         headers: { access_token: sessionStorage.getItem("token") }
       };
-      http.post(`meeting/like`, params, config).then(response => {
-        if (response.data.OK == "좋아요 취소") {
-          this.meeting.isLike = 0;
-          this.meeting.likeCnt--;
-        } else {
-          this.meeting.isLike = 1;
-          this.meeting.likeCnt++;
-        }
-      });
+      http
+        .post(`meeting/like`, params, config)
+        .then(response => {
+          this.init();
+        })
+        .catch(error => {
+          alert(error);
+        });
     },
     getAttendant() {
       let config = {
@@ -291,24 +289,28 @@ export default {
           access_token: sessionStorage.getItem("token")
         }
       };
-      http.get(`meeting/${this.seq}/attendant`, config).then(response => {
-        for (var i = 0; i < response.data.length; i++) {
-          if (response.data[i].checkUser == 0) {
-            this.writer = response.data[i];
+      http
+        .get(`meeting/${this.seq}/attendant`, config)
+        .then(response => {
+          for (var i = 0; i < response.data.length; i++) {
+            if (response.data[i].checkUser == 0) {
+              this.writer = response.data[i];
+            }
+            this.attendants.push(response.data[i]);
+            if (this.attendants[i].gender == 1) {
+              this.attendants[i].gender = "남";
+            } else {
+              this.attendants[i].gender = "여";
+            }
           }
-          this.attendants.push(response.data[i]);
-          if (this.attendants[i].gender == 1) {
-            this.attendants[i].gender = "남";
-          } else {
-            this.attendants[i].gender = "여";
-          }
-        }
-      });
+        })
+        .catch(error => {
+          alert(error);
+        });
     },
     dateParsing(beforeParsing) {
       const t = beforeParsing.indexOf("T");
       const afterParsing = beforeParsing.substring(0, t);
-      // console.log(afterParsing)
       const realdate =
         afterParsing.substring(0, 4) +
         "년 " +
@@ -344,54 +346,62 @@ export default {
           access_token: sessionStorage.getItem("token")
         }
       };
-      http.get(`meeting/${this.$route.params.seq}`, config).then(response => {
-        let this_component = this;
-        this.meeting = response.data;
-        this.chk = true;
-        //주소 있으면 지도 찍자!
-        if (this.meeting.address != null) {
-          this.geocoder.addressSearch(this.meeting.address, function(
-            results,
-            status
-          ) {
-            // 정상적으로 검색이 완료됐으면
-            if (status === daum.maps.services.Status.OK) {
-              var result = results[0]; //첫번째 결과의 값을 활용
+      http
+        .get(`meeting/${this.$route.params.seq}`, config)
+        .then(response => {
+          let this_component = this;
+          this.meeting = response.data;
+          this.chk = true;
+          console.log(this.meeting);
+          //주소 있으면 지도 찍자!
+          if (this.meeting.address != null) {
+            this.geocoder.addressSearch(this.meeting.address, function(
+              results,
+              status
+            ) {
+              // 정상적으로 검색이 완료됐으면
+              if (status === daum.maps.services.Status.OK) {
+                var result = results[0]; //첫번째 결과의 값을 활용
 
-              // 해당 주소에 대한 좌표를 받아서
-              var coords = new daum.maps.LatLng(result.y, result.x);
-              // 지도를 보여준다.
-              this_component.mapContainer.style.display = "block";
-              this_component.map.relayout();
-              // 지도 중심을 변경한다.
-              this_component.map.setCenter(coords);
-              // 마커를 결과값으로 받은 위치로 옮긴다.
-              this_component.marker.setPosition(coords);
-            }
-          });
-        } else {
-          this.mapContainer = null;
-        }
-
-        ///////데이터 정제////////
-        if (this.meeting.fee != null) {
-          this.meeting.fee = this.meeting.fee.toLocaleString();
-        }
-        if (this.meeting.meetingDate != null) {
-          this.meeting.meetingDate = this.dateParsing(this.meeting.meetingDate);
-        }
-        if (this.meeting.createdAt != null) {
-          this.meeting.createdAt = this.dateParsing(this.meeting.createdAt);
-        }
-        if (this.meeting.tags != null) {
-          let split_tags = this.meeting.tags.split(" ");
-          let tags = [];
-          for (var i in split_tags) {
-            tags.push(split_tags[i]);
+                // 해당 주소에 대한 좌표를 받아서
+                var coords = new daum.maps.LatLng(result.y, result.x);
+                // 지도를 보여준다.
+                this_component.mapContainer.style.display = "block";
+                this_component.map.relayout();
+                // 지도 중심을 변경한다.
+                this_component.map.setCenter(coords);
+                // 마커를 결과값으로 받은 위치로 옮긴다.
+                this_component.marker.setPosition(coords);
+              }
+            });
+          } else {
+            this.mapContainer = null;
           }
-          this.meeting.tags = tags;
-        }
-      });
+
+          ///////데이터 정제////////
+          if (this.meeting.fee != null) {
+            this.meeting.fee = this.meeting.fee.toLocaleString();
+          }
+          if (this.meeting.meetingDate != null) {
+            this.meeting.meetingDate = this.dateParsing(
+              this.meeting.meetingDate
+            );
+          }
+          if (this.meeting.createdAt != null) {
+            this.meeting.createdAt = this.dateParsing(this.meeting.createdAt);
+          }
+          if (this.meeting.tags != null) {
+            let split_tags = this.meeting.tags.split(" ");
+            let tags = [];
+            for (var i in split_tags) {
+              tags.push(split_tags[i]);
+            }
+            this.meeting.tags = tags;
+          }
+        })
+        .catch(error => {
+          alert(error);
+        });
     }
   }
 };
