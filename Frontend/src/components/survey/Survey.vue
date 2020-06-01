@@ -146,7 +146,7 @@ export default {
         },
         {
           number: 9,
-          question: "나는 약속을 잘 어기며, 게으른 편이다",
+          question: "나는 약속을 잘 어긴다",
           answer: 0
         },
         {
@@ -161,7 +161,7 @@ export default {
         },
         {
           number: 12,
-          question: "나는 생각하지 않고 행동하는 편이다",
+          question: "나는 조심성이 없는 편이다",
           answer: 0
         },
         {
