@@ -6,7 +6,7 @@
         <h3 style="color:Green;">
           {{ username }}
           <span style="color:dimgrey">님은 [</span>
-          <span style="color:orange"> {{ myKeyword }} </span>
+          <span style="color:orange">{{ main_keyword }}</span>
           <span style="color:dimgrey">] 사람입니다.</span>
         </h3>
         <h4 class="mt-2">결과분석</h4>
@@ -17,6 +17,7 @@
           class="black--text mt-2"
           label
         >#{{ keyword }}</v-chip>
+        <survey-result-text :mbti="mbti" />
       </div>
     </v-flex>
   </v-container>
@@ -25,18 +26,21 @@
 <script>
 import http from "../../http-common.js";
 import VueApexCharts from "vue-apexcharts";
+import SurveyResultText from "./SurveyResultText";
 
 export default {
   name: "SurveyResult",
   components: {
-    apexchart: VueApexCharts
+    apexchart: VueApexCharts,
+    SurveyResultText
   },
   data() {
     return {
       chk: false,
       username: sessionStorage.getItem("username"),
       keywords: [],
-      myKeyword: "",
+      mbti: "",
+      main_keyword: "",
       random_keywords: [],
       openness_keywords: [
         "전통적인",
@@ -148,40 +152,122 @@ export default {
             this.survey.agreeableness,
             this.survey.neuroticism
           ];
-          let key_index = this.series[0].data.indexOf(
-            Math.max(...this.series[0].data)
+
+          let main_keywords = [
+            "창의적인",
+            "조심스러운",
+            "부지런한",
+            "충동적인",
+            "사교적인",
+            "조용한",
+            "신사적인",
+            "완고한",
+            "감정적인",
+            "평온한"
+          ];
+          var gap = [0, 0, 0, 0, 0];
+          var minus_gap = [0, 0, 0, 0, 0];
+          gap[0] = Math.abs(this.survey.openness - this.avg.openness);
+          gap[1] = Math.abs(
+            this.survey.conscientiousness - this.avg.conscientiousness
           );
+          gap[2] = Math.abs(this.survey.extraversion - this.avg.extraversion);
+          gap[3] = Math.abs(this.survey.agreeableness - this.avg.agreeableness);
+          gap[4] = Math.abs(this.survey.neuroticism - this.avg.neuroticism);
+
+          minus_gap[0] = this.survey.openness - this.avg.openness;
+          minus_gap[1] =
+            this.survey.conscientiousness - this.avg.conscientiousness;
+          minus_gap[2] = this.survey.extraversion - this.avg.extraversion;
+          minus_gap[3] = this.survey.agreeableness - this.avg.agreeableness;
+          minus_gap[4] = this.survey.neuroticism - this.avg.neuroticism;
+
+          let key_index = gap.indexOf(Math.max(...gap));
+          key_index *= 2;
+
           switch (key_index) {
             case 0:
-              this.myKeyword = "개방적인";
-              break;
-            case 1:
-              this.myKeyword = "부지런한";
+              if (minus_gap[0] < 0) {
+                key_index += 1;
+              }
               break;
             case 2:
-              this.myKeyword = "활동적인";
-              break;
-            case 3:
-              this.myKeyword = "신사적인";
+              if (minus_gap[1] < 0) {
+                key_index += 1;
+              }
               break;
             case 4:
-              this.myKeyword = "감정적인";
+              if (minus_gap[2] < 0) {
+                key_index += 1;
+              }
+              break;
+            case 6:
+              if (minus_gap[3] < 0) {
+                key_index += 1;
+              }
+              break;
+            case 8:
+              if (minus_gap[4] < 0) {
+                key_index += 1;
+              }
               break;
           }
+          this.main_keyword = main_keywords[key_index];
+          var min = 100;
+          var min_index = 0;
+          for(var i = 0; i < 5; i++){
+            if(min > gap[i] && minus_gap[i] >= 0){
+              min_index = i;
+              min = gap[i];
+            }
+          }
+          if (this.survey.extraversion < this.avg.extraversion) {
+            this.mbti += "I";
+            this.keywords.push(
+              this.extraversion_keywords[0],
+              this.extraversion_keywords[1],
+              this.extraversion_keywords[2]
+            );
+          } else if (this.survey.extraversion > this.avg.extraversion) {
+            this.mbti += "E";
+            this.keywords.push(
+              this.extraversion_keywords[3],
+              this.extraversion_keywords[4],
+              this.extraversion_keywords[5]
+            );
+          }
           if (this.survey.openness < this.avg.openness) {
+            this.mbti += "S";
             this.keywords.push(
               this.openness_keywords[0],
               this.openness_keywords[1],
               this.openness_keywords[2]
             );
           } else if (this.survey.openness > this.avg.openness) {
+            this.mbti += "N";
             this.keywords.push(
               this.openness_keywords[3],
               this.openness_keywords[4],
               this.openness_keywords[5]
             );
           }
+          if (this.survey.agreeableness < this.avg.agreeableness) {
+            this.mbti += "T";
+            this.keywords.push(
+              this.agreeableness_keywords[0],
+              this.agreeableness_keywords[1],
+              this.agreeableness_keywords[2]
+            );
+          } else if (this.survey.agreeableness > this.avg.agreeableness) {
+            this.mbti += "F";
+            this.keywords.push(
+              this.agreeableness_keywords[3],
+              this.agreeableness_keywords[4],
+              this.agreeableness_keywords[5]
+            );
+          }
           if (this.survey.conscientiousness < this.avg.conscientiousness) {
+            this.mbti += "P";
             this.keywords.push(
               this.conscientiousness_keywords[0],
               this.conscientiousness_keywords[1],
@@ -190,36 +276,11 @@ export default {
           } else if (
             this.survey.conscientiousness > this.avg.conscientiousness
           ) {
+            this.mbti += "J";
             this.keywords.push(
               this.conscientiousness_keywords[3],
               this.conscientiousness_keywords[4],
               this.conscientiousness_keywords[5]
-            );
-          }
-          if (this.survey.extraversion < this.avg.extraversion) {
-            this.keywords.push(
-              this.extraversion_keywords[0],
-              this.extraversion_keywords[1],
-              this.extraversion_keywords[2]
-            );
-          } else if (this.survey.extraversion > this.avg.extraversion) {
-            this.keywords.push(
-              this.extraversion_keywords[3],
-              this.extraversion_keywords[4],
-              this.extraversion_keywords[5]
-            );
-          }
-          if (this.survey.agreeableness < this.avg.agreeableness) {
-            this.keywords.push(
-              this.agreeableness_keywords[0],
-              this.agreeableness_keywords[1],
-              this.agreeableness_keywords[2]
-            );
-          } else if (this.survey.agreeableness > this.avg.agreeableness) {
-            this.keywords.push(
-              this.agreeableness_keywords[3],
-              this.agreeableness_keywords[4],
-              this.agreeableness_keywords[5]
             );
           }
           if (this.survey.neuroticism < this.avg.neuroticism) {
@@ -235,6 +296,7 @@ export default {
               this.neuroticism_keywords[5]
             );
           }
+          
           for (var i = 0; i < 3; i++) {
             var index = Math.floor(Math.random() * 15);
             if (!this.random_keywords.includes(this.keywords[index])) {
