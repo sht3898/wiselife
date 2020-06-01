@@ -212,14 +212,14 @@ public class MeetingServiceImpl implements IMeetingService {
 			// 로그인 안 한 사용자거나 사용자가 작성자라면
 			if (uid == meetingEntity.getUser().getUid()) {
 				meeting.setCheckUser(0); // 작성자
-			}
-
-			// 참가자인지 확인
-			try {
-				usermeetingrepo.findByUserAndMeeting(user, meetingEntity);
-				meeting.setCheckUser(2); // 참가자
-			} catch (Exception e) {
-				meeting.setCheckUser(1);
+			} else {
+				// 참가자인지 확인
+				try {
+					usermeetingrepo.findByUserAndMeeting(user, meetingEntity);
+					meeting.setCheckUser(2); // 참가자
+				} catch (Exception e) {
+					meeting.setCheckUser(1);
+				}
 			}
 
 			LikeMeeting likemeeting = null;
@@ -419,19 +419,20 @@ public class MeetingServiceImpl implements IMeetingService {
 		try {
 			UserMeeting userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
 			usermeetingrepo.delete(userMeeting);
+			meeting.setNowPerson(meeting.getNowPerson() - 1);
 			return 0; // 미팅참여취소
 		} catch (Exception e) {
 			if (meeting.getNowPerson() == meeting.getMaxPerson()) {
 				return -2; // 모집인원 초과
 			} else {
 				meeting.setNowPerson(meeting.getNowPerson() + 1);
-				meetingrepo.save(meeting);
 			}
 
 			UserMeeting userMeeting = new UserMeeting();
 			userMeeting.setIsActive(1);
 			userMeeting.setMeeting(meeting);
 			userMeeting.setUser(user);
+			meetingrepo.save(meeting);
 			usermeetingrepo.save(userMeeting);
 			return 1;
 		}
