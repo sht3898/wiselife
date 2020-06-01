@@ -26,7 +26,7 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 	private UserRepository userrepo;
 
 	@Override
-	public Map<String, List<ShortMeeting>> findGenderTopLank() {
+	public Map<String, List<ShortMeeting>> findGenderTopRank() {
 		List<Integer> topFiveMeeting = new ArrayList<>();
 		String title = "";
 		int meeting_id = 0;
@@ -36,12 +36,6 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 		for (int c = 1; c <= 2; c++) {
 			ArrayList<ShortMeeting> resultList = new ArrayList<>();
 			topFiveMeeting = likemeetingrepo.findByGender(c); // 남자
-			
-			if(topFiveMeeting.size() == 0) {
-				String gender = c == 1 ? "남" : "여";
-				resultMap.put(gender, null);
-				continue;
-			}
 
 			for (int i = 0; i < topFiveMeeting.size(); i++) {
 				meeting_id = topFiveMeeting.get(i);
@@ -61,7 +55,7 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 	}
 
 	@Override
-	public Map<String, List<ShortMeeting>> findAgesTopLank(long uid) {
+	public Map<String, List<ShortMeeting>> findAgesTopRank(long uid) {
 		List<Integer> topFiveMeeting = new ArrayList<>();
 		String title = "";
 		int meeting_id = 0;
@@ -71,11 +65,6 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 
 		ArrayList<ShortMeeting> resultList = new ArrayList<>();
 		topFiveMeeting = likemeetingrepo.findByAges(ages);
-		
-		if(topFiveMeeting.size() == 0) {
-			resultMap.put(ages+"", null);
-			return resultMap;
-		}
 
 		for (int i = 0; i < topFiveMeeting.size(); i++) {
 			meeting_id = topFiveMeeting.get(i);
@@ -90,7 +79,7 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 	}
 
 	@Override
-	public Map<String, List<ShortMeeting>> findAreaTopLank(long uid) {
+	public Map<String, List<ShortMeeting>> findAreaTopRank(long uid) {
 		List<Integer> topFiveMeeting = new ArrayList<>();
 		String title = "";
 		int meeting_id = 0;
@@ -102,11 +91,6 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 		
 		ArrayList<ShortMeeting> resultList = new ArrayList<>();
 		topFiveMeeting = likemeetingrepo.findByArea(firstArea, secondArea);
-		
-		if(topFiveMeeting.size() == 0) {
-			resultMap.put(firstArea+" "+secondArea, null);
-			return resultMap;
-		}
 		
 		for (int i = 0; i < topFiveMeeting.size(); i++) {
 			meeting_id = topFiveMeeting.get(i);

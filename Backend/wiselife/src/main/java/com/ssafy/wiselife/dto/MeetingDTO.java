@@ -1,6 +1,10 @@
 package com.ssafy.wiselife.dto;
 
 import java.util.Date;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +17,7 @@ public class MeetingDTO {
 		private String writer;
 		private String title;
 		private int isPeriod;
+		@DateTimeFormat(pattern = "yyyy-MM-dd")
 		private Date meetingDate;
 		private String periodDate;
 		private int isClass;
@@ -27,12 +32,14 @@ public class MeetingDTO {
 		private String area1;
 		private String area2;
 		private String phone;
+		private List<MultipartFile> files;
 	}
 	
 	@Getter @Setter
 	public static class UpdateMeeting {
 		private int isPeriod;
 		private String title;
+		@DateTimeFormat(pattern = "yyyy-MM-dd")
 		private Date meetingDate;
 		private String periodDate;
 		private int isClass;
@@ -47,6 +54,7 @@ public class MeetingDTO {
 		private String phone;
 		private String area1;
 		private String area2;
+		private List<MultipartFile> files;
 	}
 	
 	@Getter @Setter @ToString
@@ -66,7 +74,7 @@ public class MeetingDTO {
 		private String address;
 		private int fee;
 		private String unit;
-		private int isActive;
+		private int isActive; // 0-마감, 1-모집중, 2-진행중
 		private int likeCnt;
 		private int viewCnt;
 		private int mainCategory;
@@ -77,6 +85,7 @@ public class MeetingDTO {
 		private int checkUser; // 0-작성자, 1-일반사용자, 2-참가자
 		private String area1;
 		private String area2;
+		private List<String> meetingImages;
 	}
 	
 	@Getter @Setter @ToString

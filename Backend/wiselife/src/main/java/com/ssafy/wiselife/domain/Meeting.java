@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -24,12 +26,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @Table(name = "meeting")
 public class Meeting {
 	@Id
@@ -103,4 +103,10 @@ public class Meeting {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
 	private List<MeetingImages> meetingImagesList;
+	
+	@Override //JPA 연관관계 설정시 toString의 무한반복 호출을 막기위해 사용
+	 public String toString() {
+	     return ToStringBuilder
+	     .reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 }

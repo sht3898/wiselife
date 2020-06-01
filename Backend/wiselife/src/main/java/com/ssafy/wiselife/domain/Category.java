@@ -11,6 +11,8 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -18,12 +20,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @Table(name = "category")
 public class Category {
 	@Id
@@ -45,4 +45,9 @@ public class Category {
 	@JsonIgnore
 	private List<Meeting> meetingList = new ArrayList<>();
 	
+	@Override
+	 public String toString() {
+	     return ToStringBuilder
+	     .reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 }
