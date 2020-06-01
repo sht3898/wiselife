@@ -111,8 +111,12 @@ public class KakaoServiceImpl implements IKakaoService {
 			
 			long id = element.getAsJsonObject().get("id").getAsInt();
 			String nickname = properties.getAsJsonObject().get("nickname").getAsString();
-			String profile_image=properties.getAsJsonObject().get("profile_image").getAsString();
-
+			String profile_image="";
+			if(properties.getAsJsonObject().get("profile_image")==null) {
+				profile_image="https://www.google.com/imgres?imgurl=https%3A%2F%2Fpreviews.123rf.com%2Fimages%2Forla%2Forla1307%2Forla130700028%2F20569220-3d-%25EC%2582%25AC%25EB%259E%258C-%25EC%2582%25AC%25EB%259E%258C-%25EC%2582%25AC%25EB%259E%258C-%25ED%2599%2598%25EC%2598%2581-%25EC%25A0%259C%25EC%258A%25A4%25EC%25B2%2598.jpg&imgrefurl=https%3A%2F%2Fkr.123rf.com%2Fphoto_20569220_3d-%25EC%2582%25AC%25EB%259E%258C-%25EC%2582%25AC%25EB%259E%258C-%25EC%2582%25AC%25EB%259E%258C-%25ED%2599%2598%25EC%2598%2581-%25EC%25A0%259C%25EC%258A%25A4%25EC%25B2%2598.html&tbnid=b4FsTtWsEmHFAM&vet=12ahUKEwiKo_PQvtjpAhUO_JQKHTFIC1kQMygBegUIARCaAg..i&docid=-AuMnImQzb8xuM&w=1300&h=1135&q=%EC%82%AC%EB%9E%8C&hl=ko&ved=2ahUKEwiKo_PQvtjpAhUO_JQKHTFIC1kQMygBegUIARCaAg";
+			}else {
+				profile_image = properties.getAsJsonObject().get("profile_image").getAsString();
+			}
 			System.out.println("id : "+id);
 			System.out.println("nickname : "+nickname);
 			System.out.println("profile_image : "+profile_image);
