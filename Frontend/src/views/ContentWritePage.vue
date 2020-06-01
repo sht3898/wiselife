@@ -12,7 +12,7 @@
           ></v-overflow-btn>
         </v-col>
         <v-col>
-          <v-text-field placeholder="제목" outlined dense></v-text-field>
+          <v-text-field v-model="meeting.title" placeholder="제목" outlined dense></v-text-field>
         </v-col>
         <v-col class="my-0 py-0" cols="2">
           <v-overflow-btn
@@ -171,7 +171,11 @@
         </v-col>
       </v-row>
       <v-row style="heigth:300px">
-        <vue-editor v-model="meeting.content" :editorToolbar="customToolbar" style="width:100%; height:300px"></vue-editor>
+        <vue-editor
+          v-model="meeting.content"
+          :editorToolbar="customToolbar"
+          style="width:100%; height:300px"
+        ></vue-editor>
       </v-row>
 
       <v-row class="mt-12">
@@ -344,7 +348,10 @@ export default {
       search: null,
       y: 0,
       rules: [
-        value => !value || value.size > 100000000 || "이미지는 10 MB 이하로 등록해주세요!"
+        value =>
+          !value ||
+          value.size > 100000000 ||
+          "이미지는 10 MB 이하로 등록해주세요!"
       ],
       unitform: ["미정", "회비"],
       first_area: [
@@ -395,50 +402,62 @@ export default {
     }
   },
   methods: {
+    handleFilesUploads() {
+      this.files = this.$refs.files.$refs.input.files;
+    },
     validate() {
-      alert(this.category_key[this.meeting.main_category]);
-      alert(this.class_key[this.meeting.is_class]);
-      alert(this.period_key[this.meeting.is_period]);
-      alert(document.getElementById("sample6_address").value);
-
+      let config = {
+        headers: {
+          access_token: sessionStorage.getItem("token")
+        }
+      };
+      this.meeting.address = document.getElementById("sample6_address").value;
+      this.meeting.area1 = this.area1;
       for (var i = 0; i < this.hashtag.length; i++) {
         this.meeting.tags += "#" + this.hashtag[i].text + ",";
       }
+      //////////// 이미지 업로드 //////////////
+      let formData = new FormData();
+      console.log("보자!:   ", this.$refs.files.$refs.input.files);
+      console.log(this.files);
+
+      for (var j = 0; j < this.files.length; j++) {
+        let file = this.files[j];
+        formData.append("files", file);
+      }
+      formData.append("writer", sessionStorage.getItem("username"));
+      formData.append("title", this.meeting.title);
+      formData.append("isPeriod", this.period_key[this.meeting.is_period]);
+      formData.append("meetingDate", this.meeting.meeting_date);
+      formData.append("periodDate", this.meeting.period_date);
+      formData.append("isClass", this.class_key[this.meeting.is_class]);
+      formData.append("maxPerson", this.meeting.max_person);
+      formData.append("content", this.meeting.content);
+      formData.append("refUrl", this.meeting.ref_url);
+      formData.append("address", this.meeting.address);
+      formData.append("fee", this.meeting.fee);
+      formData.append("unit", this.meeting.unit);
+      formData.append(
+        "mainCategory",
+        this.category_key[this.meeting.main_category]
+      );
+      formData.append("tags", this.meeting.tags);
+      formData.append("review_content", this.content);
+      formData.append("area1", this.meeting.area1);
+      formData.append("area2", this.meeting.area2);
+      formData.append("phone", this.meeting.phone);
 
       http
-        .post(`meeting/create`, {
-          uid: "사용자",
-          meeting: this.meeting
-        })
+        .post("meeting/create", formData, config)
         .then(response => {
-          if (respons.data.state == 200) {
-            sessionStorage.setItem("token", this.token);
+          console.log(response);
+          if(response.status==200){
+            alert("성공적으로 등록되었습니다!");
+            alert(response.data.meeting_id);
+            this.$router.push("/contentdetail/"+response.data.meeting_id);
           }
-        });
-
-      /////////////// 이미지 업로드
-      // let formData = new FormData();
-
-      // for (var i = 0; i < this.files.length; i++) {
-      //   let file = this.files[i];
-      //   formData.append("files", file);
-      // }
-      // formData.append("budget_num", this.budgetInfo.budget_num);
-      // // alert("budget_num: " + this.budgetInfo.budget_num);
-      // formData.append("review_content", this.content);
-      // // alert("review_content: " + this.content);
-
-      // http
-      //   .post("/review", formData)
-      //   .then(response => {
-      //     // console.log("SUCCESS!!");
-      //     this.$router.push({name:'review'});
-      //     // console.log(response);
-      //     // this.result = response.;
-      //   })
-      //   .catch(ex => {
-      //     // console.log("FAILURE!!");
-      //   });
+        })
+        .catch(ex => {});
     },
     edit(index, item) {
       if (!this.editing) {
@@ -464,22 +483,22 @@ export default {
           .indexOf(query.toString().toLowerCase()) > -1
       );
     },
-    handleFilesUploads() {
-      this.files = this.$refs.files.files;
-    },
+
     getSecondArea() {
-      this.meeting.area1 = this.area1;
-      if (this.meeting.area1.charAt(this.meeting.area1.length - 1) == "시") {
+      this.second_area = [];
+      if (this.area1.charAt(this.area1.length - 1) == "시") {
         this.second_area.push("전체");
       }
-      // http
-      //   .get(`api/area/${this.first_area}`)
-      //   .then(response => {
-      //     this.second_area.push(response.data.second_area);
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
+      http
+        .get(`area/${this.area1}`)
+        .then(response => {
+          for (var i = 0; i < response.data.length; i++) {
+            this.second_area.push(response.data[i]);
+          }
+        })
+        .catch(err => {
+          alert(err);
+        });
     },
 
     sample6_execDaumPostcode() {
@@ -503,7 +522,7 @@ export default {
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap");
 .submitbtn {
-  font-size:13pt;
+  font-size: 13pt;
   font-family: "Nanum Pen Script", cursive;
 }
 </style>
