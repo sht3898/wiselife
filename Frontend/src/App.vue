@@ -1,10 +1,8 @@
 <template>
   <v-app id="app">
     <toolbar v-if="isLogin"/>
-    <v-divider></v-divider>
     <router-view class="mt-12 pt-12" />
-    <go-top v-if="isLogin"/>
-    <v-divider></v-divider>
+    <go-top v-if="isLogin"/>    
     <Footer v-if="isLogin"/>
   </v-app>
 </template>
@@ -25,7 +23,7 @@ export default {
       isLogin: "",
     };
   },
-  mounted(){
+  created(){
     this.isLogin = sessionStorage.getItem("token");
     if(!this.isLogin){
       this.$router.push('/login');

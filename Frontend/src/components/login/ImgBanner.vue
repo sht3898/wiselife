@@ -8,8 +8,8 @@
       :cycle="true"
       interval="3000"
     >
-      <v-carousel-item v-for="k in 2" :key="k">
-        <v-img :src="imgSrc[k-1]" height="600px" :aspect-ratio="0.8"></v-img>
+      <v-carousel-item v-for="k in 4" :key="k">
+        <v-img :src="imgSrc[k-1]" :aspect-ratio="6"></v-img>
       </v-carousel-item>
     </v-carousel>
   </div>

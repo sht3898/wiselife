@@ -5,7 +5,7 @@
         <p class="menu">
           참여한 강좌/모임
           <span class="blinking" style="float:right">
-            <v-btn rounded class="reviewbtn green lighten-1" @click="insertReview">리뷰 작성 ✒️</v-btn>
+            <v-btn rounded class="reviewbtn orange lighten-1" @click="insertReview">리뷰 작성 ✒️</v-btn>
           </span>
         </p>
         <attend-meeting-list style="width=80%"/>
