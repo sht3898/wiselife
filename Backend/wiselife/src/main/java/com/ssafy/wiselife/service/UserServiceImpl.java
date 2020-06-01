@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.wiselife.domain.Category;
 import com.ssafy.wiselife.domain.InterestCategory;
+import com.ssafy.wiselife.domain.Meeting;
 import com.ssafy.wiselife.domain.Survey;
 import com.ssafy.wiselife.domain.User;
+import com.ssafy.wiselife.domain.UserMeeting;
 import com.ssafy.wiselife.dto.AreaDTO;
 import com.ssafy.wiselife.dto.SurveyDTO;
 import com.ssafy.wiselife.dto.UserDTO;
@@ -21,6 +23,7 @@ import com.ssafy.wiselife.mapper.EntityMapper;
 import com.ssafy.wiselife.repository.AreaRepository;
 import com.ssafy.wiselife.repository.CategoryRepository;
 import com.ssafy.wiselife.repository.InterestCategoryRepository;
+import com.ssafy.wiselife.repository.MeetingRepository;
 import com.ssafy.wiselife.repository.SurveyRepository;
 import com.ssafy.wiselife.repository.UserRepository;
 
@@ -41,6 +44,9 @@ public class UserServiceImpl implements IUserService {
 
 	@Autowired
 	private InterestCategoryRepository interestcategoryrepo;
+	
+	@Autowired
+	private MeetingRepository meetingrepo;
 
 	@Autowired
 	private ModelMapper modelMapper; // DTO를 Entity타입으로 mapping할때 사용
@@ -174,7 +180,12 @@ public class UserServiceImpl implements IUserService {
 	public void deleteUserInfo(long uid) {
 		// TODO Auto-generated method stub
 		User user = userrepo.findByUid(uid);
-
+		List<UserMeeting> userMeetingList = user.getUserMeetingList();
+		for (int i = 0; i < userMeetingList.size(); i++) {
+			Meeting meeting = userMeetingList.get(i).getMeeting();
+			meeting.setNowPerson(meeting.getNowPerson() - 1);
+			meetingrepo.save(meeting);
+		}
 		userrepo.delete(user);
 	}
 

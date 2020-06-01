@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -15,12 +17,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @Table(name = "user")
 public class User {
 	@Id
@@ -66,4 +66,10 @@ public class User {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
 	private List<LikeMeeting> likeMeetingList = new ArrayList<>();
+
+	@Override
+	 public String toString() {
+	     return ToStringBuilder
+	     .reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 }

@@ -3,15 +3,13 @@ package com.ssafy.wiselife.service;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
 import com.ssafy.wiselife.dto.UserDTO.MeetingOfJoinAttendant;
 
 public interface IMeetingService {
-	int createMeeting(long uid, CreateMeeting meeting, MultipartHttpServletRequest files);
+	int createMeeting(long uid, CreateMeeting meeting);
 	
 	int updateMeeting(int meeting_id, long uid, UpdateMeeting meeting);
 	

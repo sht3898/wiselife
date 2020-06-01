@@ -1,5 +1,6 @@
 package com.ssafy.wiselife.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,20 +13,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.ssafy.wiselife.dto.UserDTO.MeetingOfJoinAttendant;
 import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
+import com.ssafy.wiselife.dto.UserDTO.MeetingOfJoinAttendant;
 import com.ssafy.wiselife.service.IKakaoService;
 import com.ssafy.wiselife.service.IMeetingService;
 
@@ -44,14 +44,15 @@ public class MeetingController {
 	private IKakaoService kakaoservice;
 
 	@PostMapping("/meeting/create")
-	@ApiOperation(value = "모임/강좌 개설하기", consumes = "multipart/form-data", produces="application/text;charset=utf-8")//bigfat.tistory.com/103 [Bigfat])//HttpServletRequest req,
-	public ResponseEntity<Map<Object, String>> createMeeting(HttpServletRequest req,
-			@RequestBody CreateMeeting meeting, MultipartHttpServletRequest files) {
+	@ApiOperation(value = "모임/강좌 개설하기", consumes = "multipart/form-data", produces="application/text;charset=utf-8")
+	public ResponseEntity<Map<Object, Object>> createMeeting(HttpServletRequest req, @ModelAttribute CreateMeeting meeting) {
 		System.out.println("-----모임/강좌 개설-----");
-		System.out.println("개설 Meeting Data : " + meeting.toString());
-		Map<Object, String> resultMap = new HashMap<>();
+		System.out.println(meeting.toString());
+		System.out.println("오늘날짜는 : "+new Date());
+		
+		Map<Object, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-
+		
 		String access_token = null;
 		HashMap<String, Object> userInfo = null;
 		long uid = 0;
@@ -65,13 +66,12 @@ public class MeetingController {
 			resultMap.put(status, "로그인을 먼저 진행해주세요");
 			return new ResponseEntity<>(resultMap, status);
 		}
-
-		int result = meetingservice.createMeeting(uid, meeting, files);
+		int result = meetingservice.createMeeting(uid, meeting);
 
 		// meeting_id 값을 return
 		if (result > 0) {
 			status = HttpStatus.OK;
-			resultMap.put(result, "SUCCESS");
+			resultMap.put("meeting_id", result);
 		} else if (result == -1) {
 			status = HttpStatus.BAD_REQUEST;
 			resultMap.put(status, "FAIL");
@@ -84,11 +84,11 @@ public class MeetingController {
 	}
 
 	@PutMapping("/meeting/update")
-	@ApiOperation(value = "모임/강좌 수정하기")//, MultipartHttpServletRequest files
-	public ResponseEntity<Map<Object, String>> updateMeeting(@RequestParam String meeting_id, HttpServletRequest req,
-			@RequestBody UpdateMeeting meeting) {
+	@ApiOperation(value = "모임/강좌 수정하기")
+	public ResponseEntity<Map<Object, Object>> updateMeeting(@RequestParam String meeting_id, HttpServletRequest req,
+			@ModelAttribute UpdateMeeting meeting) {
 		System.out.println("-----모임/강좌 수정-----");
-		Map<Object, String> resultMap = new HashMap<>();
+		Map<Object, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 
 		String access_token = null;
@@ -109,7 +109,7 @@ public class MeetingController {
 
 		if (result > 0) {
 			status = HttpStatus.OK;
-			resultMap.put(result, "SUCCESS");
+			resultMap.put("meeting_id", result);
 		} else if (result == -1) {
 			status = HttpStatus.BAD_REQUEST;
 			resultMap.put(status, "FAIL");
@@ -264,7 +264,7 @@ public class MeetingController {
 		Map<String, List<DetailMeeting>> result = meetingservice.userOfJoinMeetingList(uid);
 
 		status = HttpStatus.OK;
-		if (result == null) {
+		if (result.isEmpty()) {
 			resultMap.put(status, "NO DATA");
 			return new ResponseEntity<>(resultMap, status);
 		} else {
@@ -294,7 +294,7 @@ public class MeetingController {
 
 		List<MeetingOfJoinAttendant> resultList = meetingservice.getMeetingOfAttendantList(Integer.parseInt(meeting_id));
 
-		if (resultList == null) {
+		if (resultList.isEmpty()) {
 			status = HttpStatus.BAD_REQUEST;
 			resultMap.put(status, "FAIL");
 			return new ResponseEntity<>(resultMap, status);
@@ -323,7 +323,6 @@ public class MeetingController {
 			resultMap.put(status, "로그인을 먼저 진행해주세요");
 			return new ResponseEntity<>(resultMap, status);
 		}
-		
 		int result = meetingservice.joinMeeting(uid, meeting_id);
 		
 		if(result == 1) {

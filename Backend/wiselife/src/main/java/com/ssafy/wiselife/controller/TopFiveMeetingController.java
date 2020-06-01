@@ -52,13 +52,13 @@ public class TopFiveMeetingController {
 			return new ResponseEntity<>(resultError, status);
 		}
 		
-		resultTopMeetingList = topfivemeetingservice.findGenderTopLank();
+		resultTopMeetingList = topfivemeetingservice.findGenderTopRank();
 		resultMap.put("성별", resultTopMeetingList);
 		
-		resultTopMeetingList = topfivemeetingservice.findAgesTopLank(uid);
+		resultTopMeetingList = topfivemeetingservice.findAgesTopRank(uid);
 		resultMap.put("연령", resultTopMeetingList);
 		
-		resultTopMeetingList = topfivemeetingservice.findAreaTopLank(uid);
+		resultTopMeetingList = topfivemeetingservice.findAreaTopRank(uid);
 		resultMap.put("지역", resultTopMeetingList);
 		return new ResponseEntity<>(resultMap, HttpStatus.OK);
 	}
