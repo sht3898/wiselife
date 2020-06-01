@@ -1,5 +1,6 @@
 from pathlib import Path
 import pandas as pd
+import numpy as np
 from django.core.management.base import BaseCommand
 from wiselife import settings
 from api import models
@@ -29,12 +30,15 @@ class Command(BaseCommand):
 # load meetings dataframe
 # meetings
         print("[*] Initializing meetings...")
-        print(meetings.head())
+        # print(meetings.head())
         models.Meeting.objects.all().delete()
+        print('[*] Delete ...................................')
+        print(meetings.dtypes)
+        meetings.meeting_id = meetings.meeting_id.astype('int')
         meetings_bulk = [
             models.Meeting(
                 meeting_id = meetings.meeting_id,
-                uid = meetings.uid,
+                uid = models.User.objects.get(uid=1),
                 writer = meetings.writer,
                 created_at = meetings.created_at,
                 updated_at = meetings.updated_at,
@@ -43,23 +47,25 @@ class Command(BaseCommand):
                 period_date = meetings.period_date,
                 is_class = meetings.is_class,
                 max_person = meetings.max_person,
-                now_person = meetings.now_person,
+                now_person = 0,
                 content = meetings.content,
                 ref_url = meetings.ref_url,
                 address = meetings.address,
                 fee = meetings.fee,
                 unit = meetings.unit,
                 is_active = meetings.is_active,
-                like_cnt = meetings.like_cnt,
-                view_cnt = meetings.view_cnt,
-                score = meetings.score,
-                main_category = meetings.main_category,
+                like_cnt = 0,
+                view_cnt = 0,
+                score = 0,
+                main_category = models.Category.objects.get(category_id=1),
                 tags = meetings.tags,
+                title = meetings.title,
                 area1 = "기타",
                 area2 = "기타"
             )
             for meeting in meetings.itertuples()
         ]
+        print('[*] Bulk ...................................')
         models.Meeting.objects.bulk_create(meetings_bulk)
 
         print("[+] Done")
