@@ -165,7 +165,7 @@ export default {
               this.myKeyword = "신사적인";
               break;
             case 4:
-              this.myKeyword = "날카로운";
+              this.myKeyword = "감정적인";
               break;
           }
           if (this.survey.openness < this.avg.openness) {
