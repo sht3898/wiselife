@@ -31,10 +31,18 @@
           >진행중</v-chip>
           <v-chip v-else :color="`red lighten-4`" class="black--text mr-3" label>마감</v-chip>
           <v-chip
-            v-if="meeting.checkUser==1"
+            v-if="meeting.checkUser==1 && meeting.nowPerson != meeting.maxPerson"
             color="primary"
             class="black--text"
             label
+            @click="attendMeeting()"
+          >신청하기</v-chip>
+          <v-chip
+            v-if="meeting.checkUser==1 && meeting.nowPerson == meeting.maxPerson"
+            color="primary"
+            class="black--text"
+            label
+            disabled
             @click="attendMeeting()"
           >신청하기</v-chip>
           <v-chip
@@ -52,7 +60,7 @@
           <v-card outlined class="ma-auto">
             <v-list-item>
               <v-list-item-content>
-                <v-list-item-title class="headline">{{ meeting.title }}</v-list-item-title>
+                <v-list-item-title class="contentstitle">{{ meeting.title }}</v-list-item-title>
               </v-list-item-content>
               <v-btn icon @click="btnLike()">
                 <v-icon v-if="meeting.isLike == 0">mdi-heart-outline</v-icon>
@@ -62,7 +70,21 @@
               <span class="mdi mdi-eye-outline ml-4" style="color:#e9c04c"></span>
               <span class="grey--text ml-2">{{ meeting.viewCnt }}</span>
             </v-list-item>
-
+            <!-- 
+<v-carousel
+    cycle
+    height="400"
+    hide-delimiter-background
+    show-arrows-on-hover
+  >
+    <v-carousel-item
+      v-for="(image, i) in meeting.meetingImages"
+      :key="i"
+    >
+    <v-img :src="meeting.meetingImages[i-1]" ></v-img>
+     
+    </v-carousel-item>
+            </v-carousel>-->
             <v-img src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg" height="194"></v-img>
             <v-card-text class="text--primary">
               <v-row class="ml-2">
@@ -86,7 +108,7 @@
                       <span class="mdi mdi-dark mdi-clock mr-1" style="font-size:15pt;" />
                       날짜/주기
                     </v-chip>
-                    <span v-if="meeting.isPeriod == 1" style="font-size:15pt;">
+                    <span v-if="meeting.isPeriod == 1">
                       <span style="color:grey;">(정기)</span>
                       <span class="ml-2" style="font-weight:bold;">{{ meeting.periodDate }}</span>
                     </span>
@@ -136,7 +158,7 @@
                           small
                           pill
                           v-on="on"
-                        >목록 보기</v-chip>
+                        >참여자 보기</v-chip>
                       </template>
                       <v-card width="300">
                         <v-list>
@@ -244,7 +266,8 @@ export default {
         "기타"
       ],
       meeting: {},
-      attendants: []
+      attendants: [],
+      images: [{ src: "" }]
     };
   },
   mounted() {
@@ -261,8 +284,16 @@ export default {
       http
         .post(`meeting/attend`, params, config)
         .then(response => {
+          if (response.data.OK == "참가 신청 완료") {
+            this.meeting.checkUser = 2;
+            this.getAttendant();
+            this.meeting.nowPerson++;
+          } else {
+            this.meeting.checkUser = 1;
+            this.getAttendant();
+            this.meeting.nowPerson--;
+          }
           console.log(response);
-          this.init();
         })
         .catch(error => {
           alert(error);
@@ -277,7 +308,14 @@ export default {
       http
         .post(`meeting/like`, params, config)
         .then(response => {
-          this.init();
+          if (response.data.OK == "좋아요 취소") {
+            this.meeting.isLike = 0;
+            this.meeting.likeCnt--;
+          } else {
+            this.meeting.isLike = 1;
+            this.meeting.likeCnt++;
+          }
+          console.log(response);
         })
         .catch(error => {
           alert(error);
@@ -289,6 +327,7 @@ export default {
           access_token: sessionStorage.getItem("token")
         }
       };
+      this.attendants = [];
       http
         .get(`meeting/${this.seq}/attendant`, config)
         .then(response => {
@@ -316,7 +355,7 @@ export default {
         "년 " +
         afterParsing.substring(5, 7) +
         "월 " +
-        (Number(afterParsing.substring(8, 11)) + 1) +
+        afterParsing.substring(8, 10) +
         "일";
       return realdate;
     },
@@ -349,6 +388,7 @@ export default {
       http
         .get(`meeting/${this.$route.params.seq}`, config)
         .then(response => {
+          console.log(response.data);
           let this_component = this;
           this.meeting = response.data;
           this.chk = true;
