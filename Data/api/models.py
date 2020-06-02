@@ -1,148 +1,138 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import UserManager
+from .managers import CustomUserManager
+from django.utils import timezone
+
+now = timezone.localtime()
 
 
-class Area(models.Model):
-    area_id = models.AutoField(primary_key=True)
-    first_area = models.CharField(max_length=255, blank=True, null=True)
-    second_area = models.CharField(max_length=255, blank=True, null=True)
+# Create your models here.
+class User(AbstractBaseUser):
+    uid = models.AutoField(primary_key=True)
+    username = models.TextField(unique=True)
+    profile_image = models.TextField(null=True)
+    is_inst = models.IntegerField(default=0)
+    gender = models.IntegerField(null=True)
+    year = models.IntegerField(null=True)
+    ages = models.IntegerField(null=True)
+    area1 = models.TextField(null=True)
+    area2 = models.TextField(null=True)
 
-    class Meta:
-        managed = False
-        db_table = 'area'
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+
+    objects = CustomUserManager()
+    
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = []
+
+    def __str__(self):
+        return self.username or ''
+
+    def has_perm(self, perm, obj=None):
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        return self.is_superuser
+
 
 
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
-    category_description = models.TextField(blank=True, null=True)
-    category_name = models.CharField(max_length=255, blank=True, null=True)
+    category_name = models.TextField()
+    category_description = models.TextField()
 
-    class Meta:
-        managed = False
-        db_table = 'category'
-
+    def __str__(self):
+            return self.category_name or ''
 
 class InterestCategory(models.Model):
-    category = models.OneToOneField(Category, models.DO_NOTHING, primary_key=True)
-    uid = models.ForeignKey('User', models.DO_NOTHING, db_column='uid')
-
-    class Meta:
-        managed = False
-        db_table = 'interest_category'
-        unique_together = (('category', 'uid'),)
-
-
-class LikeMeeting(models.Model):
-    meeting = models.OneToOneField('Meeting', models.DO_NOTHING, primary_key=True)
-    uid = models.ForeignKey('User', models.DO_NOTHING, db_column='uid')
-
-    class Meta:
-        managed = False
-        db_table = 'like_meeting'
-        unique_together = (('meeting', 'uid'),)
-
+    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='interestCategory')
+    uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interestCategory')
 
 class Meeting(models.Model):
     meeting_id = models.AutoField(primary_key=True)
-    address = models.CharField(max_length=255, blank=True, null=True)
-    area1 = models.CharField(max_length=255, blank=True, null=True)
-    area2 = models.CharField(max_length=255, blank=True, null=True)
-    content = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    fee = models.IntegerField()
-    is_active = models.IntegerField()
-    is_class = models.IntegerField()
+    uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='meeting')
+    writer = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     is_period = models.IntegerField()
-    like_cnt = models.IntegerField()
+    meeting_date = models.DateTimeField()
+    period_date = models.TextField()
+    is_class = models.IntegerField()
     max_person = models.IntegerField()
-    meeting_date = models.DateTimeField(blank=True, null=True)
     now_person = models.IntegerField()
-    period_date = models.CharField(max_length=255, blank=True, null=True)
-    phone = models.CharField(max_length=255, blank=True, null=True)
-    ref_url = models.CharField(max_length=255, blank=True, null=True)
-    score = models.FloatField()
-    tags = models.CharField(max_length=255, blank=True, null=True)
-    title = models.CharField(max_length=255, blank=True, null=True)
-    unit = models.CharField(max_length=255, blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
+    content = models.TextField()
+    ref_url = models.TextField()
+    address = models.TextField()
+    fee = models.IntegerField()
+    unit = models.TextField()
+    is_active = models.IntegerField()
+    like_cnt = models.IntegerField()
     view_cnt = models.IntegerField()
-    writer = models.CharField(max_length=255, blank=True, null=True)
-    main_category = models.ForeignKey(Category, models.DO_NOTHING, db_column='main_category', blank=True, null=True)
-    uid = models.ForeignKey('User', models.DO_NOTHING, db_column='uid', blank=True, null=True)
+    score = models.FloatField()
+    main_category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='meeting')
+    tags = models.TextField()
+    title = models.TextField()
+    area1 = models.TextField()
+    area2 = models.TextField()
 
-    class Meta:
-        managed = False
-        db_table = 'meeting'
-
+    def __str__(self):
+            return self.title or ''
 
 class MeetingImages(models.Model):
-    meeting_images_id = models.AutoField(primary_key=True)
-    image_url = models.CharField(max_length=255, blank=True, null=True)
-    meeting = models.ForeignKey(Meeting, models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'meeting_images'
-
+    meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='meetingImages')
+    image_url = models.TextField()
 
 class Review(models.Model):
     review_id = models.AutoField(primary_key=True)
-    content = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    image_url = models.CharField(max_length=255, blank=True, null=True)
-    score = models.FloatField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
-    writer = models.CharField(max_length=255, blank=True, null=True)
-    meeting = models.ForeignKey(Meeting, models.DO_NOTHING, blank=True, null=True)
-    uid = models.ForeignKey('User', models.DO_NOTHING, db_column='uid', blank=True, null=True)
+    uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='review')
+    meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='review')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    score = models.IntegerField()
+    image_url = models.TextField()
 
-    class Meta:
-        managed = False
-        db_table = 'review'
+    def __str__(self):
+            return self.score or ''
 
+class Chatting(models.Model):
+    chatting_id = models.AutoField(primary_key=True)
+    uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chatting')
+    meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='chatting')
+    writer = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    content = models.TextField()
+
+    def __str__(self):
+            return self.chatting or ''
+
+class UserMeeting(models.Model):
+    uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='userMeeting')
+    meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='userMeeting')
+    is_active = models.IntegerField()
 
 class Survey(models.Model):
     survey_id = models.AutoField(primary_key=True)
-    agreeableness = models.IntegerField()
+    uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='survey')
+    openness = models.IntegerField()
     conscientiousness = models.IntegerField()
     extraversion = models.IntegerField()
+    agreeableness = models.IntegerField()
     neuroticism = models.IntegerField()
-    openness = models.IntegerField()
-    uid = models.ForeignKey('User', models.DO_NOTHING, db_column='uid', blank=True, null=True)
 
-    class Meta:
-        managed = False
-        db_table = 'survey'
+    def __str__(self):
+            return self.survey_id or ''
 
+class Area(models.Model):
+    area_id = models.AutoField(primary_key=True)
+    first_area = models.TextField()
+    second_area = models.TextField(null=True)
 
-class User(models.Model):
-    uid = models.BigIntegerField(primary_key=True)
-    ages = models.IntegerField()
-    area1 = models.CharField(max_length=255, blank=True, null=True)
-    area2 = models.CharField(max_length=255, blank=True, null=True)
-    gender = models.IntegerField()
-    is_inst = models.IntegerField()
-    profile_image = models.CharField(max_length=255, blank=True, null=True)
-    username = models.CharField(max_length=255, blank=True, null=True)
-    year = models.IntegerField()
+    def __str__(self):
+            return self.first_area or ''
 
-    class Meta:
-        managed = False
-        db_table = 'user'
-
-
-class UserMeeting(models.Model):
-    meeting = models.OneToOneField(Meeting, models.DO_NOTHING, primary_key=True)
-    uid = models.ForeignKey(User, models.DO_NOTHING, db_column='uid')
-    is_active = models.IntegerField()
-
-    class Meta:
-        managed = False
-        db_table = 'user_meeting'
-        unique_together = (('meeting', 'uid'),)
+class LikeMeeting(models.Model):
+    uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likeMeeting')
+    meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='likeMeeting')

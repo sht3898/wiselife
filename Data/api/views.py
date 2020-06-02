@@ -11,4 +11,5 @@ from . import models
 # Create your views here.
 @api_view(["GET"])
 def Recommend(request, pk):
-    pass
+    rec_meetings = models.Meeting.objects.get(meeting_id=pk)
+    

@@ -32,34 +32,31 @@ class Command(BaseCommand):
         print("[*] Initializing meetings...")
         # print(meetings.head())
         models.Meeting.objects.all().delete()
-        print('[*] Delete ...................................')
-        print(meetings.dtypes)
-        meetings.meeting_id = meetings.meeting_id.astype('int')
         meetings_bulk = [
             models.Meeting(
-                meeting_id = meetings.meeting_id,
+                meeting_id = meeting.meeting_id,
                 uid = models.User.objects.get(uid=1),
-                writer = meetings.writer,
-                created_at = meetings.created_at,
-                updated_at = meetings.updated_at,
-                is_period = meetings.is_period,
-                meeting_date = meetings.meeting_date,
-                period_date = meetings.period_date,
-                is_class = meetings.is_class,
-                max_person = meetings.max_person,
+                writer = meeting.writer,
+                created_at = meeting.created_at,
+                updated_at = meeting.updated_at,
+                is_period = meeting.is_period,
+                meeting_date = meeting.meeting_date,
+                period_date = meeting.period_date,
+                is_class = meeting.is_class,
+                max_person = meeting.max_person,
                 now_person = 0,
-                content = meetings.content,
-                ref_url = meetings.ref_url,
-                address = meetings.address,
-                fee = meetings.fee,
-                unit = meetings.unit,
-                is_active = meetings.is_active,
+                content = meeting.content,
+                ref_url = meeting.ref_url,
+                address = meeting.address,
+                fee = meeting.fee,
+                unit = meeting.unit,
+                is_active = meeting.is_active,
                 like_cnt = 0,
                 view_cnt = 0,
                 score = 0,
                 main_category = models.Category.objects.get(category_id=1),
-                tags = meetings.tags,
-                title = meetings.title,
+                tags = meeting.tags,
+                title = meeting.title,
                 area1 = "기타",
                 area2 = "기타"
             )
@@ -70,20 +67,20 @@ class Command(BaseCommand):
 
         print("[+] Done")
 
-# load images dataframe
-# images
-        print("[*] Initializing meeting images...")
-        models.MeetingImages.objects.all().delete()
-        images_bulk = [
-            models.MeetingImages(
-                meeting_id = images.meeting_id,
-                images_url = images.image_url
-            )
-            for meeting in images.itertuples()
-        ]
-        models.MeetingImages.objects.bulk_create(images_bulk)
+# # load images dataframe
+# # images
+#         print("[*] Initializing meeting images...")
+#         models.MeetingImages.objects.all().delete()
+#         images_bulk = [
+#             models.MeetingImages(
+#                 meeting_id = images.meeting_id,
+#                 images_url = images.image_url
+#             )
+#             for meeting in images.itertuples()
+#         ]
+#         models.MeetingImages.objects.bulk_create(images_bulk)
 
-        print("[+] Done")
+#         print("[+] Done")
 
 
     def handle(self, *args, **kwargs):
