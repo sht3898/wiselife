@@ -73,7 +73,7 @@
 
             <v-carousel cycle height="400" hide-delimiter-background show-arrows-on-hover>
               <v-carousel-item v-for="(image, i) in meeting.meetingImages" :key="i">
-                <v-img :src="`http://13.125.114.122`+ meeting.meetingImages[i-1]"></v-img>
+                <v-img :src="`http://k02b1051.p.ssafy.io`+ meeting.meetingImages[i]"></v-img>
               </v-carousel-item>
             </v-carousel>
             <v-card-text class="text--primary">

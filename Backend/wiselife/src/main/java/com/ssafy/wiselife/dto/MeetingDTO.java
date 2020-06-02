@@ -58,6 +58,36 @@ public class MeetingDTO {
 	}
 	
 	@Getter @Setter @ToString
+	public static class DetailMeetingRequest {
+		private String writer;
+		private String title;
+		private Date updatedAt;
+		private Date createdAt;
+		private int isPeriod;
+		private Date meetingDate;
+		private String periodDate;
+		private int isClass;
+		private int maxPerson;
+		private int nowPerson;
+		private String content;
+		private String refUrl;
+		private String address;
+		private int fee;
+		private String unit;
+		private int isActive; // 0-마감, 1-모집중, 2-진행중
+		private int likeCnt;
+		private int viewCnt;
+		private int mainCategory;
+		private String tags;
+		private double score;
+		private String phone;
+		private int isLike;
+		private int checkUser; // 0-작성자, 1-일반사용자, 2-참가자
+		private String area1;
+		private String area2;
+	}
+	
+	@Getter @Setter @ToString
 	public static class DetailMeeting {
 		private String writer;
 		private String title;
