@@ -135,8 +135,12 @@ export default {
   },
   methods: {
     search() {
+      let config = {
+        headers: { access_token: sessionStorage.getItem("token") }
+      };
+
       http
-        .get(`search/${this.$route.params.category}`, { keyword: this.$route.params.keyword })
+        .get(`search/${this.$route.params.category}?keyword=`+this.$route.params.keyword , config)
         .then(response => {
           console.log(response)
           this.contentslist=response.data;

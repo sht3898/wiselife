@@ -60,16 +60,16 @@ public class SearchController {
 		
 		if(keyword == null || keyword == "") {
 			meetingList = searchservice.searchByCategory(category_id);
-			if(meetingList.isEmpty()) {
+			if(meetingList==null) {
 				resultMap.put(HttpStatus.OK, "NO DATA");
 				return resultMap;
 			}
-			
+			 
 			return meetingList;
 		}
 		
 		meetingList = searchservice.searchByKeyword(category_id, keyword);
-		if(meetingList.isEmpty()) {
+		if(meetingList==null) {
 			resultMap.put(HttpStatus.OK, "일치하는 내용 없음");
 			return resultMap;
 		}

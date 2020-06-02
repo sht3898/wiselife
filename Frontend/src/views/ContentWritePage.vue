@@ -414,6 +414,9 @@ export default {
       this.meeting.address = document.getElementById("sample6_address").value;
       this.meeting.area1 = this.area1;
       for (var i = 0; i < this.hashtag.length; i++) {
+        if(i==5){
+          break;
+        }
         this.meeting.tags += "#" + this.hashtag[i].text + ",";
       }
       //////////// 이미지 업로드 //////////////
