@@ -117,7 +117,7 @@ export default {
       return require("../assets/categories/" + img);
     },
     searchByCategory(category) {
-      var keyword=" "
+      var keyword=""
       this.$router.push("/result/"+category+"/"+keyword);
       
     },
