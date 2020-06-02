@@ -167,7 +167,7 @@ public class ReviewServiceImpl implements IReviewService {
 	// 리뷰 이미지 저장 함수
 	public static String reviewImgConversion(MultipartFile files) throws IOException {
 		System.out.println("-----Save Review Images-----");
-		String path = "C:/Users/multicampus/Desktop/test/review/";
+		String path = "/home/ubuntu/images/review/";
 		String fileName = files.getOriginalFilename();
 		byte[] imageData = files.getBytes();
 		String fileUrl = "";

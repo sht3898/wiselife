@@ -70,22 +70,12 @@
               <span class="mdi mdi-eye-outline ml-4" style="color:#e9c04c"></span>
               <span class="grey--text ml-2">{{ meeting.viewCnt }}</span>
             </v-list-item>
-            <!-- 
-<v-carousel
-    cycle
-    height="400"
-    hide-delimiter-background
-    show-arrows-on-hover
-  >
-    <v-carousel-item
-      v-for="(image, i) in meeting.meetingImages"
-      :key="i"
-    >
-    <v-img :src="meeting.meetingImages[i-1]" ></v-img>
-     
-    </v-carousel-item>
-            </v-carousel>-->
-            <v-img src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg" height="194"></v-img>
+
+            <v-carousel cycle height="400" hide-delimiter-background show-arrows-on-hover>
+              <v-carousel-item v-for="(image, i) in meeting.meetingImages" :key="i">
+                <v-img :src="`http://13.125.114.122`+ meeting.meetingImages[i-1]"></v-img>
+              </v-carousel-item>
+            </v-carousel>
             <v-card-text class="text--primary">
               <v-row class="ml-2">
                 <v-chip
@@ -266,8 +256,7 @@ export default {
         "기타"
       ],
       meeting: {},
-      attendants: [],
-      images: [{ src: "" }]
+      attendants: []
     };
   },
   mounted() {
