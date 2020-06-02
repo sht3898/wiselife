@@ -6,9 +6,9 @@ import java.util.Map;
 import com.ssafy.wiselife.dto.MeetingDTO.ShortMeeting;
 
 public interface ITopFiveMeetingService {
-	Map<String, List<ShortMeeting>> findGenderTopLank();
+	Map<String, List<ShortMeeting>> findGenderTopRank();
 	
-	Map<String, List<ShortMeeting>> findAgesTopLank(long uid);
+	Map<String, List<ShortMeeting>> findAgesTopRank(long uid);
 	
-	Map<String, List<ShortMeeting>> findAreaTopLank(long uid);
+	Map<String, List<ShortMeeting>> findAreaTopRank(long uid);
 }

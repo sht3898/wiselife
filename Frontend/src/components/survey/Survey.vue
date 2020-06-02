@@ -12,6 +12,7 @@
           <br />
           <br />총 30문항으로 순서대로 답변을 해주시면 됩니다.
           <br />질문을 읽은 후 너무 많은 생각을 하기보다는 바로 선택하세요.
+          <br />중간 답변 의미를 선택하면 약 50 % 정확도가 있습니다.
         </p>
       </div>
       <v-divider></v-divider>
@@ -145,7 +146,7 @@ export default {
         },
         {
           number: 9,
-          question: "나는 약속을 잘 어기며, 게으른 편이다",
+          question: "나는 약속을 잘 어긴다",
           answer: 0
         },
         {
@@ -160,7 +161,7 @@ export default {
         },
         {
           number: 12,
-          question: "나는 생각하지 않고 행동하는 편이다",
+          question: "나는 조심성이 없는 편이다",
           answer: 0
         },
         {

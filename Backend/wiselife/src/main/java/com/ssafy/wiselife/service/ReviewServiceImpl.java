@@ -50,9 +50,6 @@ public class ReviewServiceImpl implements IReviewService {
 
 		userMeeting = usermeetingrepo.findByUser(user);
 
-		if (userMeeting.size() == 0)
-			return null;
-
 		ArrayList<ShortMeeting> resultList = new ArrayList<>();
 		for (int i = 0; i < userMeeting.size(); i++) {
 			ShortMeeting shortMeeting = new ShortMeeting();
@@ -142,39 +139,35 @@ public class ReviewServiceImpl implements IReviewService {
 
 	@Override
 	public List<DetailReview> showMeetingOfReviewList(int meeting_id) {
+		List<DetailReview> resultList = new ArrayList<>();
 		if (!meetingrepo.existsById(meeting_id)) {
-			return null;
+			return resultList;
 		} else {
-			try {
-				List<Review> reviewEntityList = reviewrepo.findByMeetingId(meeting_id);
-				List<DetailReview> resultList = new ArrayList<>();
-				Review reviewEntity = null;
-				DetailReview review = null;
-				Meeting meeting = null;
-				User user = null;
-				
-				for (int i = 0; i < reviewEntityList.size(); i++) {
-					reviewEntity = reviewEntityList.get(i);
-					review = entityMapper.convertToDomain(reviewEntity, DetailReview.class);
-					user = reviewEntity.getUser();
-					review.setProfileImage(user.getProfileImage());
-					review.setUsername(user.getUsername());
-					meeting = reviewEntity.getMeeting();
-					int value = meeting.getUser().getUid() == user.getUid() ? 0 : 1;
-					review.setCheckUser(value); //작성자
-					resultList.add(review);
-				}
-				return resultList;
-			} catch (Exception e) {
-				return null;
+			List<Review> reviewEntityList = reviewrepo.findByMeetingId(meeting_id);
+			Review reviewEntity = null;
+			DetailReview review = null;
+			Meeting meeting = null;
+			User user = null;
+
+			for (int i = 0; i < reviewEntityList.size(); i++) {
+				reviewEntity = reviewEntityList.get(i);
+				review = entityMapper.convertToDomain(reviewEntity, DetailReview.class);
+				user = reviewEntity.getUser();
+				review.setProfileImage(user.getProfileImage());
+				review.setUsername(user.getUsername());
+				meeting = reviewEntity.getMeeting();
+				int value = meeting.getUser().getUid() == user.getUid() ? 0 : 1;
+				review.setCheckUser(value); // 작성자
+				resultList.add(review);
 			}
+			return resultList;
 		}
 	}
 
 	// 리뷰 이미지 저장 함수
 	public static String reviewImgConversion(MultipartFile files) throws IOException {
 		System.out.println("-----Save Review Images-----");
-		String path = "C:/Users/multicampus/Desktop/test/review/";
+		String path = "/home/ubuntu/images/review/";
 		String fileName = files.getOriginalFilename();
 		byte[] imageData = files.getBytes();
 		String fileUrl = "";

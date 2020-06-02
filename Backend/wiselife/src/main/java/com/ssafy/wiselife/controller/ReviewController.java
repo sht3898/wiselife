@@ -62,7 +62,7 @@ public class ReviewController {
 		List<ShortMeeting> resultList = reviewservice.userOfJoinMeetingList(uid);
 		status = HttpStatus.OK;
 
-		if (resultList == null) {
+		if (resultList.isEmpty()) {
 			resultMap.put(status, "NO DATA");
 			return new ResponseEntity<>(resultMap, status);
 		} else {
@@ -160,7 +160,7 @@ public class ReviewController {
 
 		List<DetailReview> resultList = reviewservice.showMeetingOfReviewList(meeting_id);
 
-		if (resultList == null) {
+		if (resultList.isEmpty()) {
 			status = HttpStatus.OK;
 			resultMap.put(status, "NO DATA");
 			return new ResponseEntity<>(resultMap, status);

@@ -2,24 +2,23 @@
   <v-container fluid>
     <div v-if="!clickBtn">
       <div class="mx-auto">
+        <img-banner :imgSrc="bannerImg" />
         <v-row>
-          <v-col class="hidden-sm-and-down">
-            <img-banner :imgSrc="bannerImg" />
+          <v-col>
+            <div style="padding:60px;">
+              <v-img src="../assets/wiselife.png" style="margin:auto;" height="100%" width="350px"></v-img>
+            </div>
           </v-col>
           <v-col>
-            <div style="padding:50px;">
-              <v-img src="../assets/wiselife.png" style="margin:auto;" height="110px" width="170px"></v-img>
-            </div>
-            <v-spacer></v-spacer>
-            <div style="padding:50px;">
-              <h2 style="text-align:center;">
+            <div style="padding:45px;">
+              <p class="maintext" style="text-align:center;">
                 빅데이터 기반으로
                 <br />당신의 맞춤 여가생활을
                 <br />추천해드립니다!
-              </h2>
+              </p>
             </div>
-            <v-spacer></v-spacer>
-            <div style="padding:50px;">
+
+            <div style="padding:30px;">
               <v-img
                 style="cursor:pointer; margin:auto"
                 max-width="450px"
@@ -53,7 +52,12 @@ export default {
       isMember: true,
       clickBtn: false,
       token: "",
-      bannerImg: [this.getImgUrl("banner1.jpg"), this.getImgUrl("banner2.jpg")]
+      bannerImg: [
+        this.getImgUrl("wiselifeimgbanner1.png"),
+        this.getImgUrl("wiselifeimgbanner2.png"),
+        this.getImgUrl("wiselifeimgbanner3.png"),
+        this.getImgUrl("wiselifeimgbanner4.png")
+      ]
     };
   },
   mounted() {
@@ -68,7 +72,7 @@ export default {
       Kakao.Auth.login({
         success: function(authObj) {
           let headers = {
-            access_token: authObj.access_token,
+            access_token: authObj.access_token
           };
           http
             .get(`user/login`, {
@@ -111,4 +115,9 @@ export default {
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
+.maintext {
+  font-size: 16pt;
+  font-family: "Jua", sans-serif;
+}
 </style>

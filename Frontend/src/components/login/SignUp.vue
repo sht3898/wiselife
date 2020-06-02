@@ -200,6 +200,7 @@ export default {
       this.$refs.form.reset();
     },
     getSecondArea() {
+      this.second_area = [];
       if (this.area1.charAt(this.area1.length - 1) == "시") {
         this.second_area.push("전체");
       }

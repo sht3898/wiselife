@@ -21,11 +21,11 @@ public class SearchServiceImpl implements ISearchService {
 
 	@Autowired
 	private EntityMapper entityMapper;
-	
+
 	@Autowired
 	private CategoryRepository categoryrepo;
 
-	//키워드가 있을때
+	// 키워드가 있을때
 	@Override
 	public List<CardMeeting> searchByKeyword(int category_id, String keyword) {
 		System.out.println(keyword);
@@ -39,22 +39,20 @@ public class SearchServiceImpl implements ISearchService {
 					keywords += tags[i].substring(1, tags[i].length()) + " ";
 				}
 				keywords = keywords.substring(0, keywords.length() - 1);
-				System.out.println(keywords);
 
-				try {
-					meetingList = meetingrepo.findByTags(keyword);
-				} catch (Exception e) {
+				meetingList = meetingrepo.findByTags(keyword);
+				if (meetingList.isEmpty())
 					return null;
-				}
+				
 			} else {
 				String[] input = keyword.split(" ");
 				for (int i = 0; i < input.length; i++) {
 					keywords += "+" + input[i] + "* ";
 				}
-				
+
 				keywords = keywords.substring(0, keywords.length() - 1);
 				System.out.println(keywords);
-				
+
 				try {
 					meetingList = meetingrepo.findByAllFullText(keywords);
 				} catch (Exception e2) {
@@ -65,14 +63,14 @@ public class SearchServiceImpl implements ISearchService {
 
 		// 카테고리 별 검색
 		else {
-			if(keyword.contains("#")) {
+			if (keyword.contains("#")) {
 				String[] tags = keyword.split(" ");
 				for (int i = 0; i < tags.length; i++) {
 					keywords += tags[i].substring(1, tags[i].length()) + " ";
 				}
 				keywords = keywords.substring(0, keywords.length() - 1);
 				System.out.println(keywords);
-				
+
 				try {
 					meetingList = meetingrepo.findByCategoryAndTags(category_id, keywords);
 				} catch (Exception e) {
@@ -85,7 +83,7 @@ public class SearchServiceImpl implements ISearchService {
 				}
 				keywords = keywords.substring(0, keywords.length() - 1);
 				System.out.println(keywords);
-				
+
 				try {
 					meetingList = meetingrepo.findByCategoryAndAllFullText(category_id, keywords);
 				} catch (Exception e2) {
@@ -93,17 +91,19 @@ public class SearchServiceImpl implements ISearchService {
 				}
 			}
 		}
-		
+
 		return meetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class))
 				.collect(Collectors.toList());
 	}
 
-	//키워드가 없을때 최신순으로 보여줌
+	// 키워드가 없을때 최신순으로 보여줌
 	@Override
 	public List<CardMeeting> searchByCategory(int category_id) {
 		try {
-			List<Meeting> meetingList = meetingrepo.findByCategoryOrderByMeetingIdDesc(categoryrepo.findById(category_id).get());
-			return meetingList.stream().map(e->entityMapper.convertToDomain(e, CardMeeting.class)).collect(Collectors.toList());
+			List<Meeting> meetingList = meetingrepo
+					.findByCategoryOrderByMeetingIdDesc(categoryrepo.findById(category_id).get());
+			return meetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class))
+					.collect(Collectors.toList());
 		} catch (Exception e) {
 			return null;
 		}

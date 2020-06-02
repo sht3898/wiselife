@@ -23,7 +23,9 @@
         </v-col>
       </v-row>
     </v-card>
+    <div v-if="(reviews.length > 0)">
     <review-content v-for="review in reviews" :key="review.key" :review="review" />
+    </div>
   </v-container>
 </template>
 <script>

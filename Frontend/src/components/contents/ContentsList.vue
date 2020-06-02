@@ -11,6 +11,7 @@
 </template>
 <script>
 import ContentsCard from "./ContentsCard";
+import http from '../../http-common';
 export default {
   name: "ContentsList",
   props: {
@@ -24,16 +25,11 @@ export default {
   data() {
     return {
       contents: [
-        { name: "Kin Khao", tag: ["Thai"] },
-        { name: "Jū-Ni", tag: ["Sushi", "Japanese", "$$$$"] },
-        { name: "Delfina", tag: ["Pizza", "Casual"] },
-        { name: "San Tung", tag: ["Chinese", "$$"] },
-        { name: "Anchor Oyster Bar", tag: ["Seafood", "Cioppino"] },
-        { name: "Locanda", tag: ["Italian"] },
-        { name: "Garden Creamery", tag: ["Ice cream"] }
+        
       ]
     };
-  }
+  },
+  
 };
 </script>
 <style scoped>

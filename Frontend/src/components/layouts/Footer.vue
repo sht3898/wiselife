@@ -1,4 +1,6 @@
 <template>
+<div>
+<v-divider></v-divider>
   <v-footer  padless  color="white">
     <v-card class="footer" flat tile>
       <v-card-text>
@@ -17,6 +19,7 @@
       </v-card-text>
     </v-card>
   </v-footer>
+</div>
 </template>
 <script>
 export default {
