@@ -2,6 +2,7 @@ package com.example.chat.controller;
 
 import java.util.List;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,38 +17,26 @@ import com.example.chat.model.ChatRoom;
 
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @CrossOrigin(origins = ("*"), maxAge = 6000)
-@RestController
+@RequiredArgsConstructor
+@Controller
 @RequestMapping("/chat")
 public class ChatRoomController {
 	private final com.example.chat.repo.ChatRoomRepository chatRoomRepository;
 
-	// 채팅 리스트 화면
-	@GetMapping("/room")
-	public String rooms(Model model) {
-		return "/chat/room";
-	}
-
 	// 모든 채팅방 목록 반환
 	@GetMapping("/rooms")
 	@ResponseBody
-	public List<ChatRoom> room() {
+	public List<ChatRoom> findAllRoom() {
 		return chatRoomRepository.findAllRoom();
 	}
 
 	// 채팅방 생성
 	@PostMapping("/room")
 	@ResponseBody
-	public ChatRoom createRoom(@RequestParam String name) {
+	public ChatRoom createChatRoom(@RequestParam String name) {
+		System.out.println("name: "+name);
 		return chatRoomRepository.createChatRoom(name);
-	}
-
-	// 채팅방 입장 화면
-	@GetMapping("/room/enter/{roomId}")
-	public void roomDetail(Model model, @PathVariable String roomId) {
-		model.addAttribute("roomId", roomId);
-		System.out.println("들어왔어요");
 	}
 
 	// 특정 채팅방 조회
