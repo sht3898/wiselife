@@ -51,7 +51,7 @@ export default new Router({
 			component: ErrorPage
         },
 		{
-			path : '/result/:category/:keyword',
+			path : '/result/:category/:keyword?',
 			name : 'resultPage',
 			component: ResultPage,
 			props : true

@@ -17,7 +17,7 @@
           class="black--text mt-2"
           label
         >#{{ keyword }}</v-chip>
-        <survey-result-text :mbti="mbti" />
+        <survey-result-text v-if="chk" :mbti="mbti" />
       </div>
     </v-flex>
   </v-container>
