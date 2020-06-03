@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -36,8 +36,10 @@ public class Meeting {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int meetingId;
 	
+	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4")
 	private String writer;
 	
+	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4")
 	private String title;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -60,17 +62,22 @@ public class Meeting {
 	private int maxPerson;
 	private int nowPerson;
 	
-	@Lob
+	@Column(columnDefinition = "LONGTEXT CHARACTER SET utf8mb4")
 	private String content;
 	
 	private String refUrl;
+	
+	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4")
 	private String address;
+	
 	private int fee;
 	private String unit;
 	private int isActive;
 	private int likeCnt;
 	private int viewCnt;
 	private double score;
+	
+	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4")
 	private String tags;
 	private String area1;
 	private String area2;

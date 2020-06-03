@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,7 +211,8 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingrepo.save(meetingEntity);
 
 			DetailMeeting meeting = entityMapper.convertToDomain(meetingEntity, DetailMeeting.class);
-
+			meeting.setMainCategory(meetingEntity.getCategory().getCategoryId());
+			
 			// 좋아요 확인
 			user = userrepo.findById(uid).get();
 
@@ -317,10 +320,12 @@ public class MeetingServiceImpl implements IMeetingService {
 		Meeting meetingEntity = null;
 		DetailMeeting meeting = null;
 		LikeMeeting likeMeeting = null;
-		Map<String, List<DetailMeeting>> resultMap = new HashMap<>();
+		List<MeetingImages> meetingImagesList = new ArrayList<>();
+		List<String> imageUrlList = new ArrayList<>();
 
 		ArrayList<DetailMeeting> attendList = new ArrayList<>();
 		ArrayList<DetailMeeting> postList = new ArrayList<>();
+		Map<String, List<DetailMeeting>> resultMap = new HashMap<>();
 
 		for (int i = 0; i < userMeetingList.size(); i++) {
 			long writer_id = userMeetingList.get(i).getMeeting().getUser().getUid();
@@ -329,8 +334,19 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingEntity = meetingrepo.findById(meeting_id).get();
 
 			meeting = modelMapper.map(meetingEntity, DetailMeeting.class);
+			
+			// 이 미팅의 작성자가 나인지 확인
 			int value = writer_id == uid ? 0 : 2;
-			meeting.setCheckUser(value); // 작성자
+			meeting.setCheckUser(value);
+			
+			// 미팅 이미지 있는지 확인
+			meetingImagesList = meetingimagesrepo.findByMeeting(meetingEntity);
+			if(!meetingImagesList.isEmpty()) {
+				for (int j = 0; j < meetingImagesList.size(); j++) {
+					imageUrlList.add(meetingImagesList.get(i).getImageUrl());
+				}
+			}
+			meeting.setMeetingImages(imageUrlList);
 
 			// 좋아요 유무
 			likeMeeting = likemeetingrepo.findByUserAndMeeting(user, meetingEntity);
@@ -347,6 +363,9 @@ public class MeetingServiceImpl implements IMeetingService {
 			} else {
 				attendList.add(meeting);
 			}
+			
+			
+			
 		}
 
 		resultMap.put("등록", postList);
@@ -445,5 +464,23 @@ public class MeetingServiceImpl implements IMeetingService {
 			usermeetingrepo.save(userMeeting);
 			return 1;
 		}
+	}
+
+	@Override
+	public int putMeetingOfUpdateIsActive(long uid, int meeting_id, int isActive) {
+		try {
+			Meeting meeting = meetingrepo.findById(meeting_id).get();
+			
+			if (meeting.getUser().getUid() == uid) {
+				meeting.setIsActive(isActive);
+			} else {
+				return 0;
+			}
+			
+			meetingrepo.save(meeting);
+			return meeting.getMeetingId();
+		} catch (EntityNotFoundException e) {
+			return -1;
+		} 
 	}
 }

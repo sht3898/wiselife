@@ -24,4 +24,6 @@ public interface IMeetingService {
 	List<MeetingOfJoinAttendant> getMeetingOfAttendantList(int meeting_id);
 	
 	int joinMeeting(long uid, int meeting_id);
+
+	int putMeetingOfUpdateIsActive(long uid, int meeting_id, int isActive);
 }

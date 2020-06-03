@@ -59,6 +59,7 @@ public class MeetingDTO {
 	
 	@Getter @Setter @ToString
 	public static class DetailMeeting {
+		private int meetingId;
 		private String writer;
 		private String title;
 		private Date updatedAt;
@@ -99,6 +100,7 @@ public class MeetingDTO {
 		private String area2;
 		private int likeCnt;
 		private int viewCnt;
+		private List<String> meetingImages;
 	}
 	
 	
