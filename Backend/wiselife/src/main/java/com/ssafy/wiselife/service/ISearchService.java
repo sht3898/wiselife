@@ -6,8 +6,8 @@ import com.ssafy.wiselife.dto.MeetingDTO.CardMeeting;
 
 public interface ISearchService {
 
-	List<CardMeeting> searchByKeyword(int category_id, String keyword);
+	List<CardMeeting> searchByKeyword(int category_id, String keyword, long uid);
 
-	List<CardMeeting> searchByCategory(int category_id);
+	List<CardMeeting> searchByCategory(int category_id, long uid);
 	
 }

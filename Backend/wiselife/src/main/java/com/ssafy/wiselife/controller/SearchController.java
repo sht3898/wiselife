@@ -36,27 +36,27 @@ public class SearchController {
 	// category = 0, keyword = "" 는 빅데이터에서 처리해야함
 	@GetMapping("/search/{category_id}")
 	@ApiOperation(value = "검색")
-	@ResponseBody
-	public Object searchKeyword(HttpServletRequest req, @PathVariable int category_id, String keyword) {
+	@ResponseBody//HttpServletRequest req,
+	public Object searchKeyword(long uid, @PathVariable int category_id, String keyword) {
 		System.out.println("-----검색-----");
 		List<CardMeeting> meetingList = null;
 		Map<Object, Object> resultMap = new HashMap<>();
 
-		HttpStatus status = null;
-		String access_token = null;
-		HashMap<String, Object> userInfo = null;
-
-		try {
-			access_token = req.getHeader("access_token");
-			userInfo = kakaoservice.getUserInfo(access_token);
-		} catch (Exception e) {
-			status = HttpStatus.UNAUTHORIZED;
-			resultMap.put(status, "로그인을 먼저 진행해주세요");
-			return new ResponseEntity<>(resultMap, status);
-		}
+//		HttpStatus status = null;
+//		String access_token = null;
+//		HashMap<String, Object> userInfo = null;
+//
+//		try {
+//			access_token = req.getHeader("access_token");
+//			userInfo = kakaoservice.getUserInfo(access_token);
+//		} catch (Exception e) {
+//			status = HttpStatus.UNAUTHORIZED;
+//			resultMap.put(status, "로그인을 먼저 진행해주세요");
+//			return new ResponseEntity<>(resultMap, status);
+//		}
 
 		if (keyword == null || keyword == "") {
-			meetingList = searchservice.searchByCategory(category_id);
+			meetingList = searchservice.searchByCategory(category_id, uid);
 			if (meetingList == null) {
 				resultMap.put(HttpStatus.OK, "NO DATA");
 				return resultMap;
@@ -65,7 +65,7 @@ public class SearchController {
 			return meetingList;
 		}
 
-		meetingList = searchservice.searchByKeyword(category_id, keyword);
+		meetingList = searchservice.searchByKeyword(category_id, keyword, uid);
 		if (meetingList == null) {
 			resultMap.put(HttpStatus.OK, "일치하는 내용 없음");
 			return resultMap;
