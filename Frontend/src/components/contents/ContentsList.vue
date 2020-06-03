@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-layout mt-1 wrap>
-    <v-flex v-for="content in this.contents" :key="content.title" xs12 sm4 lg3 >
+    <v-flex v-for="content in contentslist" :key="content.name" xs12 sm4 lg3 >
        <contents-card :content="content"/>
     </v-flex>
   </v-layout>
@@ -23,12 +23,9 @@ export default {
   },
   data() {
     return {
-      contents: []
     };
   },
-  mounted(){   
-      this.contents=this.contentslist;  
-      }
+  
 };
 </script>
 <style scoped>
