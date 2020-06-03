@@ -28,5 +28,5 @@ urlpatterns = [
    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
     
-   path('recommendations/<int:pk>/', views.Recommend),
+   path('recommendations/<int:uid>/', views.Recommend),
 ]
