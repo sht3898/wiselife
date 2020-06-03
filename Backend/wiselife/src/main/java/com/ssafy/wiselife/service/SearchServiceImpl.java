@@ -7,10 +7,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ssafy.wiselife.domain.LikeMeeting;
 import com.ssafy.wiselife.domain.Meeting;
 import com.ssafy.wiselife.dto.MeetingDTO.CardMeeting;
 import com.ssafy.wiselife.mapper.EntityMapper;
 import com.ssafy.wiselife.repository.CategoryRepository;
+import com.ssafy.wiselife.repository.LikeMeetingRepository;
 import com.ssafy.wiselife.repository.MeetingRepository;
 
 @Service
@@ -24,6 +26,9 @@ public class SearchServiceImpl implements ISearchService {
 
 	@Autowired
 	private CategoryRepository categoryrepo;
+	
+	@Autowired
+	private LikeMeetingRepository likemeetingrepo;
 
 	// 키워드가 있을때
 	@Override
@@ -31,6 +36,7 @@ public class SearchServiceImpl implements ISearchService {
 		System.out.println(keyword);
 		List<Meeting> meetingList = new ArrayList<>();
 		String keywords = "";
+		
 		// 메인페이지에서 검색
 		if (category_id == 0) {
 			if (keyword.contains("#")) { // 해시태그 검색
@@ -51,7 +57,6 @@ public class SearchServiceImpl implements ISearchService {
 				}
 
 				keywords = keywords.substring(0, keywords.length() - 1);
-				System.out.println(keywords);
 
 				try {
 					meetingList = meetingrepo.findByAllFullText(keywords);
@@ -69,7 +74,6 @@ public class SearchServiceImpl implements ISearchService {
 					keywords += tags[i].substring(1, tags[i].length()) + " ";
 				}
 				keywords = keywords.substring(0, keywords.length() - 1);
-				System.out.println(keywords);
 
 				try {
 					meetingList = meetingrepo.findByCategoryAndTags(category_id, keywords);
@@ -82,7 +86,6 @@ public class SearchServiceImpl implements ISearchService {
 					keywords += "+" + input[i] + "* ";
 				}
 				keywords = keywords.substring(0, keywords.length() - 1);
-				System.out.println(keywords);
 
 				try {
 					meetingList = meetingrepo.findByCategoryAndAllFullText(category_id, keywords);
@@ -91,9 +94,22 @@ public class SearchServiceImpl implements ISearchService {
 				}
 			}
 		}
-
-		return meetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class))
+		
+		// 좋아요 확인
+		List<CardMeeting> resultList = meetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class))
 				.collect(Collectors.toList());
+		LikeMeeting likeMeeting = null;
+		for (int i = 0; i < meetingList.size(); i++) {
+			Meeting meeting = meetingList.get(i);
+			likeMeeting = likemeetingrepo.findByUserAndMeeting(meeting.getUser(), meeting);
+			int value = 0;
+			if(likeMeeting != null) value = 1;
+			else value = 0;
+			
+			resultList.get(i).setIsLike(value);
+		}
+		
+		return resultList;
 	}
 
 	// 키워드가 없을때 최신순으로 보여줌
@@ -107,6 +123,21 @@ public class SearchServiceImpl implements ISearchService {
 				meetingList = meetingrepo
 						.findByCategoryOrderByMeetingIdDesc(categoryrepo.findById(category_id).get());
 			}
+			
+			// 좋아요 확인
+			List<CardMeeting> resultList = meetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class))
+					.collect(Collectors.toList());
+			LikeMeeting likeMeeting = null;
+			for (int i = 0; i < meetingList.size(); i++) {
+				Meeting meeting = meetingList.get(i);
+				likeMeeting = likemeetingrepo.findByUserAndMeeting(meeting.getUser(), meeting);
+				int value = 0;
+				if(likeMeeting != null) value = 1;
+				else value = 0;
+				
+				resultList.get(i).setIsLike(value);
+			}
+			
 			return meetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class))
 					.collect(Collectors.toList());
 		} catch (Exception e) {

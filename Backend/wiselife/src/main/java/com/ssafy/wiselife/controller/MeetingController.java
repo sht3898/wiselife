@@ -306,7 +306,7 @@ public class MeetingController {
 	@PostMapping("/meeting/attend")
 	@ApiOperation(value = "모임/강좌에 참여하기")
 	public ResponseEntity<Map<Object, String>> joinMeeting(@RequestParam int meeting_id, HttpServletRequest req) {
-		System.out.println("-----모임/강좌에 참여하가-----");
+		System.out.println("-----모임/강좌에 참여하기-----");
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
 
@@ -337,6 +337,44 @@ public class MeetingController {
 		} else {
 			status = HttpStatus.OK;
 			resultMap.put(status, "참가 취소");
+		}
+		
+		return new ResponseEntity<>(resultMap, status);
+	}
+	
+	@PostMapping("/meeting/update/isActive")
+	@ApiOperation(value = "모임/강좌 상태 변경")
+	public  ResponseEntity<Map<Object, Object>> meetingOfUpdateIsActive(@RequestParam int meeting_id, @RequestParam int isActive,
+			HttpServletRequest req) {
+		System.out.println("-----모임/강좌 상태 변경-----");
+		Map<Object, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+
+		String access_token = null;
+		HashMap<String, Object> userInfo = null;
+		long uid = 0;
+
+		try {
+			access_token = req.getHeader("access_token");
+			userInfo = kakaoservice.getUserInfo(access_token);
+			uid = (long) userInfo.get("id");
+		} catch (Exception e) {
+			status = HttpStatus.UNAUTHORIZED;
+			resultMap.put(status, "로그인을 먼저 진행해주세요");
+			return new ResponseEntity<>(resultMap, status);
+		}
+		
+		int result = meetingservice.putMeetingOfUpdateIsActive(uid, meeting_id, isActive);
+		
+		if(result == -1) {
+			status = HttpStatus.NOT_FOUND;
+			resultMap.put(status, "삭제되었거나 존재하지 않는 모임/강좌");
+		} else if(result == 0) {
+			status = HttpStatus.UNAUTHORIZED;
+			resultMap.put(status, "NOT PERMISSION");
+		} else {
+			status = HttpStatus.OK;
+			resultMap.put("meeting_id", result);
 		}
 		
 		return new ResponseEntity<>(resultMap, status);
