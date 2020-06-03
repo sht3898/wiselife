@@ -35,7 +35,7 @@
       </span>
     </v-flex>
     <v-flex class="ma-auto" lg10 xs12>
-      <contents-list v-if="ok" :contentslist="this.contentslist" />
+      <contents-list v-if="ok" :contentslist="page_list" />
     </v-flex>
     <div class="text-center">
       <v-pagination v-model="page" :length="pagelength" circle color="success"></v-pagination>
@@ -56,7 +56,7 @@ export default {
       page: 1,
       pagelength: 1,
       contentslist: [],
-
+      page_list: [],
       categories: [
         {
           key: 0,
@@ -142,9 +142,6 @@ export default {
     this.search();
     this.userInfo();
   },
-  watch: {
-    myarea: "getMyArea"
-  },
   computed: {
     keyword: function() {
       this.search();
@@ -162,7 +159,23 @@ export default {
       return this.$route.params.category;
     }
   },
+  watch: {
+    myarea: "getMyArea",
+    page: "pagination"
+  },
   methods: {
+    pagination() {
+      this.ok = false;
+      var page_list = [];
+      for (var i = (this.page - 1) * 12; i < (this.page - 1) * 12 + 12; i++) {
+        if(i == this.contentslist.length){
+          break;
+        }
+        page_list.push(this.contentslist[i]);
+      }
+      this.page_list = page_list;
+      this.ok = true;
+    },
     getMyArea() {
       if (this.myarea == 1) {
         var contents = [];
@@ -183,10 +196,13 @@ export default {
           }
         }
         this.contentslist = contents;
+        this.page = 1;
+        this.pagination();
       } else {
         for (var i = 0; i < this.sortingFilter.length; i++) {
           this.sortingFilter[i].clicked = false;
         }
+        this.page = 1;
         this.search();
       }
     },
@@ -210,29 +226,33 @@ export default {
       let config = {
         headers: { access_token: sessionStorage.getItem("token") }
       };
-      if (this.$route.params.keyword == null) {
-        this.$route.params.keyword = "";
+      let keyword = "";
+      if (this.$route.params.keyword != null) {
+        keyword = this.$route.params.keyword;
       }
       this.ok = false;
       http
-        .get(
-          `search/${this.$route.params.category}?keyword=` +
-            this.$route.params.keyword,
-          config
-        )
+        .get(`search/${this.$route.params.category}?keyword=` + keyword, config)
         .then(response => {
-          if(response.data.OK != null){
-            
-          }else{
+          console.log(response);
+          if (response.data.OK != null) {
+            this.contentslist = [];
+          } else {
             this.contentslist = response.data;
             for (var i = 0; i < this.contentslist.length; i++) {
               this.contentslist[i].tags = this.contentslist[i].tags.split(" ");
-                if(this.contentslist[i].meetingImages != null){
-                  this.contentslist[i].meetingImages = this.contentslist[i].meetingImages[0];
+              let meetingImages = this.contentslist[i].meetingImages;
+              if (meetingImages != null) {
+                this.contentslist[i].meetingImages = meetingImages[0];
+                if (meetingImages[0].substring(0, 1) == "h") {
+                  this.contentslist[i].isUrl = true;
+                } else {
+                  this.contentslist[i].isUrl = false;
                 }
+              }
             }
-            this.ok = true;
             this.pagelength = Math.floor(this.contentslist.length / 12) + 1;
+            this.pagination();
           }
         })
         .catch(err => {
@@ -285,6 +305,7 @@ export default {
           });
           break;
       }
+      this.pagination();
       this.ok = true;
     },
     checkURL() {

@@ -1,31 +1,29 @@
 <template>
   <div>
     <v-layout mt-1 wrap>
-    <v-flex v-for="content in contentslist" :key="content.name" xs12 sm4 lg3 >
-       <contents-card :content="content"/>
-    </v-flex>
-  </v-layout>
-    
+      <v-flex v-for="content in contentslist" :key="content.meetingId" xs12 sm4 lg3>
+        <contents-card :content="content" />
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 <script>
 import ContentsCard from "./ContentsCard";
-import http from '../../http-common';
+import http from "../../http-common";
 export default {
   name: "ContentsList",
   props: {
     contentslist: {
-      type: Array
+      type: Array,
+      default: []
     }
   },
   components: {
     ContentsCard
   },
   data() {
-    return {
-    };
-  },
-  
+    return {};
+  }
 };
 </script>
 <style scoped>
