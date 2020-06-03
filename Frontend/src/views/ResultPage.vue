@@ -35,7 +35,7 @@
       </span>
     </v-flex>
     <v-flex class="ma-auto" lg10 xs12>
-      <contents-list :contentslist="this.contentslist" />
+      <contents-list v-if="ok" :contentslist="this.contentslist" />
     </v-flex>
     <div class="text-center">
       <v-pagination v-model="page" :length="pagelength" circle color="success"></v-pagination>
@@ -52,6 +52,7 @@ export default {
   },
   data() {
     return {
+      ok: false,
       page: 1,
       pagelength: 1,
       contentslist: [],
@@ -133,45 +134,57 @@ export default {
       ]
     };
   },
+  mounted() {
+    this.checkURL();
+    this.search();
+  },
+  computed: {
+    keyword: function() {
+      this.search();
+      return this.$route.params.keyword;
+    },
+    category: function() {
+      for (var i = 0; i < this.categories.length; i++) {
+        if (this.categories[i].key == this.$route.params.category) {
+          this.categories[i].clicked = true;
+        } else {
+          this.categories[i].clicked = false;
+        }
+      }
+      this.search();
+      return this.$route.params.category;
+    }
+  },
   methods: {
     search() {
       let config = {
         headers: { access_token: sessionStorage.getItem("token") }
       };
-      // console.log(this.$route.params.category);
-      // console.log(this.$route.params.keyword);
-
-      if (this.$route.params.keyword == undefined) {
-        http
-          .get(`search/${this.$route.params.category}`, config)
-          .then(response => {
-            console.log(response);
-            this.contentslist = response.data;
-            console.log(this.contentslist);
-            this.pagelength = Math.floor(this.contentslist.length / 12) + 1;
-            console.log(this.pagelength);
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      } else {
-        http
-          .get(
-            `search/${this.$route.params.category}?keyword=` +
-              this.$route.params.keyword,
-            config
-          )
-          .then(response => {
-            console.log(response);
-            this.contentslist = response.data;
-            console.log(this.contentslist);
-            this.pagelength = Math.floor(this.contentslist.length / 12) + 1;
-            console.log(this.pagelength);
-          })
-          .catch(err => {
-            console.log(err);
-          });
+      if (this.$route.params.keyword == null) {
+        this.$route.params.keyword = "";
       }
+      this.ok = false;
+      http
+        .get(
+          `search/${this.$route.params.category}?keyword=` +
+            this.$route.params.keyword,
+          config
+        )
+        .then(response => {
+          console.log(response);
+          this.contentslist = response.data;
+          for (var i = 0; i < this.contentslist.length; i++) {
+            this.contentslist[i].tags = this.contentslist[i].tags.split(" ");
+          }
+          this.ok = true;
+          console.log(this.contentslist);
+          if (this.contentslist)
+            this.pagelength = Math.floor(this.contentslist.length / 12) + 1;
+          console.log(this.pagelength);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     clickCategory(category) {
       for (var i = 0; i < this.categories.length; i++) {
@@ -183,15 +196,30 @@ export default {
       this.$router.push(
         "/result/" + category.key + "/" + this.$route.params.keyword
       );
-      this.search();
     },
     clickSorting(sorting) {
+      this.ok = false;
       for (var i = 0; i < this.sortingFilter.length; i++) {
         if (this.sortingFilter[i] != sorting) {
           this.sortingFilter[i].clicked = false;
         }
       }
       sorting.clicked = true;
+      switch (sorting.key) {
+        case 1:
+          this.contentslist.sort(function(a,b){
+            return b.meetingId - a.meetingId;
+          })
+          break;
+        case 2:
+          break;
+        case 3:
+          break;
+        case 4:
+          break;
+        case 5:
+          break;
+      }
     },
     checkURL() {
       for (var i = 0; i < this.categories.length; i++) {
@@ -199,27 +227,6 @@ export default {
           this.categories[i].clicked = true;
         }
       }
-    }
-  },
-  mounted() {
-    this.checkURL();
-    this.search();
-  },
-  computed: {
-    keyword: function() {
-      return this.$route.params.keyword;
-      this.search();
-    },
-    category: function() {
-      for (var i = 0; i < this.categories.length; i++) {
-        if (this.categories[i].key == this.$route.params.category) {
-          this.categories[i].clicked = true;
-        } else {
-          this.categories[i].clicked = false;
-        }
-      }
-      return this.$route.params.category;
-      this.search();
     }
   }
 };

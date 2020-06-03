@@ -1,6 +1,6 @@
 <template>
   <v-flex>
-    <div class="card-carousel-wrapper">
+    <div v-if="ok" class="card-carousel-wrapper">
       <div class="card-carousel--nav__left" :disabled="atHeadOfList" @click="moveCarousel(-1)" />
       <div class="card-carousel">
         <div class="card-carousel--overflow-container">
@@ -9,7 +9,7 @@
             :style="{ transform: 'translateX' + '(' + currentOffset + 'px' + ')'}"
           >
             <div v-for="item in items" :key="item.name" class="card-carousel--card">
-              <contents-card />
+              <contents-card :content="item" />
             </div>
           </div>
         </div>
@@ -19,6 +19,7 @@
   </v-flex>
 </template>
 <script>
+import http from "../../http-common.js"
 import ContentsCard from "./ContentsCard";
 export default {
   name: "RecommendsList",
@@ -27,18 +28,11 @@ export default {
   },
   data() {
     return {
+      ok:false,
       currentOffset: 0,
       windowSize: 4,
       paginationFactor: 220,
-      items: [
-        { name: "Kin Khao", tag: ["Thai"] },
-        { name: "Jū-Ni", tag: ["Sushi", "Japanese", "$$$$"] },
-        { name: "Delfina", tag: ["Pizza", "Casual"] },
-        { name: "San Tung", tag: ["Chinese", "$$"] },
-        { name: "Anchor Oyster Bar", tag: ["Seafood", "Cioppino"] },
-        { name: "Locanda", tag: ["Italian"] },
-        { name: "Garden Creamery", tag: ["Ice cream"] }
-      ]
+      items: []
     };
   },
   computed: {
@@ -52,7 +46,33 @@ export default {
       return this.currentOffset === 0;
     }
   },
+  mounted(){
+    this.getList();
+  },
   methods: {
+    getList(){
+      let config = {
+        headers: { access_token: sessionStorage.getItem("token") }
+      };
+      this.ok = false;
+      http
+        .get(
+          `search/0?keyword=`,
+          config
+        )
+        .then(response => {
+          console.log(response);
+          this.items = response.data;
+          for (var i = 0; i < this.items.length; i++) {
+            this.items[i].tags = this.items[i].tags.split(" ");
+          }
+          this.ok = true;
+          console.log(this.items);
+        })
+        .catch(err => {
+          alert(err);
+        });
+    },
     moveCarousel(direction) {
       // Find a more elegant way to express the :style. consider using props to make it truly generic
       if (direction === 1 && !this.atEndOfList) {
