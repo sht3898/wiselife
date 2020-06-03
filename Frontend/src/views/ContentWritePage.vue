@@ -128,11 +128,12 @@
         <v-col cols="6">
           <v-file-input
             :rules="rules"
-            accept="image/png, image/jpeg, image/bmp"
+            accept="image/png, images/PNG, image/jpg, image/jpeg, image/bmp"
             placeholder="이미지 첨부"
             prepend-icon="mdi-camera-enhance"
             outlined
             multiple
+            show-size
             dense
             id="files"
             ref="files"
@@ -256,127 +257,122 @@ export default {
   components: {
     VueEditor
   },
-  data() {
-    return {
-      customToolbar: [
-        ["bold", "italic", "underline"],
-        [{ list: "ordered" }, { list: "bullet" }],
-        [
-          { align: "" },
-          { align: "center" },
-          { align: "right" },
-          { align: "justify" }
-        ]
-      ],
-      meeting: {
-        writer: "",
-        main_category: "",
-        title: "",
-        tags: "", // 해시태그 띄어쓰기로 구분 (#붙여서 보내기!)
-        is_period: 0,
-        meeting_date: new Date().toISOString().substr(0, 10),
-        period_date: "",
-        is_class: 0,
-        max_person: 0,
-        content: "",
-        ref_url: "",
-        area1: "",
-        area2: "",
-        address: "",
-        phone: "",
-        fee: 0, // 회비 또는 금액을 작성시 숫자를 입력하도록
-        unit: "" // 단위 : 원/미정/회비
-      },
+  data: () => ({
+    customToolbar: [
+      ["bold", "italic", "underline"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [
+        { align: "" },
+        { align: "center" },
+        { align: "right" },
+        { align: "justify" }
+      ]
+    ],
+    meeting: {
+      writer: "",
+      main_category: "",
+      title: "",
+      tags: "", // 해시태그 띄어쓰기로 구분 (#붙여서 보내기!)
+      is_period: 0,
+      meeting_date: new Date().toISOString().substr(0, 10),
+      period_date: "",
+      is_class: 0,
+      max_person: 0,
+      content: "",
+      ref_url: "",
       area1: "",
+      area2: "",
+      address: "",
+      phone: "",
+      fee: 0, // 회비 또는 금액을 작성시 숫자를 입력하도록
+      unit: "" // 단위 : 원/미정/회비
+    },
+    area1: "",
 
-      image_url: "",
-      files: "",
+    image_url: "",
+    files: "",
 
-      categories: [
-        "레저/스포츠",
-        "요리",
-        "수공예/공방",
-        "놀이/게임",
-        "문화",
-        "예술",
-        "축제/행사",
-        "기타"
-      ],
-      category_key: {
-        "레저/스포츠": 1,
-        요리: 2,
-        "수공예/공방": 3,
-        "놀이/게임": 4,
-        문화: 5,
-        예술: 6,
-        "축제/행사": 7,
-        기타: 8
+    categories: [
+      "레저/스포츠",
+      "요리",
+      "수공예/공방",
+      "놀이/게임",
+      "문화",
+      "예술",
+      "축제/행사",
+      "기타"
+    ],
+    category_key: {
+      "레저/스포츠": 1,
+      요리: 2,
+      "수공예/공방": 3,
+      "놀이/게임": 4,
+      문화: 5,
+      예술: 6,
+      "축제/행사": 7,
+      기타: 8
+    },
+    classform: ["강좌", "모임"],
+    class_key: {
+      강좌: 1,
+      모임: 0
+    },
+    periodform: ["정기", "비정기"],
+    period_key: {
+      정기: 1,
+      비정기: 0
+    },
+    modal: false,
+    menu2: false,
+
+    activator: null,
+    attach: null,
+    colors: ["red", "amber", "lime", "teal", "indigo"],
+    editing: null,
+    index: -1,
+    items: [
+      { header: "해시태그를 등록해주세요!" },
+      {
+        text: "슬기로운",
+        color: "green"
       },
-      classform: ["강좌", "모임"],
-      class_key: {
-        강좌: 1,
-        모임: 0
-      },
-      periodform: ["정기", "비정기"],
-      period_key: {
-        정기: 1,
-        비정기: 0
-      },
-      modal: false,
-      menu2: false,
-
-      activator: null,
-      attach: null,
-      colors: ["red", "amber", "lime", "teal", "indigo"],
-      editing: null,
-      index: -1,
-      items: [
-        { header: "해시태그를 등록해주세요!" },
-        {
-          text: "슬기로운",
-          color: "green"
-        },
-        {
-          text: "여가생활",
-          color: "orange"
-        }
-      ],
-      nonce: 1,
-      menu: false,
-      hashtag: [],
-      x: 0,
-      search: null,
-      y: 0,
-      rules: [
-        value =>
-          !value ||
-          value.size > 100000000 ||
-          "이미지는 10 MB 이하로 등록해주세요!"
-      ],
-      unitform: ["미정", "회비"],
-      first_area: [
-        "서울특별시",
-        "부산광역시",
-        "대구광역시",
-        "인천광역시",
-        "광주광역시",
-        "대전광역시",
-        "울산광역시",
-        "세종특별자치시",
-        "경기도",
-        "강원도",
-        "충청북도",
-        "충청남도",
-        "전라북도",
-        "전라남도",
-        "경상북도",
-        "경상남도",
-        "제주특별자치도"
-      ],
-      second_area: []
-    };
-  },
-
+      {
+        text: "여가생활",
+        color: "orange"
+      }
+    ],
+    nonce: 1,
+    menu: false,
+    hashtag: [],
+    x: 0,
+    search: null,
+    y: 0,
+    rules: [
+      value =>
+        !value.length || value.reduce((size, file) => size + file.size, 0) < 10000000 || "이미지는 10 MB 이하로 등록해주세요!"
+    ],
+    unitform: ["미정", "회비"],
+    first_area: [
+      "서울특별시",
+      "부산광역시",
+      "대구광역시",
+      "인천광역시",
+      "광주광역시",
+      "대전광역시",
+      "울산광역시",
+      "세종특별자치시",
+      "경기도",
+      "강원도",
+      "충청북도",
+      "충청남도",
+      "전라북도",
+      "전라남도",
+      "경상북도",
+      "경상남도",
+      "제주특별자치도"
+    ],
+    second_area: []
+  }),
   watch: {
     area1: "getSecondArea",
     hashtag(val, prev) {
@@ -414,7 +410,7 @@ export default {
       this.meeting.address = document.getElementById("sample6_address").value;
       this.meeting.area1 = this.area1;
       for (var i = 0; i < this.hashtag.length; i++) {
-        if(i==5){
+        if (i == 5) {
           break;
         }
         this.meeting.tags += "#" + this.hashtag[i].text + ",";
@@ -454,10 +450,10 @@ export default {
         .post("meeting/create", formData, config)
         .then(response => {
           console.log(response);
-          if(response.status==200){
+          if (response.status == 200) {
             alert("성공적으로 등록되었습니다!");
             alert(response.data.meeting_id);
-            this.$router.push("/contentdetail/"+response.data.meeting_id);
+            this.$router.push("/contentdetail/" + response.data.meeting_id);
           }
         })
         .catch(ex => {});
