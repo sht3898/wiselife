@@ -107,7 +107,7 @@
                 </v-col>
               </v-row>
               <v-row class="ml-2">
-                <v-col cols="6">
+                <v-col lg6 sm12>
                   <v-row class="my-3">
                     <v-chip :color="`grey lighten-4`" class="black--text mr-3" label small>
                       <span class="mdi mdi-dark mdi-clock mr-1" style="font-size:15pt;" />
@@ -199,13 +199,13 @@
                     <v-chip :color="`grey lighten-4`" class="black--text mr-3" label small>
                       <span class="mdi mdi-dark mdi-link mr-1" style="font-size:15pt;" />참고 URL
                     </v-chip>
-                    <a :href="meeting.refUrl">link</a>
+                    <a :href="meeting.refUrl" target="_blank">link</a>
                   </v-row>
                   <v-row class="mt-12">
                     <span v-html="meeting.content" />
                   </v-row>
                 </v-col>
-                <v-col cols="6">
+                <v-col lg6 sm12>
                   <v-row class="my-1">
                     <v-chip :color="`grey lighten-4`" class="black--text mx-2" label small>지역</v-chip>
                     <span
@@ -218,7 +218,7 @@
                   </v-row>
                   <div
                     id="map"
-                    style="max-width:300px; max-height:300px; width:25vw;height:25vw;margin-top:10px;display:none"
+                    style="max-width:400px; max-height:200px; width:25vw;height:25vw;margin-top:10px;display:none"
                   ></div>
                 </v-col>
               </v-row>
@@ -228,7 +228,7 @@
       </v-row>
       <v-row>
         <v-card outlined class="mx-4 pa-3" width="100%" height="100%">
-          <span v-html="meeting.content" />
+          <span class="vhtml" v-html="meeting.content" />
         </v-card>
       </v-row>
     </v-flex>
@@ -507,7 +507,19 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style lang="css" scoped>
+.vhtml >>> .ql-align-center {
+  text-align: center;
+}
+.vhtml >>> ul[data-checked="false"] > li::before,
+.vhtml >>> ul[data-checked="true"] > li::before {
+  font-size: 1.35em;
+  vertical-align: baseline;
+  bottom: -0.065em;
+  font-weight: 900;
+  color: #222;
+}
+
 @import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
 .contentstitle {
   font-size: 20pt;
