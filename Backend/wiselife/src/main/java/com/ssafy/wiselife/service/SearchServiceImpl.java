@@ -16,6 +16,7 @@ import com.ssafy.wiselife.repository.CategoryRepository;
 import com.ssafy.wiselife.repository.LikeMeetingRepository;
 import com.ssafy.wiselife.repository.MeetingImagesRepository;
 import com.ssafy.wiselife.repository.MeetingRepository;
+import com.ssafy.wiselife.repository.UserRepository;
 
 @Service
 public class SearchServiceImpl implements ISearchService {
@@ -30,6 +31,9 @@ public class SearchServiceImpl implements ISearchService {
 	private CategoryRepository categoryrepo;
 	
 	@Autowired
+	private UserRepository userrepo;
+	
+	@Autowired
 	private MeetingImagesRepository meetingimagesrepo;
 	
 	@Autowired
@@ -37,7 +41,7 @@ public class SearchServiceImpl implements ISearchService {
 
 	// 키워드가 있을때
 	@Override
-	public List<CardMeeting> searchByKeyword(int category_id, String keyword) {
+	public List<CardMeeting> searchByKeyword(int category_id, String keyword, long uid) {
 		System.out.println(keyword);
 		List<Meeting> meetingList = new ArrayList<>();
 		String keywords = "";
@@ -105,11 +109,11 @@ public class SearchServiceImpl implements ISearchService {
 				.collect(Collectors.toList());
 		LikeMeeting likeMeeting = null;
 		List<MeetingImages> meetingImagesList = new ArrayList<>();
-		List<String> imgUrlList = new ArrayList<>();
 		
 		for (int i = 0; i < meetingList.size(); i++) {
+			List<String> imgUrlList = new ArrayList<>();
 			Meeting meeting = meetingList.get(i);
-			likeMeeting = likemeetingrepo.findByUserAndMeeting(meeting.getUser(), meeting);
+			likeMeeting = likemeetingrepo.findByUserAndMeeting(userrepo.findById(uid).get(), meeting);
 			meetingImagesList = meetingimagesrepo.findByMeeting(meeting);
 			
 			int value = 0;
@@ -122,7 +126,6 @@ public class SearchServiceImpl implements ISearchService {
 					imgUrlList.add(meetingImagesList.get(j).getImageUrl());
 				}
 			}
-			
 			resultList.get(i).setMeetingImages(imgUrlList);
 		}
 		
@@ -131,7 +134,7 @@ public class SearchServiceImpl implements ISearchService {
 
 	// 키워드가 없을때 최신순으로 보여줌
 	@Override
-	public List<CardMeeting> searchByCategory(int category_id) {
+	public List<CardMeeting> searchByCategory(int category_id, long uid) {
 		try {
 			List<Meeting> meetingList = null;
 			if(category_id == 0) {
@@ -145,18 +148,26 @@ public class SearchServiceImpl implements ISearchService {
 			List<CardMeeting> resultList = meetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class))
 					.collect(Collectors.toList());
 			LikeMeeting likeMeeting = null;
+			List<MeetingImages> meetingImagesList = new ArrayList<>();
+			
 			for (int i = 0; i < meetingList.size(); i++) {
+				List<String> imgUrlList = new ArrayList<>();
 				Meeting meeting = meetingList.get(i);
-				likeMeeting = likemeetingrepo.findByUserAndMeeting(meeting.getUser(), meeting);
+				likeMeeting = likemeetingrepo.findByUserAndMeeting(userrepo.findById(uid).get(), meeting);
+				meetingImagesList = meetingimagesrepo.findByMeeting(meeting);
 				int value = 0;
 				if(likeMeeting != null) value = 1;
 				else value = 0;
 				
 				resultList.get(i).setIsLike(value);
+				if(!meetingImagesList.isEmpty()) {
+					for (int j = 0; j < meetingImagesList.size(); j++) {
+						imgUrlList.add(meetingImagesList.get(j).getImageUrl());
+					}
+				}
+				resultList.get(i).setMeetingImages(imgUrlList);
 			}
-			
-			return meetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class))
-					.collect(Collectors.toList());
+			return resultList;
 		} catch (Exception e) {
 			return null;
 		}

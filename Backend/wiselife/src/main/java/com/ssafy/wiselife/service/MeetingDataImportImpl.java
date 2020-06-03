@@ -57,6 +57,9 @@ public class MeetingDataImportImpl implements IMeetingDataImport {
 			int cnt = 0;
 
 			while ((line = br.readLine()) != null) {
+				if(cnt > 100)
+					break;
+				
 				imgLine = brImg.readLine();
 				if (cnt != 0) {
 					String array[] = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
@@ -92,7 +95,7 @@ public class MeetingDataImportImpl implements IMeetingDataImport {
 					for (int j = 0; j < len; j++) { // 최대 5개 tag만 저장
 						String tmp = new_tags[j].replace("[", "").replace("]", "").replace("(", "").replace(")", "")
 								.replace(".", "").replace("-", "").replace("#", "").replace("!", "").replace("\'", "")
-								.replace("_", "").replace("\"", "");
+								.replace("_", "").replace("\"", "").replace("&", "");
 
 						if (!tmp.isBlank())
 							save_tags += tmp + " ";
@@ -141,11 +144,14 @@ public class MeetingDataImportImpl implements IMeetingDataImport {
 					usermeetingrepo.save(usermeeting);
 
 					try {
-						MeetingImages meetingimages = new MeetingImages();
-						meetingimages.setMeeting(meeting);
-						if(!imgArray[1].equals("None") && !imgArray[1].isBlank() && !imgArray[1].equals(" "))
+						if(!imgArray[1].equals("None") && !imgArray[1].equals(" ") && imgArray[1] != null
+								&& !imgArray[1].isBlank()) {
+							imgArray[1] = imgArray[1].substring(1, imgArray[1].length()-1);
+							MeetingImages meetingimages = new MeetingImages();
+							meetingimages.setMeeting(meeting);
 							meetingimages.setImageUrl(imgArray[1]);
-						meetingimagesrepo.save(meetingimages);
+							meetingimagesrepo.save(meetingimages);
+						}
 					} catch (Exception e) {
 						System.out.println("미팅이미지 저장 실패");
 					}
