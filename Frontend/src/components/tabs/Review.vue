@@ -23,6 +23,7 @@
         </v-col>
       </v-row>
     </v-card>
+    <p> * 리뷰는 참여자만 등록 가능합니다! 리뷰 작성은 <router-link to="/mypage"> My Page > My Meeting </router-link> 에서 진행해주세요!</p>
     <div v-if="(reviews.length > 0)">
     <review-content v-for="review in reviews" :key="review.key" :review="review" />
     </div>
