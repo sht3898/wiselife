@@ -23,7 +23,6 @@ import com.ssafy.wiselife.domain.User;
 import com.ssafy.wiselife.domain.UserMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.CreateMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.DetailMeeting;
-import com.ssafy.wiselife.dto.MeetingDTO.DetailMeetingRequest;
 import com.ssafy.wiselife.dto.MeetingDTO.UpdateMeeting;
 import com.ssafy.wiselife.dto.UserDTO.MeetingOfJoinAttendant;
 import com.ssafy.wiselife.mapper.EntityMapper;
@@ -86,14 +85,11 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingEntity.setCategory(category);
 			meetingEntity.setUpdatedAt(new Date());
 			meetingEntity.setIsActive(1);
-
 			meetingrepo.save(meetingEntity);
-			int meeting_id = meetingrepo.findLastMeetingId();
-			Meeting findMeeting = meetingrepo.findById(meeting_id).get();
-			
+
 			// 모임/강좌 참여자 테이블에 작성자 저장
 			UserMeeting usermeeting = new UserMeeting();
-			usermeeting.setMeeting(findMeeting);
+			usermeeting.setMeeting(meetingEntity);
 			usermeeting.setUser(meetingEntity.getUser());
 			usermeeting.setIsActive(1); // 모집중
 			usermeetingrepo.save(usermeeting);
@@ -102,22 +98,20 @@ public class MeetingServiceImpl implements IMeetingService {
 			List<MultipartFile> files = new ArrayList<>();
 			files = meeting.getFiles();
 			List<String> fileUrlList = null;
-			if (!files.isEmpty()) {
-				try {
-					fileUrlList = meetingImgConversion(files, uid);
-					System.out.println(fileUrlList.toString());
-					for (String fileUrl : fileUrlList) {
-						MeetingImages meetingImage = new MeetingImages();
-						meetingImage.setImageUrl(fileUrl);
-						meetingImage.setMeeting(findMeeting);
-						meetingimagesrepo.save(meetingImage);
-					}
-					System.out.println("미팅 이미지 파일 업로드 성공");
-				} catch (Exception e) {
-					System.out.println("미팅 이미지 파일 업로드 실패");
+			try {
+				fileUrlList = meetingImgConversion(files, uid);
+				for (String fileUrl : fileUrlList) {
+					MeetingImages meetingImage = new MeetingImages();
+					meetingImage.setImageUrl(fileUrl);
+					meetingImage.setMeeting(meetingEntity);
+					meetingimagesrepo.save(meetingImage);
 				}
+				System.out.println("미팅 이미지 파일 업로드 성공");
+			} catch (Exception e) {
+				System.out.println("미팅 이미지 파일 업로드 실패");
 			}
-			return meeting_id;
+
+			return meetingEntity.getMeetingId();
 		} catch (Exception e) {
 			return -1;
 		}
@@ -161,14 +155,20 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingEntity.setUpdatedAt(new Date());
 
 			// 미팅 이미지 저장 과정
-			List<MultipartFile> files = meeting.getFiles();
+			List<MultipartFile> files = new ArrayList<>();
+			files = meeting.getFiles();
 			List<String> fileUrlList = null;
-			if (!files.isEmpty()) {
-				try {
-					fileUrlList = meetingImgConversion(files, uid);
-				} catch (Exception e) {
-					System.out.println("미팅 이미지 파일 업로드 실패");
+			try {
+				fileUrlList = meetingImgConversion(files, uid);
+				for (String fileUrl : fileUrlList) {
+					MeetingImages meetingImage = new MeetingImages();
+					meetingImage.setImageUrl(fileUrl);
+					meetingImage.setMeeting(meetingEntity);
+					meetingimagesrepo.save(meetingImage);
 				}
+				System.out.println("미팅 이미지 파일 업로드 성공");
+			} catch (Exception e) {
+				System.out.println("미팅 이미지 파일 업로드 실패");
 			}
 
 			meetingrepo.save(meetingEntity);
@@ -188,6 +188,7 @@ public class MeetingServiceImpl implements IMeetingService {
 				}
 				usermeetingrepo.saveAll(userMeetingList);
 			}
+
 			return meeting_id;
 		} catch (Exception e) {
 			return -1;
@@ -207,32 +208,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingEntity.setViewCnt(preViewCnt + 1);
 			meetingrepo.save(meetingEntity);
 
-			DetailMeetingRequest m = entityMapper.convertToDomain(meetingEntity, DetailMeetingRequest.class);
-			DetailMeeting meeting = new DetailMeeting();
-			meeting.setWriter(m.getWriter());
-			meeting.setTitle(m.getTitle());
-			meeting.setUpdatedAt(m.getUpdatedAt());
-			meeting.setCreatedAt(m.getCreatedAt());
-			meeting.setIsPeriod(m.getIsPeriod());
-			meeting.setMeetingDate(m.getMeetingDate());
-			meeting.setPeriodDate(m.getPeriodDate());
-			meeting.setIsClass(m.getIsClass());
-			meeting.setMaxPerson(m.getMaxPerson());
-			meeting.setNowPerson(m.getNowPerson());
-			meeting.setContent(m.getContent());
-			meeting.setRefUrl(m.getRefUrl());
-			meeting.setAddress(m.getAddress());
-			meeting.setFee(m.getFee());
-			meeting.setUnit(m.getUnit());
-			meeting.setIsActive(m.getIsActive());
-			meeting.setLikeCnt(m.getLikeCnt());
-			meeting.setViewCnt(m.getViewCnt());
-			meeting.setMainCategory(meetingEntity.getCategory().getCategoryId());
-			meeting.setTags(m.getTags());
-			meeting.setScore(m.getScore());
-			meeting.setPhone(m.getPhone());
-			meeting.setArea1(m.getArea1());
-			meeting.setArea2(m.getArea2());
+			DetailMeeting meeting = entityMapper.convertToDomain(meetingEntity, DetailMeeting.class);
 
 			// 좋아요 확인
 			user = userrepo.findById(uid).get();
@@ -256,23 +232,21 @@ public class MeetingServiceImpl implements IMeetingService {
 			} else {
 				meeting.setIsLike(0);
 			}
-			
+
 			// 이미지 가져오기
-			List<MeetingImages> meetingImages = null;
-			try {
-				meetingImages = meetingimagesrepo.findByMeeting(meetingEntity);
-			} catch (Exception e) {
-				System.out.println("미팅이미지 찾을 수 없음");
-			}
-			
+			List<MeetingImages> meetingImages = new ArrayList<>();
+			meetingImages = meetingimagesrepo.findByMeeting(meetingEntity);
+
 			List<String> imageUrlList = new ArrayList<>();
-			if(meetingImages!=null) {
+			if (!meetingImages.isEmpty()) {
 				for (int i = 0; i < meetingImages.size(); i++) {
 					String imageUrl = meetingImages.get(i).getImageUrl();
 					imageUrlList.add(imageUrl);
 				}
 			}
+			
 			meeting.setMeetingImages(imageUrlList);
+			
 			return meeting;
 		} catch (Exception e) {
 			return null;
@@ -338,7 +312,7 @@ public class MeetingServiceImpl implements IMeetingService {
 	public Map<String, List<DetailMeeting>> userOfJoinMeetingList(long uid) {
 		User user = userrepo.findById(uid).get();
 		List<UserMeeting> userMeetingList = new ArrayList<>();
-		userMeetingList = user.getUserMeetingList();
+		userMeetingList = usermeetingrepo.findByUser(user);
 
 		Meeting meetingEntity = null;
 		DetailMeeting meeting = null;
@@ -350,6 +324,7 @@ public class MeetingServiceImpl implements IMeetingService {
 
 		for (int i = 0; i < userMeetingList.size(); i++) {
 			long writer_id = userMeetingList.get(i).getMeeting().getUser().getUid();
+			System.out.println("작성자 아이디 :"+writer_id);
 			int meeting_id = userMeetingList.get(i).getMeeting().getMeetingId();
 			meetingEntity = meetingrepo.findById(meeting_id).get();
 
@@ -364,7 +339,8 @@ public class MeetingServiceImpl implements IMeetingService {
 			} else {
 				meeting.setIsLike(1);
 			}
-
+			
+			System.out.println("미팅리스트:"+meeting.toString());
 			// 참여/모집 나누기
 			if (value == 0) {
 				postList.add(meeting);
@@ -446,10 +422,10 @@ public class MeetingServiceImpl implements IMeetingService {
 		} catch (Exception e) {
 			return -1; // 존재하지 않는 Meeting
 		}
-		
+
 		UserMeeting userMeeting = null;
 		userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
-		if(userMeeting != null) {
+		if (userMeeting != null) {
 			userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
 			usermeetingrepo.delete(userMeeting);
 			meeting.setNowPerson(meeting.getNowPerson() - 1);

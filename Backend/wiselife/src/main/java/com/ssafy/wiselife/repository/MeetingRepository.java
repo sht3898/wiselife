@@ -15,9 +15,6 @@ import com.ssafy.wiselife.domain.User;
 @Repository
 public interface MeetingRepository extends JpaRepository<Meeting, Integer>{
 	
-	@Query(value = "SELECT LAST_INSERT_ID() FROM MEETING", nativeQuery = true)
-	public int findLastMeetingId();
-	
 	public Meeting findByMeetingIdAndUser(int meeting_id, User user);
 	
 	@Query(value = "SELECT * FROM MEETING m WHERE MATCH(m.tags) AGAINST(:tags in boolean mode) ORDER BY m.meeting_id DESC", nativeQuery = true)
@@ -36,6 +33,8 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer>{
 	public List<Meeting> findByCategoryAndAllFullText(@Param("category_id") int category_id, @Param("keywords") String keywords);
 
 	public List<Meeting> findByCategoryOrderByMeetingIdDesc(Category category);
+	
+	public List<Meeting> findByOrderByMeetingIdDesc();
 	
 	@Query(value = "SELECT title FROM MEETING m WHERE m.meeting_id = :meeting_id", nativeQuery = true)
 	public String findTitleByMeetingId(@Param("meeting_id") int meeting_id);
