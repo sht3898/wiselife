@@ -84,10 +84,16 @@
                   />
                 </a>
               </span>
+
+              <div>
+                 <v-btn class="contentbtn mr-3" color="green lighten-2"  rounded small @click="updateContent()" style="font-size: 12pt;">수정</v-btn>
+          <v-btn class="contentbtn"  rounded small style="font-size: 12pt;">삭제</v-btn>
+              </div>
             </v-list-item>
 
             <v-carousel cycle height="400" hide-delimiter-background show-arrows-on-hover>
               <v-carousel-item v-for="(image, i) in meeting.meetingImages" :key="i">
+                <v-img v-if="isUrl" :src="meeting.meetingImages[i]"></v-img>
                 <v-img :src="`http://k02b1051.p.ssafy.io`+ meeting.meetingImages[i]"></v-img>
               </v-carousel-item>
             </v-carousel>
@@ -101,13 +107,13 @@
                   label
                   small
                 >#{{ tag }}</v-chip>
-                <v-col style="text-align:right; color:LightGrey">
+                <v-col style="text-align:right; color:LightGrey" cols="12" sm="6">
                   <span class="mdi mdi-pencil ml-4" style="color:Grey">작성일</span>
                   <span class="grey--text ml-2">{{ meeting.createdAt }}</span>
                 </v-col>
               </v-row>
               <v-row class="ml-2">
-                <v-col lg6 sm12>
+                <v-col cols="12" sm="6">
                   <v-row class="my-3">
                     <v-chip :color="`grey lighten-4`" class="black--text mr-3" label small>
                       <span class="mdi mdi-dark mdi-clock mr-1" style="font-size:15pt;" />
@@ -201,11 +207,8 @@
                     </v-chip>
                     <a :href="meeting.refUrl" target="_blank">link</a>
                   </v-row>
-                  <v-row class="mt-12">
-                    <span v-html="meeting.content" />
-                  </v-row>
                 </v-col>
-                <v-col lg6 sm12>
+                <v-col cols="12" sm="6">
                   <v-row class="my-1">
                     <v-chip :color="`grey lighten-4`" class="black--text mx-2" label small>지역</v-chip>
                     <span
@@ -218,7 +221,7 @@
                   </v-row>
                   <div
                     id="map"
-                    style="max-width:400px; max-height:200px; width:25vw;height:25vw;margin-top:10px;display:none"
+                    style="max-width:400px; max-height:200px; width:100vw; height:30vw;margin-top:10px;display:none"
                   ></div>
                 </v-col>
               </v-row>
@@ -251,6 +254,7 @@ export default {
     return {
       menu: false,
       chk: false,
+      isUrl: false,
       seq: this.$route.params.seq,
       colors: ["red", "amber", "lime", "teal", "indigo"],
       mapContainer: "",
@@ -279,6 +283,9 @@ export default {
     this.getAttendant();
   },
   methods: {
+    updateContent(){
+
+    },
     kakaotalklink() {
       //<![CDATA[
       // // 사용할 앱의 JavaScript 키를 설정해 주세요.
@@ -499,6 +506,18 @@ export default {
             }
             this.meeting.tags = tags;
           }
+          if(this.meeting.meetingImages != null){
+            if(this.meeting.meetingImages[0].substring(2,3) == "t"){
+              if(this.meeting.meetingImages[0].substring(0,1) == "\""){
+                let length = this.meeting.meetingImages[0].length;
+                this.meeting.meetingImages[0] = this.meeting.meetingImages[0].substring(1,length-1);
+              }
+              this.meeting.meetingImages = this.meeting.meetingImages[0].split(" ");
+              if(this.meeting.meetingImages[0].substring(0,1) == "h"){
+                this.isUrl = true;
+              }
+            }
+          }
         })
         .catch(error => {
           alert(error);
@@ -523,5 +542,9 @@ export default {
 .contentstitle {
   font-size: 20pt;
   font-family: "Jua", sans-serif;
+}
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap");
+.contentbtn {
+  font-family: "Nanum Pen Script", cursive;
 }
 </style>

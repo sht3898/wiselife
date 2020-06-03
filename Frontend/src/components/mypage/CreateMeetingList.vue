@@ -8,8 +8,8 @@
             class="card-carousel-cards"
             :style="{ transform: 'translateX' + '(' + currentOffset + 'px' + ')'}"
           >
-            <div v-for="item in items" :key="item.name" class="card-carousel--card">
-              <contents-card />
+            <div v-for="item in createlist" :key="item.name" class="card-carousel--card">
+              <contents-card :content="item"/>
             </div>
           </div>
         </div>
@@ -31,22 +31,16 @@ export default {
       currentOffset: 0,
       windowSize: 4,
       paginationFactor: 220,
-      items: [
-        { name: "Kin Khao", tag: ["Thai"] },
-        { name: "Jū-Ni", tag: ["Sushi", "Japanese", "$$$$"] },
-        { name: "Delfina", tag: ["Pizza", "Casual"] },
-        { name: "San Tung", tag: ["Chinese", "$$"] },
-        { name: "Anchor Oyster Bar", tag: ["Seafood", "Cioppino"] },
-        { name: "Locanda", tag: ["Italian"] },
-        { name: "Garden Creamery", tag: ["Ice cream"] }
-      ]
     };
+  },
+  props:{
+     createlist: { type: Array }
   },
   computed: {
     atEndOfList() {
       return (
         this.currentOffset <=
-        this.paginationFactor * -1 * (this.items.length - this.windowSize)
+        this.paginationFactor * -1 * (this.createlist.length - this.windowSize)
       );
     },
     atHeadOfList() {
