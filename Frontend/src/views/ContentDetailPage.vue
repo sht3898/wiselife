@@ -511,14 +511,13 @@ export default {
 .vhtml >>> .ql-align-center {
   text-align: center;
 }
-.vhtml >>> ul[data-checked="false"] > li::before,
-.vhtml >>> ul[data-checked="true"] > li::before {
-  font-size: 1.35em;
-  vertical-align: baseline;
-  bottom: -0.065em;
-  font-weight: 900;
-  color: #222;
+.vhtml >>> .ql-align-left {
+  text-align: left;
 }
+.vhtml >>> .ql-align-right {
+  text-align: right;
+}
+
 
 @import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
 .contentstitle {
