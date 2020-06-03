@@ -1,6 +1,10 @@
 <template>
   <v-card :loading="loading" class="mx-auto my-3" width="200" height="350">
-    <v-img height="100" @click="goDetail" src="https://cdn.vuetifyjs.com/images/cards/cooking.png">
+    <v-img
+      height="100px"
+      @click="goDetail"
+      :src="`http://k02b1051.p.ssafy.io/`+ content.meetingImages"
+    >
       <div style="z-index:5; position: relative;">
         <v-chip
           :color="`green lighten-4`"
@@ -10,7 +14,7 @@
           style="top: 0px; left: 5px;"
         >{{ content.area1 }} {{ content.area2 }}</v-chip>
       </div>
-      <v-btn icon style="top: 110px; left: 80px;" @click="btnLike(content)">
+      <v-btn icon style="top: 42px; left: 160px;" @click="btnLike(content)">
         <v-icon v-if="content.isLike == 0">mdi-heart-outline</v-icon>
         <v-icon v-else color="red">mdi-heart</v-icon>
       </v-btn>
@@ -18,22 +22,22 @@
 
     <v-card-title
       class="contenttitle"
-      style="font-weight:bold; height:75px"
+      style="font-weight:bold; height:95px"
       @click="goDetail"
     >{{ content.title }}</v-card-title>
 
     <v-card-text style="height:175px">
-      <v-row class="mx-0 mt-2" style="height:110px;">
+      <div class="mx-0 mt-2" style="height:80px;">
         <v-chip
           v-for="(tag, index) in content.tags"
           :key="tag"
           :color="`${colors[index]} lighten-3`"
-          class="black--text mr-2"
+          class="mr-2"
           label
-          small
+          x-small
           @click="tagSearch(tag)"
         >#{{ tag }}</v-chip>
-      </v-row>
+      </div>
       <v-row align="center" class="mx-0" style="height:20px;">
         <v-rating
           v-if="content.score != 0"
