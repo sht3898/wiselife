@@ -1,7 +1,7 @@
 <template>
   <v-container class="my-5">
     <v-flex class="ma-auto" lg9 xs11>
-      <h3 class="mt-5">'{{keyword}}'에 대한 검색 결과입니다. 선택된 카테고리는 '{{category}}'</h3>
+      <h3 v-if="keyword" class="mt-5">'{{keyword}}'에 대한 검색 결과입니다.</h3>
       <v-row class="pa-0">
         <v-col>
           <v-row class="filtering">
@@ -26,7 +26,7 @@
       <span class="ma-0 pa-0" v-for="sorting in sortingFilter" :key="sorting.key">
         <v-chip
           :color="`yellow lighten-4`"
-          :class="{bold: sorting.clicked}"
+          :class="{sort: sorting.clicked}"
           @click="clickSorting(sorting)"
           class="black--text mr-2"
           label
@@ -43,7 +43,7 @@
   </v-container>
 </template>
 <script>
-import http from "../http-common";
+import http from "../http-common.js";
 import ContentsList from "@/components/contents/ContentsList";
 export default {
   name: "ResultPage",
@@ -56,6 +56,7 @@ export default {
       page: 1,
       pagelength: 1,
       contentslist: [],
+
       categories: [
         {
           key: 0,
@@ -105,6 +106,8 @@ export default {
       ],
       selctedCategory: 0,
       myarea: 0,
+      myarea1: "",
+      myarea2: "",
       sortingFilter: [
         {
           key: 1,
@@ -137,6 +140,10 @@ export default {
   mounted() {
     this.checkURL();
     this.search();
+    this.userInfo();
+  },
+  watch: {
+    myarea: "getMyArea"
   },
   computed: {
     keyword: function() {
@@ -156,6 +163,49 @@ export default {
     }
   },
   methods: {
+    getMyArea() {
+      if (this.myarea == 1) {
+        var contents = [];
+        if (this.myarea2 == "전체") {
+          for (var i = 0; i < this.contentslist.length; i++) {
+            if (this.contentslist[i].area1 == this.myarea1) {
+              contents.push(this.contentslist[i]);
+            }
+          }
+        } else {
+          for (var i = 0; i < this.contentslist.length; i++) {
+            if (
+              this.contentslist[i].area1 == this.myarea1 &&
+              this.contentslist[i].area2 == this.myarea2
+            ) {
+              contents.push(this.contentslist[i]);
+            }
+          }
+        }
+        this.contentslist = contents;
+      } else {
+        for (var i = 0; i < this.sortingFilter.length; i++) {
+          this.sortingFilter[i].clicked = false;
+        }
+        this.search();
+      }
+    },
+    userInfo() {
+      let config = {
+        headers: { access_token: sessionStorage.getItem("token") }
+      };
+      http
+        .get(`user/info/`, config)
+        .then(response => {
+          console.log(response.data);
+          this.myarea1 = response.data.info.userinfo.area1;
+          this.myarea2 = response.data.info.userinfo.area2;
+        })
+        .catch(error => {
+          alert(error);
+          this.$router.push("/");
+        });
+    },
     search() {
       let config = {
         headers: { access_token: sessionStorage.getItem("token") }
@@ -171,16 +221,19 @@ export default {
           config
         )
         .then(response => {
-          console.log(response);
-          this.contentslist = response.data;
-          for (var i = 0; i < this.contentslist.length; i++) {
-            this.contentslist[i].tags = this.contentslist[i].tags.split(" ");
-          }
-          this.ok = true;
-          console.log(this.contentslist);
-          if (this.contentslist)
+          if(response.data.OK != null){
+            
+          }else{
+            this.contentslist = response.data;
+            for (var i = 0; i < this.contentslist.length; i++) {
+              this.contentslist[i].tags = this.contentslist[i].tags.split(" ");
+                if(this.contentslist[i].meetingImages != null){
+                  this.contentslist[i].meetingImages = this.contentslist[i].meetingImages[0];
+                }
+            }
+            this.ok = true;
             this.pagelength = Math.floor(this.contentslist.length / 12) + 1;
-          console.log(this.pagelength);
+          }
         })
         .catch(err => {
           console.log(err);
@@ -207,19 +260,32 @@ export default {
       sorting.clicked = true;
       switch (sorting.key) {
         case 1:
-          this.contentslist.sort(function(a,b){
+          this.contentslist.sort(function(a, b) {
             return b.meetingId - a.meetingId;
-          })
+          });
           break;
         case 2:
+          this.contentslist.sort(function(a, b) {
+            return a.title < b.title ? -1 : a.title > b.title ? 1 : 0;
+          });
           break;
         case 3:
+          this.contentslist.sort(function(a, b) {
+            return b.viewCnt - a.viewCnt;
+          });
           break;
         case 4:
+          this.contentslist.sort(function(a, b) {
+            return b.likeCnt - a.likeCnt;
+          });
           break;
         case 5:
+          this.contentslist.sort(function(a, b) {
+            return b.score - a.score;
+          });
           break;
       }
+      this.ok = true;
     },
     checkURL() {
       for (var i = 0; i < this.categories.length; i++) {
@@ -233,11 +299,15 @@ export default {
 </script>
 <style scoped>
 .filtering {
-  background-color: lightgray;
+  background-color: GhostWhite;
   border-radius: 12px;
 }
 .bold {
   font-weight: bold;
   color: darkgreen;
+}
+.sort {
+  font-weight: bold;
+  color: darkorange !important;
 }
 </style>
