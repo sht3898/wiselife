@@ -8,7 +8,7 @@
             <v-btn rounded class="reviewbtn orange lighten-1" @click="insertReview">리뷰 작성 ✒️</v-btn>
           </span>
         </p>
-        <!-- <attend-meeting-list style="width=80%"/> -->
+        <attend-meeting-list :attendlist="this.attendmeetinglist"/>
       </v-container>
       <!-- 리뷰 modal -->
       <v-dialog v-model="dialog" max-width="800">
@@ -32,7 +32,7 @@
 
       <v-container fluid mb-12>
         <p class="menu">등록한 강좌/모임</p>
-        <create-meeting-list/>
+        <create-meeting-list :createlist="this.createmeetinglist"/>
       </v-container>
     </v-flex>
 </template>
@@ -50,14 +50,16 @@ export default {
   },
   data() {
     return {
-      dialog: false
+      dialog: false,
+      attendmeetinglist: [],
+      createmeetinglist: []
     };
   },
   methods: {
     insertReview() {
       this.dialog = true;
     },
-    getAttendMeeting(){
+    getMyMeeting(){
        let config = {
         headers: {
           access_token: sessionStorage.getItem("token")
@@ -67,11 +69,24 @@ export default {
       .get(`meeting/list`, config)
       .then(response => {
         console.log(response);
+
+        
+        this.attendmeetinglist = response.data.참여;
+         for (var i = 0; i < this.attendmeetinglist.length; i++) {
+            this.attendmeetinglist[i].tags = this.attendmeetinglist[i].tags.split(" ");
+          }
+        this.createmeetinglist = response.data.등록;
+         for (var i = 0; i < this.createmeetinglist.length; i++) {
+            this.createmeetinglist[i].tags = this.createmeetinglist[i].tags.split(" ");
+          }
+
+        console.log(this.attendmeetinglist);
+        console.log(this.createmeetinglist);
       })
     }
   },
   mounted(){
-    this.getAttendMeeting();
+    this.getMyMeeting();
   }
 };
 </script>

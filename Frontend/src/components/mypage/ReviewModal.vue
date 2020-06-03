@@ -1,17 +1,16 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="desserts"
+    :items="attendmeetinglist"
     single-expand
     :expanded.sync="expanded"
-    item-key="name"
+    item-key="title"
     show-expand
   >
-    <template v-slot:expanded-item="{ headers, item }">
-      <td :colspan="headers.length">
-        {{ item.name }}
+    <template v-slot:expanded-item="{ headers }">
+      <td :colspan="headers.length">        
         
-        <v-container class="pa-3">
+        <v-container class="pa-3 mt-5">
           <v-file-input
             :rules="rules"
             accept="image/png, image/jpeg, image/bmp"
@@ -26,7 +25,7 @@
           ></v-file-input>
 
           <v-textarea
-            v-model="content"
+            v-model="reviewContent"
             background-color="amber lighten-4"
             color="orange orange-darken-4"
             outlined
@@ -35,8 +34,8 @@
         
 
         <div class="pb-5" style="text-align:right">
-          <v-btn class="reviewbtn mr-3" color="green lighten-2"  rounded small @click="writeReview(true)" style="font-size: 12pt;">등록</v-btn>
-          <v-btn class="reviewbtn"  rounded small @click="writeReview(false)" style="font-size: 12pt;">삭제</v-btn>
+          <v-btn class="reviewbtn mr-3" color="green lighten-2"  rounded small @click="writeReview()" style="font-size: 12pt;">등록</v-btn>
+          <v-btn class="reviewbtn"  rounded small style="font-size: 12pt;">삭제</v-btn>
         </div>
         </v-container>
       </td>
@@ -45,6 +44,7 @@
 </template>
 
 <script>
+import http from "../../http-common"
 export default {
   name: "ReviewModal",
   data() {
@@ -52,146 +52,118 @@ export default {
       expanded: [],
       singleExpand: false,
       headers: [
-        { text: "카테고리", value: "category" },
+        { text: "카테고리", value: "mainCategory" },
         {
           text: "강좌/모임명",
           align: "start",
-          value: "name"
+          value: "title"
         },
         { text: "호스트", value: "writer" },
-        { text: "모임 유형", value: "is_period" },
-        { text: "모임 날짜", value: "meeting_date" },
+        { text: "모임 유형", value: "isPeriod" },
+        { text: "모임 날짜", value: "meetingDate" },
 
         { text: "", value: "data-table-expand" }
       ],
-      desserts: [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%"
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: "1%"
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: "7%"
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: "8%"
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: "16%"
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: "0%"
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: "2%"
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: "45%"
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: "22%"
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: "6%"
-        }
-      ],
+      attendmeetinglist:[],
+      reviewContent:"",
       files: "",
       rules: [
         value =>
           !value ||
           value.size > 100000000 ||
           "이미지는 10 MB 이하로 등록해주세요!"
-      ]
+      ],
+      categories: [
+        "전체",
+        "레저/스포츠",
+        "요리",
+        "수공예/공방",
+        "놀이/게임",
+        "문화",
+        "예술",
+        "축제/행사",
+        "기타"
+      ],
     };
   },
+  mounted(){
+    this.getMymeeting();
+  },
   methods: {
+    getMymeeting(){
+      let config = {
+        headers: {
+          access_token: sessionStorage.getItem("token")
+        }
+      };
+      http
+      .get(`meeting/list`, config)
+      .then(response => {
+        console.log(response);
+
+        
+        this.attendmeetinglist = response.data.참여;
+         for (var i = 0; i < this.attendmeetinglist.length; i++) {
+            this.attendmeetinglist[i].tags = this.attendmeetinglist[i].tags.split(" ");
+            
+            if(this.attendmeetinglist[i].isPeriod == "0") {
+              this.attendmeetinglist[i].isPeriod="비정기";
+            }else{
+              this.attendmeetinglist[i].isPeriod="정기";
+            }
+            this.attendmeetinglist[i].mainCategory = this.categories[this.attendmeetinglist[i].mainCategory];
+            this.attendmeetinglist[i].meetingDate = this.dateParsing(this.attendmeetinglist[i].meetingDate);
+          }  
+
+        console.log(this.attendmeetinglist);
+      })
+    
+    },
+    dateParsing(beforeParsing) {
+      const t = beforeParsing.indexOf("T");
+      const afterParsing = beforeParsing.substring(0, t);
+      const realdate =
+        afterParsing.substring(0, 4) +
+        "년 " +
+        afterParsing.substring(5, 7) +
+        "월 " +
+        afterParsing.substring(8, 10) +
+        "일";
+      return realdate;
+    },
     handleFilesUploads() {
       this.files = this.$refs.files.files;
     },
-    writeReview(bool) {
-      //   if (bool === true) {
-      //     if (this.content == "") {
-      //       alert("내용을 입력해주세요.");
-      //       return;
-      //     }
-      //     if(this.files == ""){
-      //       alert("이미지를 등록해주세요.");
-      //       return;
-      //     }
-      //     let formData = new FormData();
-      //     for (var i = 0; i < this.files.length; i++) {
-      //       let file = this.files[i];
-      //       formData.append("files", file);
-      //     }
-      //     formData.append("budget_num", this.budgetInfo.budget_num);
-      //     // alert("budget_num: " + this.budgetInfo.budget_num);
-      //     formData.append("review_content", this.content);
-      //     // alert("review_content: " + this.content);
-      //     http
-      //       .post("/review", formData)
-      //       .then(response => {
-      //         // console.log("SUCCESS!!");
-      //         this.$router.push({name:'review'});
-      //         // console.log(response);
-      //         // this.result = response.;
-      //       })
-      //       .catch(ex => {
-      //         // console.log("FAILURE!!");
-      //       });
-      //   } else {
-      //     this.dialog = false;
-      //   }
+    writeReview() {
+          if (this.reviewContent == "") {
+            alert("내용을 입력해주세요.");
+            return;
+          }
+          if(this.files == ""){
+            alert("이미지를 등록해주세요.");
+            return;
+          }
+          let formData = new FormData();
+          for (var i = 0; i < this.files.length; i++) {
+            let file = this.files[i];
+            formData.append("files", file);
+          }
+          formData.append("budget_num", this.budgetInfo.budget_num);
+          // alert("budget_num: " + this.budgetInfo.budget_num);
+          formData.append("reviewContent", this.reviewContent);
+          // alert("reviewContent: " + this.reviewContent);
+          http
+            .post("/review", formData)
+            .then(response => {
+              // console.log("SUCCESS!!");
+              this.$router.push({name:'review'});
+              // console.log(response);
+              // this.result = response.;
+            })
+            .catch(ex => {
+              // console.log("FAILURE!!");
+            });
+         
     }
   }
 };
