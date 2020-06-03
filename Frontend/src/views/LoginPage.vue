@@ -1,5 +1,6 @@
 <template>
   <v-container fluid>
+    <v-flex class="ma-auto mt-5" lg9>
     <div v-if="!clickBtn">
       <div class="mx-auto">
         <img-banner :imgSrc="bannerImg" />
@@ -30,6 +31,7 @@
         </v-row>
       </div>
     </div>
+    </v-flex>
     <sign-up v-if="!isMember" :token="token" />
   </v-container>
 </template>
