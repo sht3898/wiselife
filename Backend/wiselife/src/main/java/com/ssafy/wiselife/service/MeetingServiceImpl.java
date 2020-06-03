@@ -363,9 +363,6 @@ public class MeetingServiceImpl implements IMeetingService {
 			} else {
 				attendList.add(meeting);
 			}
-			
-			
-			
 		}
 
 		resultMap.put("등록", postList);
