@@ -69,6 +69,21 @@
               <span class="topscore ma-auto">{{ meeting.likeCnt }}</span>
               <span class="mdi mdi-eye-outline ml-4" style="color:#e9c04c"></span>
               <span class="grey--text ml-2">{{ meeting.viewCnt }}</span>
+              <!-- 카톡링크전송 -->
+              <span class="mx-4">
+                <a
+                  href="javascript:;"
+                  @click="kakaotalklink"
+                  id="kakao-link-btn"
+                  style="width:30px; height:auto"
+                >
+                  <!-- 버튼이 생기는 부분, id는 맘대로 쓰시되 아래 js 코드도 동일하게 적용해주셔야 합니다. -->
+                  <img
+                    src="//developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"
+                    style="width:30px; height:auto"
+                  />
+                </a>
+              </span>
             </v-list-item>
 
             <v-carousel cycle height="400" hide-delimiter-background show-arrows-on-hover>
@@ -81,7 +96,7 @@
                 <v-chip
                   v-for="(tag, index) in meeting.tags"
                   :key="tag"
-                  :color="colors[index]"
+                  :color="`${colors[index]} lighten-3`"
                   class="black--text mr-2 my-1"
                   label
                   small
@@ -237,7 +252,7 @@ export default {
       menu: false,
       chk: false,
       seq: this.$route.params.seq,
-      colors: ["lime", "amber", "orange", "teal", "indigo"],
+      colors: ["red", "amber", "lime", "teal", "indigo"],
       mapContainer: "",
       geocoder: "",
       map: "",
@@ -264,6 +279,63 @@ export default {
     this.getAttendant();
   },
   methods: {
+    kakaotalklink() {
+      //<![CDATA[
+      // // 사용할 앱의 JavaScript 키를 설정해 주세요.
+      // Kakao.cleanup();
+      // Kakao.init("c2d9f09a902e77b8550b754cdb90d407");
+      // // 카카오링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
+      Kakao.Link.createDefaultButton({
+        container: "#kakao-link-btn", // 컨테이너는 아까 위에 버튼이 쓰여진 부분 id
+        objectType: "feed",
+        content: {
+          // 여기부터 실제 내용이 들어갑니다.
+          title: this.meeting.title, // 본문 제목
+          // description: this.meeting.tags, // 본문 바로 아래 들어가는 영역?
+          imageUrl:
+            "http://k02b1051.p.ssafy.io" + this.meeting.meetingImages[0], // 이미지
+          link: {
+            webUrl:
+              "http://k02b1051.p.ssafy.io/contentdetail/" +
+              this.$route.params.seq,
+            mobileWebUrl:
+              "http://k02b1051.p.ssafy.io/contentdetail/" +
+              this.$route.params.seq,
+            androidExecParams:
+              "http://k02b1051.p.ssafy.io/contentdetail/" +
+              this.$route.params.seq,
+            iosExecParams:
+              "http://k02b1051.p.ssafy.io/contentdetail/" +
+              this.$route.params.seq
+          }
+        },
+        social: {
+          /* 공유하면 소셜 정보도 같이 줄 수 있는데, 이 부분은 기반 서비스마다 적용이 쉬울수도 어려울 수도 있을듯 합니다. 전 연구해보고 안되면 제거할 예정 (망할 google  blogger...) */
+          likeCount: this.meeting.likeCnt
+          // commentCount: 45,
+          // sharedCount: 845
+        },
+        buttons: [
+          {
+            title: "슬기로운 여가생활로 이동",
+            link: {
+              webUrl:
+                "http://k02b1051.p.ssafy.io/contentdetail/" +
+                this.$route.params.seq,
+              mobileWebUrl:
+                "http://k02b1051.p.ssafy.io/contentdetail/" +
+                this.$route.params.seq,
+              androidExecParams:
+                "http://k02b1051.p.ssafy.io/contentdetail/" +
+                this.$route.params.seq,
+              iosExecParams:
+                "http://k02b1051.p.ssafy.io/contentdetail/" +
+                this.$route.params.seq
+            }
+          }
+        ]
+      });
+    },
     attendMeeting() {
       let params = new URLSearchParams();
       params.append("meeting_id", this.seq);

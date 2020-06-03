@@ -8,7 +8,7 @@
             <v-btn rounded class="reviewbtn orange lighten-1" @click="insertReview">리뷰 작성 ✒️</v-btn>
           </span>
         </p>
-        <attend-meeting-list style="width=80%"/>
+        <!-- <attend-meeting-list style="width=80%"/> -->
       </v-container>
       <!-- 리뷰 modal -->
       <v-dialog v-model="dialog" max-width="800">
@@ -37,6 +37,7 @@
     </v-flex>
 </template>
 <script>
+import http from "../../http-common";
 import ReviewModal from "./ReviewModal";
 import AttendMeetingList from "./AttendMeetingList";
 import CreateMeetingList from "./CreateMeetingList";
@@ -55,7 +56,22 @@ export default {
   methods: {
     insertReview() {
       this.dialog = true;
+    },
+    getAttendMeeting(){
+       let config = {
+        headers: {
+          access_token: sessionStorage.getItem("token")
+        }
+      };
+      http
+      .get(`meeting/list`, config)
+      .then(response => {
+        console.log(response);
+      })
     }
+  },
+  mounted(){
+    this.getAttendMeeting();
   }
 };
 </script>

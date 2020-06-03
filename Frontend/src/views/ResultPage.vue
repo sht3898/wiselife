@@ -43,7 +43,7 @@
   </v-container>
 </template>
 <script>
-import http from "../http-common"
+import http from "../http-common";
 import ContentsList from "@/components/contents/ContentsList";
 export default {
   name: "ResultPage",
@@ -138,19 +138,40 @@ export default {
       let config = {
         headers: { access_token: sessionStorage.getItem("token") }
       };
+      // console.log(this.$route.params.category);
+      // console.log(this.$route.params.keyword);
 
-      http
-        .get(`search/${this.$route.params.category}?keyword=`+this.$route.params.keyword , config)
-        .then(response => {
-          console.log(response)
-          this.contentslist=response.data;
-          console.log(this.contentslist);
-          this.pagelength=Math.floor(this.contentslist.length/12) + 1;
-          console.log(this.pagelength)
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      if (this.$route.params.keyword == undefined) {
+        http
+          .get(`search/${this.$route.params.category}`, config)
+          .then(response => {
+            console.log(response);
+            this.contentslist = response.data;
+            console.log(this.contentslist);
+            this.pagelength = Math.floor(this.contentslist.length / 12) + 1;
+            console.log(this.pagelength);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        http
+          .get(
+            `search/${this.$route.params.category}?keyword=` +
+              this.$route.params.keyword,
+            config
+          )
+          .then(response => {
+            console.log(response);
+            this.contentslist = response.data;
+            console.log(this.contentslist);
+            this.pagelength = Math.floor(this.contentslist.length / 12) + 1;
+            console.log(this.pagelength);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     },
     clickCategory(category) {
       for (var i = 0; i < this.categories.length; i++) {
@@ -162,6 +183,7 @@ export default {
       this.$router.push(
         "/result/" + category.key + "/" + this.$route.params.keyword
       );
+      this.search();
     },
     clickSorting(sorting) {
       for (var i = 0; i < this.sortingFilter.length; i++) {
@@ -185,7 +207,8 @@ export default {
   },
   computed: {
     keyword: function() {
-      return this.$route.params.keyword;      
+      return this.$route.params.keyword;
+      this.search();
     },
     category: function() {
       for (var i = 0; i < this.categories.length; i++) {
@@ -196,6 +219,7 @@ export default {
         }
       }
       return this.$route.params.category;
+      this.search();
     }
   }
 };

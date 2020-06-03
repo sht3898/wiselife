@@ -74,7 +74,7 @@
           :class="{green: category.clicked}"
           @click="category.clicked = !category.clicked"
         />
-        <div class="subheading" style="font-size:11pt; text-align:center;">{{ category.name }}</div>
+        <div class="subheading" style="font-size:10pt; text-align:center;">{{ category.name }}</div>
       </v-col>
     </v-row>
 
