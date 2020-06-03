@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.wiselife.domain.LikeMeeting;
 import com.ssafy.wiselife.domain.Meeting;
+import com.ssafy.wiselife.domain.MeetingImages;
 import com.ssafy.wiselife.dto.MeetingDTO.CardMeeting;
 import com.ssafy.wiselife.mapper.EntityMapper;
 import com.ssafy.wiselife.repository.CategoryRepository;
 import com.ssafy.wiselife.repository.LikeMeetingRepository;
+import com.ssafy.wiselife.repository.MeetingImagesRepository;
 import com.ssafy.wiselife.repository.MeetingRepository;
 
 @Service
@@ -26,6 +28,9 @@ public class SearchServiceImpl implements ISearchService {
 
 	@Autowired
 	private CategoryRepository categoryrepo;
+	
+	@Autowired
+	private MeetingImagesRepository meetingimagesrepo;
 	
 	@Autowired
 	private LikeMeetingRepository likemeetingrepo;
@@ -95,18 +100,30 @@ public class SearchServiceImpl implements ISearchService {
 			}
 		}
 		
-		// 좋아요 확인
+		// 좋아요 , 사진 확인
 		List<CardMeeting> resultList = meetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class))
 				.collect(Collectors.toList());
 		LikeMeeting likeMeeting = null;
+		List<MeetingImages> meetingImagesList = new ArrayList<>();
+		List<String> imgUrlList = new ArrayList<>();
+		
 		for (int i = 0; i < meetingList.size(); i++) {
 			Meeting meeting = meetingList.get(i);
 			likeMeeting = likemeetingrepo.findByUserAndMeeting(meeting.getUser(), meeting);
+			meetingImagesList = meetingimagesrepo.findByMeeting(meeting);
+			
 			int value = 0;
 			if(likeMeeting != null) value = 1;
 			else value = 0;
 			
 			resultList.get(i).setIsLike(value);
+			if(!meetingImagesList.isEmpty()) {
+				for (int j = 0; j < meetingImagesList.size(); j++) {
+					imgUrlList.add(meetingImagesList.get(j).getImageUrl());
+				}
+			}
+			
+			resultList.get(i).setMeetingImages(imgUrlList);
 		}
 		
 		return resultList;
