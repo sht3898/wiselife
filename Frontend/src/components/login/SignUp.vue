@@ -65,6 +65,7 @@
     </v-row>
 
     <h3>관심 카테고리</h3>
+    <p style="font-size:9pt">복수 선택 가능합니다.</p>
     <v-row justify="space-around">
       <v-col v-for="category in categories" :key="category.name" class="mt-5">
         <v-img

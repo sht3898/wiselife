@@ -265,7 +265,7 @@ export default {
         year: this.birth,
         area1: this.area1,
         area2: this.area2,
-        is_inst: this.instructor,
+        isInst: this.instructor,
         interestCategory: picked
       };
       let config = {

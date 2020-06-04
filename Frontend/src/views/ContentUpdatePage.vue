@@ -1,136 +1,149 @@
 <template>
   <v-container>
-    <v-flex class="ma-auto my-5" lg9>
-      <v-row class="ma-0 pa-0">
-        <v-col class="my-0 py-0" cols="2">
-          <v-overflow-btn
-            v-model="meeting.mainCategory"
-            :items="categories"
-            style="font-size:10pt"
-            label="카테고리"
-            dense
-          ></v-overflow-btn>
-        </v-col>
-        <v-col>
-          <v-text-field v-model="meeting.title" placeholder="제목" outlined dense></v-text-field>
-        </v-col>
-        <v-col class="my-0 py-0" cols="2">
-          <v-overflow-btn
-            v-model="meeting.isClass"
-            :items="classform"
-            style="font-size:10pt"
-            label="형태"
-            dense
-          ></v-overflow-btn>
-        </v-col>
-        <v-col class="my-0 py-0" cols="2">
-          <v-overflow-btn
-            v-model="meeting.isPeriod"
-            :items="periodform"
-            style="font-size:10pt"
-            label="기간"
-            dense
-          ></v-overflow-btn>
-        </v-col>
-        <v-col v-if="meeting.is_period=='정기'">
-          <v-text-field
-            v-model="meeting.periodDate"
-            dense
-            outlined
-            style="font-size:10pt"
-            placeholder="주/월 n회"
-          ></v-text-field>
-        </v-col>
-        <v-col v-if="meeting.isPeriod=='비정기'">
-          <v-menu
-            v-model="menu2"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            transition="scale-transition"
-            offset-y
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                dense
-                outlined
-                v-model="meeting.meetingDate"
-                style="font-size:10pt"
-                label="모임 날짜"
-                prepend-icon="mdi-calendar"
-                readonly
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker v-model="meeting.meetingDate" @input="menu2 = false"></v-date-picker>
-          </v-menu>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-combobox
-            class="my-0 py-0"
-            v-model="hashtag"
-            :filter="filter"
-            :hide-no-data="!search"
-            :items="items"
-            :search-input.sync="search"
-            hide-selected
-            label="해시태그를 등록해주세요! (최대 5개 / 메인에는 3개만 보입니다)"
-            multiple
-            small-chips
-            solo
-          >
-            <template v-slot:no-data>
-              <v-list-item>
-                <span class="subheading">Create</span>
-                <v-chip :color="`${colors[nonce - 1]} lighten-3`" label small>{{ search }}</v-chip>
-              </v-list-item>
-            </template>
-            <template v-slot:selection="{ attrs, item, parent, selected }">
-              <v-chip
-                v-if="item === Object(item)"
-                v-bind="attrs"
-                :color="`${item.color} lighten-3`"
-                :input-value="selected"
-                label
-                small
-              >
-                <span class="pr-2">{{ item.text }}</span>
-                <v-icon small @click="parent.selectItem(item)">mdi-close</v-icon>
-              </v-chip>
-            </template>
-            <template v-slot:item="{ index, item }">
-              <v-text-field
-                class="my-0 py-0"
-                v-if="editing === item"
-                v-model="editing.text"
-                autofocus
-                flat
-                background-color="transparent"
-                hide-details
-                solo
-                @keyup.enter="edit(index, item)"
-              ></v-text-field>
-              <v-chip v-else :color="`${item.color} lighten-3`" dark label small>{{ item.text }}</v-chip>
-              <v-spacer></v-spacer>
-              <v-list-item-action @click.stop>
-                <v-btn icon @click.stop.prevent="edit(index, item)">
-                  <v-icon>{{ editing !== item ? 'mdi-pencil' : 'mdi-check' }}</v-icon>
-                </v-btn>
-              </v-list-item-action>
-            </template>
-          </v-combobox>
-        </v-col>
-      </v-row>
+   <v-flex class="ma-auto my-5" lg9>
+      <v-card outlined>
+        <p class="infotext ml-5 mt-3">필수 항목 - 강좌/모임에 대한 정보를 입력해주세요!</p>
+        <v-row class="ma-0 pa-0">
+          <v-col class="my-0 mr-0 pr-0 py-0" cols="2">
+            <v-overflow-btn
+              v-model="meeting.mainCategory"
+              :items="categories"
+              style="font-size:10pt"
+              label="카테고리"
+              dense
+            ></v-overflow-btn>
+          </v-col>
+          <v-col>
+            <v-text-field v-model="meeting.title" placeholder="제목" outlined dense></v-text-field>
+          </v-col>
+          <v-col class="ma-0 pa-0" cols="2">
+            <v-overflow-btn
+              v-if="userinst==1"
+              v-model="meeting.isClass"
+              :items="classform"
+              style="font-size:10pt"
+              label="형태"
+              dense
+            ></v-overflow-btn>
+            <v-overflow-btn
+              v-else
+              v-model="meeting.isClass"
+              :items="meetingform"
+              style="font-size:10pt"
+              label="형태"
+              dense
+            ></v-overflow-btn>
+          </v-col>
+          <v-col class="my-0 py-0" cols="2">
+            <v-overflow-btn
+              v-model="meeting.isPeriod"
+              :items="periodform"
+              style="font-size:10pt"
+              label="기간"
+              dense
+            ></v-overflow-btn>
+          </v-col>
+          <v-col v-if="meeting.isPeriod=='정기'">
+            <v-text-field
+              v-model="meeting.periodDate"
+              dense
+              outlined
+              style="font-size:10pt"
+              placeholder="주/월 n회"
+            ></v-text-field>
+          </v-col>
+          <v-col v-if="meeting.isPeriod=='비정기'">
+            <v-menu
+              v-model="menu2"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  dense
+                  outlined
+                  v-model="meeting.meetingDate"
+                  style="font-size:10pt"
+                  label="모임 날짜"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="meeting.meetingDate" @input="menu2 = false"></v-date-picker>
+            </v-menu>
+          </v-col>
+        </v-row>
 
+        <v-row>
+          <v-col class="my-0 mr-0 pr-0 py-0">
+            <v-container id="dropdown-example-2" class="py-0">
+              <v-overflow-btn
+                class="my-0 py-0"
+                v-model="area1"
+                :items="first_area"
+                style="font-size:10pt"
+                label="도/시"
+                dense
+              ></v-overflow-btn>
+            </v-container>
+          </v-col>
+          <v-col class="ma-0 pa-0">
+            <v-container id="dropdown-example-2" class="py-0">
+              <v-overflow-btn
+                class="my-0 py-0"
+                v-model="meeting.area2"
+                :items="second_area"
+                style="font-size:10pt"
+                label="시/군/구"
+                dense
+              ></v-overflow-btn>
+            </v-container>
+          </v-col>
+
+          <v-col class="my-0 py-0">
+            <v-text-field
+              v-model="meeting.maxPerson"
+              label="모집 인원"
+              style="font-size:10pt"
+              type="number"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+          <v-col class="my-0 py-0 mr-3 pr-3">
+            <v-overflow-btn
+              class="my-0 py-0"
+              v-model="meeting.unit"
+              :items="unitform"
+              style="font-size:10pt"
+              label="모임비"
+              dense
+            ></v-overflow-btn>
+          </v-col>
+          <v-col class="my-0 py-0 ml-0 pl-0 mr-3 pr-3" v-if="meeting.unit=='회비'">
+            <v-text-field
+              v-model="meeting.fee"
+              type="number"
+              style="font-size:9pt"
+              suffix="원"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-card>
       <v-row>
-        <v-col cols="6">
+        <v-col cols="5">
           <v-file-input
             :rules="rules"
             accept="image/png, images/PNG, image/jpg, image/jpeg, image/bmp"
             placeholder="이미지 첨부"
             prepend-icon="mdi-camera-enhance"
+            style="font-size:10pt"
             outlined
             multiple
             show-size
@@ -140,36 +153,78 @@
             v-on:change="handleFilesUploads()"
           ></v-file-input>
         </v-col>
-        <v-col>
+        <v-col cols="6" >
           <v-text-field
-            v-model="meeting.maxPerson"
-            label="모집 인원"
-            style="font-size:10pt"
-            type="number"
-            outlined
-            dense
-          ></v-text-field>
-        </v-col>
-        <v-col>
-          <v-overflow-btn
+            v-model="meeting.address"
             class="my-0 py-0"
-            v-model="meeting.unit"
-            :items="unitform"
+            id="sample6_address"
+            prepend-icon="mdi-map-marker"
             style="font-size:10pt"
-            label="모임비"
-            dense
-          ></v-overflow-btn>
-        </v-col>
-        <v-col v-if="meeting.unit=='회비'">
-          <v-text-field
-            v-model="meeting.fee"
-            type="number"
-            style="font-size:9pt"
-            suffix="원"
             outlined
             dense
-          ></v-text-field>
+            disabled
+            placeholder="위치"
+          />
         </v-col>
+
+        <v-col cols="1" class="my-1 py-2 mx-0 px-0">
+          <v-btn @click="sample6_execDaumPostcode()" outlined color="green lighten-1">검색</v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-combobox
+          class="my-0 py-0"
+          v-model="hashtag"
+          :filter="filter"
+          :hide-no-data="!search"
+          :items="items"
+          :search-input.sync="search"
+          hide-selected
+          label="해시태그를 등록해주세요! (최대 5개 / 메인에는 3개만 보입니다)"
+          multiple
+          small-chips
+          solo
+        >
+          <template v-slot:no-data>
+            <v-list-item>
+              <span class="subheading">Create</span>
+              <v-chip :color="`${colors[nonce - 1]} lighten-3`" label small>{{ search }}</v-chip>
+            </v-list-item>
+          </template>
+          <template v-slot:selection="{ attrs, item, parent, selected }">
+            <v-chip
+              v-if="item === Object(item)"
+              v-bind="attrs"
+              :color="`${item.color} lighten-3`"
+              :input-value="selected"
+              label
+              small
+            >
+              <span class="pr-2">{{ item.text }}</span>
+              <v-icon small @click="parent.selectItem(item)">mdi-close</v-icon>
+            </v-chip>
+          </template>
+          <template v-slot:item="{ index, item }">
+            <v-text-field
+              class="my-0 py-0"
+              v-if="editing === item"
+              v-model="editing.text"
+              autofocus
+              flat
+              background-color="transparent"
+              hide-details
+              solo
+              @keyup.enter="edit(index, item)"
+            ></v-text-field>
+            <v-chip v-else :color="`${item.color} lighten-3`" dark label small>{{ item.text }}</v-chip>
+            <v-spacer></v-spacer>
+            <v-list-item-action @click.stop>
+              <v-btn icon @click.stop.prevent="edit(index, item)">
+                <v-icon>{{ editing !== item ? 'mdi-pencil' : 'mdi-check' }}</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </template>
+        </v-combobox>
       </v-row>
       <v-row style="heigth:300px">
         <vue-editor
@@ -200,48 +255,6 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col class="px-0 py-0">
-          <v-container id="dropdown-example-2" class="py-0">
-            <v-overflow-btn
-              class="my-0 py-0"
-              v-model="area1"
-              :items="first_area"
-              style="font-size:10pt"
-              label="도/시"
-              dense
-            ></v-overflow-btn>
-          </v-container>
-        </v-col>
-        <v-col class="px-0 py-0">
-          <v-container id="dropdown-example-2" class="py-0">
-            <v-overflow-btn
-              class="my-0 py-0"
-              v-model="meeting.area2"
-              :items="second_area"
-              style="font-size:10pt"
-              label="시/군/구"
-              dense
-            ></v-overflow-btn>
-          </v-container>
-        </v-col>
-        <v-col cols="6" class="my-0 py-0">
-          <v-text-field
-            v-model="meeting.address"
-            class="my-0 py-0"
-            id="sample6_address"
-            prepend-icon="mdi-map-marker"
-            style="font-size:10pt"
-            outlined
-            dense
-            disabled
-            placeholder="위치"
-          />
-        </v-col>
-        <v-col cols="1" style="padding:2px">
-          <v-btn @click="sample6_execDaumPostcode()" outlined color="green lighten-1">검색</v-btn>
-        </v-col>
-      </v-row>
       <v-row class="mb-5" style="text-align:right; float:right">
         <v-btn rounded class="mr-2 submitbtn" @click="goback">취소</v-btn>
         <v-btn rounded class="mr-3 submitbtn" color="orange lighten-1" @click="validate()">수정</v-btn>
@@ -373,7 +386,8 @@ export default {
       "경상남도",
       "제주특별자치도"
     ],
-    second_area: []
+    second_area: [],
+     userinst: ""
   }),
   watch: {
     area1: "getSecondArea",
@@ -420,6 +434,8 @@ export default {
 
           this.meeting = response.data;
           this.area1 = response.data.area1;
+
+          this.userinst = response.data.isInst;
 
           console.log(this.meeting);
         })
@@ -549,6 +565,10 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap");
 .submitbtn {
   font-size: 13pt;
+  font-family: "Nanum Pen Script", cursive;
+}
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap");
+.infotext {
   font-family: "Nanum Pen Script", cursive;
 }
 </style>

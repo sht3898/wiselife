@@ -23,10 +23,10 @@
           </v-col>
         </v-row>
       </v-container>
-    <v-container fluid mb-12>
-    <p class="menu">인기 컨텐츠 TOP 5</p>
-    <top-five/>
-    </v-container>
+      <v-container fluid mb-12>
+        <p class="menu">인기 컨텐츠 TOP 5</p>
+        <top-five style="width:97%"/>
+      </v-container>
     </v-flex>
   </v-container>
 </template>

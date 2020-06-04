@@ -1,12 +1,12 @@
 <template>
-  <div class="ma-auto pa-1 mt-5" style="background-color:#e9ffe0; border-radius: 10px;">
+  <v-card class="ma-auto pa-1 mt-5" outlined >
     <v-row>
-      <v-col cols="12" sm="6">
-        <v-card class="mx-auto">
+      <v-col cols="12" sm="6" class="my-2 py-1">
+       <p class="toptitle" style="text-align:center">성별</p>
           <v-row>
             <v-col cols="12" sm="6">
-              <h5>성별</h5>
-              <h5>남</h5>
+             
+              <h5 style="text-align:center">남</h5>
               <v-list two-line>
                 <v-list-item-group multiple>
                   <template v-for="(item, index) in menlist">
@@ -14,7 +14,7 @@
                       <template>
                         <v-list-item-content>
                           <span>{{ranking[index]}}</span>
-                          <v-list-item-title v-text="item.title"></v-list-item-title>
+                          <v-list-item-title   class="meetingtitle" v-text="item.title"></v-list-item-title>
                         </v-list-item-content>
                       </template>
                     </v-list-item>
@@ -24,17 +24,19 @@
                 </v-list-item-group>
               </v-list>
             </v-col>
-            <v-col cols="12" sm="6">
-              <h5>성별</h5>
-              <h5>여</h5>
+            <v-col cols="12" sm="6"  class="ma-0 pa-0">
+              <h5 style="text-align:center">여</h5>
               <v-list two-line>
                 <v-list-item-group multiple>
                   <template v-for="(item, index) in womenlist">
                     <v-list-item :key="item.title">
                       <template>
                         <v-list-item-content>
-                          <span>{{ranking[index]}}</span>
-                          <v-list-item-title v-text="item.title"></v-list-item-title>
+                          <v-row>
+                          <v-col cols="1"><span>{{ranking[index]}}</span></v-col>
+                          <v-col cols="10"><v-list-item-title   class="meetingtitle" v-text="item.title"></v-list-item-title>
+                          </v-col>
+                          </v-row>
                         </v-list-item-content>
                       </template>
                     </v-list-item>
@@ -45,12 +47,11 @@
               </v-list>
             </v-col>
           </v-row>
-        </v-card>
       </v-col>
       <v-col cols="12" sm="3">
-        <v-card class="mx-auto">
-          <h5>연령대</h5>
-          <h5>{{ ages }} 대</h5>
+        <div class="mx-auto">
+          <p class="toptitle" style="text-align:center">연령대</p>
+          <h5 style="text-align:center">{{ ages }} 대</h5>
           <v-list two-line>
             <v-list-item-group multiple>
               <template v-for="(item, index) in ageslist">
@@ -58,7 +59,7 @@
                   <template>
                     <v-list-item-content>
                       <span>{{ranking[index]}}</span>
-                      <v-list-item-title v-text="item.title"></v-list-item-title>
+                      <v-list-item-title  class="meetingtitle" v-text="item.title"></v-list-item-title>
                     </v-list-item-content>
                   </template>
                 </v-list-item>
@@ -67,12 +68,12 @@
               </template>
             </v-list-item-group>
           </v-list>
-        </v-card>
+        </div>
       </v-col>
       <v-col cols="12" sm="3">
-        <v-card class="mx-auto">
-          <h5>지역</h5>
-          <h5>{{ area }}</h5>
+        <div class="mx-auto">
+          <p class="toptitle" style="text-align:center">지역</p>
+          <h5 style="text-align:center">{{ area }}</h5>
           <v-list two-line>
             <v-list-item-group multiple>
               <template v-for="(item, index) in arealist">
@@ -80,7 +81,7 @@
                   <template>
                     <v-list-item-content>
                       <span>{{ranking[index]}}</span>
-                      <v-list-item-title v-text="item.title"></v-list-item-title>
+                      <v-list-item-title class="meetingtitle" v-text="item.title"></v-list-item-title>
                     </v-list-item-content>
                   </template>
                 </v-list-item>
@@ -89,10 +90,10 @@
               </template>
             </v-list-item-group>
           </v-list>
-        </v-card>
+        </div>
       </v-col>
     </v-row>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -105,7 +106,7 @@ export default {
       womenlist: [],
       ageslist: [],
       arealist: [],
-      ranking: ["🥇", "🥈", "🥉", "4️", "5"],
+      ranking: ["🥇", "🥈", "🥉", " ", " "],
       ages: "",
       area: ""
     };
@@ -150,5 +151,17 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
+.toptitle {
+  font-size: 13pt;
+  font-family: "Jua", sans-serif;
+}
+.theme--light.v-card.v-card--outlined {
+    border: thick solid #AED581;
+    border-radius: 12px;
+}
+.meetingtitle {
+  font-size:9pt;
+}
 </style>
