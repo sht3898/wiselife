@@ -45,7 +45,6 @@ public class MeetingDataImportController {
 			return new ResponseEntity<>(resultMap, status);
 		}
 
-		System.out.println("-----모임/강좌 데이터 넣기 성공-----");
 		status = HttpStatus.OK;
 		resultMap.put(status, "SUCCESS");
 		return new ResponseEntity<>(resultMap, status);
