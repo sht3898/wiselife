@@ -12,12 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.wiselife.dto.MeetingDTO.ShortMeeting;
 import com.ssafy.wiselife.dto.ReviewDTO.DetailReview;
@@ -72,7 +72,7 @@ public class ReviewController {
 
 	@PostMapping("/review/write")
 	@ApiOperation("리뷰 작성 또는 수정")
-	public ResponseEntity<Map<HttpStatus, String>> saveReview(HttpServletRequest req, WriteReview review, MultipartFile files) {
+	public ResponseEntity<Map<HttpStatus, String>> saveReview(HttpServletRequest req, @ModelAttribute WriteReview review) {
 		System.out.println("-----리뷰 작성 또는 수정-----");
 		Map<HttpStatus, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
@@ -159,8 +159,11 @@ public class ReviewController {
 		HttpStatus status = null;
 
 		List<DetailReview> resultList = reviewservice.showMeetingOfReviewList(meeting_id);
-
-		if (resultList.isEmpty()) {
+		if(resultList == null) {
+			status = HttpStatus.NOT_FOUND;
+			resultMap.put(status, "삭제되었거나 존재하지 않는 모임/강좌");
+			return  new ResponseEntity<>(resultMap, status);
+		} else if (resultList.isEmpty()) {
 			status = HttpStatus.OK;
 			resultMap.put(status, "NO DATA");
 			return new ResponseEntity<>(resultMap, status);

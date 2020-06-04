@@ -29,13 +29,13 @@ public class SearchServiceImpl implements ISearchService {
 
 	@Autowired
 	private CategoryRepository categoryrepo;
-	
+
 	@Autowired
 	private UserRepository userrepo;
-	
+
 	@Autowired
 	private MeetingImagesRepository meetingimagesrepo;
-	
+
 	@Autowired
 	private LikeMeetingRepository likemeetingrepo;
 
@@ -45,33 +45,24 @@ public class SearchServiceImpl implements ISearchService {
 		System.out.println(keyword);
 		List<Meeting> meetingList = new ArrayList<>();
 		String keywords = "";
-		
-		// 메인페이지에서 검색
+
+		// 전체 검색
 		if (category_id == 0) {
 			if (keyword.contains("#")) { // 해시태그 검색
 				String[] tags = keyword.split(" ");
-				for (int i = 0; i < tags.length; i++) {
-					keywords += tags[i].substring(1, tags[i].length()) + " ";
+				for (String tag : tags) {
+					keywords += tag.substring(1, tag.length()) + " ";
 				}
-				keywords = keywords.substring(0, keywords.length() - 1);
 
+				keywords = keywords.substring(0, keywords.length() - 1);
 				meetingList = meetingrepo.findByTags(keyword);
-				if (meetingList.isEmpty())
-					return null;
-				
-			} else {
+			} else { // 기본 검색
 				String[] input = keyword.split(" ");
-				for (int i = 0; i < input.length; i++) {
-					keywords += "+" + input[i] + "* ";
+				for (String str : input) {
+					keywords += "+" + str + "* ";
 				}
-
 				keywords = keywords.substring(0, keywords.length() - 1);
-
-				try {
-					meetingList = meetingrepo.findByAllFullText(keywords);
-				} catch (Exception e2) {
-					return null;
-				}
+				meetingList = meetingrepo.findByAllFullText(keywords);
 			}
 		}
 
@@ -79,97 +70,94 @@ public class SearchServiceImpl implements ISearchService {
 		else {
 			if (keyword.contains("#")) {
 				String[] tags = keyword.split(" ");
-				for (int i = 0; i < tags.length; i++) {
-					keywords += tags[i].substring(1, tags[i].length()) + " ";
+				for (String tag : tags) {
+					keywords += tag.substring(1, tag.length()) + " ";
 				}
 				keywords = keywords.substring(0, keywords.length() - 1);
-
-				try {
-					meetingList = meetingrepo.findByCategoryAndTags(category_id, keywords);
-				} catch (Exception e) {
-					return null;
-				}
+				meetingList = meetingrepo.findByCategoryAndTags(category_id, keywords);
 			} else {
 				String[] input = keyword.split(" ");
-				for (int i = 0; i < input.length; i++) {
-					keywords += "+" + input[i] + "* ";
+				for (String str : input) {
+					keywords += "+" + str + "* ";
 				}
 				keywords = keywords.substring(0, keywords.length() - 1);
-
-				try {
-					meetingList = meetingrepo.findByCategoryAndAllFullText(category_id, keywords);
-				} catch (Exception e2) {
-					return null;
-				}
+				meetingList = meetingrepo.findByCategoryAndAllFullText(category_id, keywords);
 			}
 		}
-		
+
+		if (meetingList.isEmpty())
+			return null;
+
 		// 좋아요 , 사진 확인
 		List<CardMeeting> resultList = meetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class))
 				.collect(Collectors.toList());
-		LikeMeeting likeMeeting = null;
 		List<MeetingImages> meetingImagesList = new ArrayList<>();
-		
+		LikeMeeting likeMeeting = null;
+
 		for (int i = 0; i < meetingList.size(); i++) {
 			List<String> imgUrlList = new ArrayList<>();
 			Meeting meeting = meetingList.get(i);
 			likeMeeting = likemeetingrepo.findByUserAndMeeting(userrepo.findById(uid).get(), meeting);
 			meetingImagesList = meetingimagesrepo.findByMeeting(meeting);
-			
+
+			// 좋아요
 			int value = 0;
-			if(likeMeeting != null) value = 1;
-			else value = 0;
-			
+			if (likeMeeting != null)
+				value = 1;
+			else
+				value = 0;
 			resultList.get(i).setIsLike(value);
-			if(!meetingImagesList.isEmpty()) {
-				for (int j = 0; j < meetingImagesList.size(); j++) {
-					imgUrlList.add(meetingImagesList.get(j).getImageUrl());
+			
+			// 저장된 이미지 확인
+			if (!meetingImagesList.isEmpty()) {
+				for (MeetingImages mi : meetingImagesList) {
+					imgUrlList.add(mi.getImageUrl());
 				}
 			}
 			resultList.get(i).setMeetingImages(imgUrlList);
 		}
-		
+
 		return resultList;
 	}
 
 	// 키워드가 없을때 최신순으로 보여줌
 	@Override
 	public List<CardMeeting> searchByCategory(int category_id, long uid) {
-		try {
-			List<Meeting> meetingList = null;
-			if(category_id == 0) {
+			List<Meeting> meetingList = new ArrayList<>();
+			if (category_id == 0) {
 				meetingList = meetingrepo.findByOrderByMeetingIdDesc();
 			} else {
-				meetingList = meetingrepo
-						.findByCategoryOrderByMeetingIdDesc(categoryrepo.findById(category_id).get());
+				meetingList = meetingrepo.findByCategoryOrderByMeetingIdDesc(categoryrepo.findById(category_id).get());
 			}
 			
+			if(meetingList.isEmpty())
+				return null;
+
 			// 좋아요 확인
-			List<CardMeeting> resultList = meetingList.stream().map(e -> entityMapper.convertToDomain(e, CardMeeting.class))
-					.collect(Collectors.toList());
+			List<CardMeeting> resultList = meetingList.stream()
+					.map(e -> entityMapper.convertToDomain(e, CardMeeting.class)).collect(Collectors.toList());
 			LikeMeeting likeMeeting = null;
 			List<MeetingImages> meetingImagesList = new ArrayList<>();
-			
+
 			for (int i = 0; i < meetingList.size(); i++) {
 				List<String> imgUrlList = new ArrayList<>();
 				Meeting meeting = meetingList.get(i);
 				likeMeeting = likemeetingrepo.findByUserAndMeeting(userrepo.findById(uid).get(), meeting);
 				meetingImagesList = meetingimagesrepo.findByMeeting(meeting);
 				int value = 0;
-				if(likeMeeting != null) value = 1;
-				else value = 0;
-				
+				if (likeMeeting != null)
+					value = 1;
+				else
+					value = 0;
 				resultList.get(i).setIsLike(value);
-				if(!meetingImagesList.isEmpty()) {
-					for (int j = 0; j < meetingImagesList.size(); j++) {
-						imgUrlList.add(meetingImagesList.get(j).getImageUrl());
+				
+				if (!meetingImagesList.isEmpty()) {
+					for (MeetingImages mi : meetingImagesList) {
+						imgUrlList.add(mi.getImageUrl());
 					}
 				}
 				resultList.get(i).setMeetingImages(imgUrlList);
 			}
 			return resultList;
-		} catch (Exception e) {
-			return null;
-		}
 	}
 }

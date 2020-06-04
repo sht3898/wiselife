@@ -33,7 +33,7 @@ public class TopFiveMeetingController {
 	@GetMapping("/toplank")
 	@ApiOperation(value = "Top5 모임/강좌 전체") //return타입이 안맞아서 로그인 에러처리 안함
 	public Object showTopFiveMeeting(HttpServletRequest req) {
-		Map<String, Map<String, List<ShortMeeting>>> resultMap = new HashMap<>();
+		Map<String, Object> resultMap = new HashMap<>();
 		Map<String, List<ShortMeeting>> resultTopMeetingList = new HashMap<>();
 		
 		String access_token = null;
@@ -55,11 +55,10 @@ public class TopFiveMeetingController {
 		resultTopMeetingList = topfivemeetingservice.findGenderTopRank();
 		resultMap.put("성별", resultTopMeetingList);
 		
-		resultTopMeetingList = topfivemeetingservice.findAgesTopRank(uid);
-		resultMap.put("연령", resultTopMeetingList);
+		resultMap.put("연령", topfivemeetingservice.findAgesTopRank(uid));
 		
-		resultTopMeetingList = topfivemeetingservice.findAreaTopRank(uid);
-		resultMap.put("지역", resultTopMeetingList);
+		resultMap.put("지역", topfivemeetingservice.findAreaTopRank(uid));
+		
 		return new ResponseEntity<>(resultMap, HttpStatus.OK);
 	}
 }
