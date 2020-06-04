@@ -1,40 +1,36 @@
 <template>
-  
-    <v-flex class="ma-auto mt-5" lg11 xs12>
-      <v-container fluid>
-        <p class="menu">
-          참여한 강좌/모임
-          <span class="blinking" style="float:right">
-            <v-btn rounded class="reviewbtn orange lighten-1" @click="insertReview">리뷰 작성 ✒️</v-btn>
-          </span>
-        </p>
-        <attend-meeting-list :attendlist="this.attendmeetinglist"/>
-      </v-container>
-      <!-- 리뷰 modal -->
-      <v-dialog v-model="dialog" max-width="800">
-        <v-card>
-          <v-toolbar width="800" style="position:absolute; z-index:2">
-              
-            <v-row class="menu py-4 px-3">
-                <v-col>
-              강좌/모임 Review
-                </v-col>
-                <v-col>
+  <v-flex class="ma-auto mt-5" lg11 xs12>
+    <v-container fluid>
+      <p class="menu">
+        참여한 강좌/모임
+        <span class="blinking" style="float:right">
+          <v-btn rounded class="reviewbtn orange lighten-1" @click="insertReview">리뷰 작성 ✒️</v-btn>
+        </span>
+      </p>
+      <attend-meeting-list :attendlist="this.attendmeetinglist" />
+    </v-container>
+    <!-- 리뷰 modal -->
+    <v-dialog v-model="dialog" max-width="800">
+      <v-card>
+        <v-toolbar width="800" style="position:absolute; z-index:2">
+          <v-row class="menu py-4 px-3">
+            <v-col>강좌/모임 Review</v-col>
+            <v-col>
               <span style="text-align:right; float:right">
                 <v-btn color="green darken-1" text @click="dialog = false">Close</v-btn>
               </span>
-                </v-col>
-            </v-row>
-          </v-toolbar>
-          <review-modal style="padding-top:70px;" />
-        </v-card>
-      </v-dialog>
+            </v-col>
+          </v-row>
+        </v-toolbar>
+        <review-modal style="padding-top:70px;" />
+      </v-card>
+    </v-dialog>
 
-      <v-container fluid mb-12>
-        <p class="menu">등록한 강좌/모임</p>
-        <create-meeting-list :createlist="this.createmeetinglist"/>
-      </v-container>
-    </v-flex>
+    <v-container fluid mb-12>
+      <p class="menu">등록한 강좌/모임</p>
+      <create-meeting-list :createlist="this.createmeetinglist" />
+    </v-container>
+  </v-flex>
 </template>
 <script>
 import http from "../../http-common";
@@ -59,33 +55,115 @@ export default {
     insertReview() {
       this.dialog = true;
     },
-    getMyMeeting(){
-       let config = {
+    getMyMeeting() {
+      let config = {
         headers: {
-          access_token: sessionStorage.getItem("token")
+          access_token: localStorage.getItem("token")
         }
       };
-      http
-      .get(`meeting/list`, config)
-      .then(response => {
+      http.get(`meeting/list`, config).then(response => {
         console.log(response);
 
-        
         this.attendmeetinglist = response.data.참여;
-         for (var i = 0; i < this.attendmeetinglist.length; i++) {
-            this.attendmeetinglist[i].tags = this.attendmeetinglist[i].tags.split(" ");
-          }
+
         this.createmeetinglist = response.data.등록;
-         for (var i = 0; i < this.createmeetinglist.length; i++) {
-            this.createmeetinglist[i].tags = this.createmeetinglist[i].tags.split(" ");
-          }
 
         console.log(this.attendmeetinglist);
         console.log(this.createmeetinglist);
-      })
+
+        for (var i = 0; i < this.attendmeetinglist.length; i++) {
+          if (this.attendmeetinglist[i].tags != null) {
+            let split_tags = this.attendmeetinglist[i].tags.split(" ");
+            let tags = [];
+            for (var j in split_tags) {
+              tags.push(split_tags[j]);
+            }
+            this.attendmeetinglist[i].tags = tags;
+          }
+          if (this.attendmeetinglist[i].meetingImages.length != 0) {
+            if (
+              this.attendmeetinglist[i].meetingImages[0].substring(2, 3) == "t"
+            ) {
+              if (
+                this.attendmeetinglist[i].meetingImages[0].substring(0, 1) ==
+                '"'
+              ) {
+                let length = this.attendmeetinglist[i].meetingImages[0].length;
+                this.attendmeetinglist[
+                  i
+                ].meetingImages[0] = this.attendmeetinglist[
+                  i
+                ].meetingImages[0].substring(1, length - 1);
+              }
+              this.attendmeetinglist[i].meetingImages = this.attendmeetinglist[
+                i
+              ].meetingImages[0].split(" ")[0];
+              if (
+                this.attendmeetinglist[i].meetingImages[0].substring(0, 1) ==
+                "h"
+              ) {
+                this.attendmeetinglist[i].isUrl = true;
+              } else {
+                this.attendmeetinglist[i].isUrl = false;
+              }
+            } else {
+              this.attendmeetinglist[i].meetingImages = this.attendmeetinglist[
+                i
+              ].meetingImages[0];
+            }
+          } else {
+            this.attendmeetinglist[i].meetingImages = null;
+          }
+        }
+
+        for (var m = 0; m < this.createmeetinglist.length; m++) {
+          if (this.createmeetinglist[m].tags != null) {
+            let split_tags = this.createmeetinglist[m].tags.split(" ");
+            let tags = [];
+            for (var n in split_tags) {
+              tags.push(split_tags[n]);
+            }
+            this.createmeetinglist[m].tags = tags;
+          }
+          if (this.createmeetinglist[m].meetingImages.length != 0) {
+            if (
+              this.createmeetinglist[m].meetingImages[0].substring(2, 3) == "t"
+            ) {
+              if (
+                this.createmeetinglist[m].meetingImages[0].substring(0, 1) ==
+                '"'
+              ) {
+                let length = this.createmeetinglist[m].meetingImages[0].length;
+                this.createmeetinglist[
+                  m
+                ].meetingImages[0] = this.createmeetinglist[
+                  m
+                ].meetingImages[0].substring(1, length - 1);
+              }
+              this.createmeetinglist[m].meetingImages = this.createmeetinglist[
+                m
+              ].meetingImages[0].split(" ")[0];
+              if (
+                this.createmeetinglist[m].meetingImages[0].substring(0, 1) ==
+                "h"
+              ) {
+                this.createmeetinglist[m].isUrl = true;
+              } else {
+                this.createmeetinglist[m].isUrl = false;
+              }
+            } else {
+              this.createmeetinglist[m].meetingImages = this.createmeetinglist[
+                m
+              ].meetingImages[0];
+            }
+          } else {
+            this.createmeetinglist[m].meetingImages = null;
+          }
+        }
+      });
     }
   },
-  mounted(){
+  mounted() {
     this.getMyMeeting();
   }
 };
@@ -97,9 +175,9 @@ export default {
   font-size: 23px;
   padding-left: 10px;
 }
-@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
 .reviewbtn {
-  font-family: 'Jua', sans-serif;
+  font-family: "Jua", sans-serif;
 }
 .blinking {
   -webkit-animation: blink 1s ease-in-out infinite alternate;

@@ -6,8 +6,11 @@
         <recommends-list></recommends-list>
       </v-container>
 
-      <v-container fluid mb-12>
-        <p class="menu">전체 카테고리 <v-btn class="gobtn" @click="searchByCategory(0)" rounded small color="green lighten-2">이동</v-btn></p>
+      <v-container fluid mb-8>
+        <p class="menu">
+          전체 카테고리
+          <v-btn class="gobtn" @click="searchByCategory(0)" rounded small color="green lighten-2">이동</v-btn>
+        </p>
         <v-row justify="space-around">
           <v-col class="mt-3" v-for="category in categories" :key="category.key">
             <v-img
@@ -20,40 +23,22 @@
           </v-col>
         </v-row>
       </v-container>
-
-      <v-container fluid mb-12>
-        <p class="menu">인기 컨텐츠 TOP 5</p>
-        <v-row class="ma-auto pa-1 mt-5" style="background-color:#e9ffe0; border-radius: 10px;">
-          🥇🥈🥉
-          <v-col>
-            <h4>성별</h4>
-            <v-flex xs12 sm6 lg3>
-              <h5>남</h5>
-            </v-flex>
-            <v-flex xs12 sm6 lg3>
-              <h5>여</h5>
-            </v-flex>
-          </v-col>
-          <v-col>
-            <h4>연령대</h4>
-            <v-flex xs12 sm6 lg3></v-flex>
-          </v-col>
-          <v-col>
-            <h4>지역</h4>
-            <v-flex xs12 sm6 lg3></v-flex>
-          </v-col>
-        </v-row>
-      </v-container>
+    <v-container fluid mb-12>
+    <p class="menu">인기 컨텐츠 TOP 5</p>
+    <top-five/>
+    </v-container>
     </v-flex>
   </v-container>
 </template>
 
 <script>
 import RecommendsList from "@/components/contents/RecommendsList";
+import TopFive from "@/components/contents/TopFive";
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    RecommendsList
+    RecommendsList,
+    TopFive
   },
   data() {
     return {
@@ -109,7 +94,7 @@ export default {
       ]
     };
   },
-  mounted(){
+  mounted() {
     this.checkLogin();
   },
   methods: {
@@ -117,13 +102,12 @@ export default {
       return require("../assets/categories/" + img);
     },
     searchByCategory(category) {
-      var keyword=""
-      this.$router.push("/result/"+category+"/"+keyword);
-      
+      var keyword = "";
+      this.$router.push("/result/" + category + "/" + keyword);
     },
-    checkLogin(){
-      if(!sessionStorage.getItem('token')){
-        this.$router.push('/login');
+    checkLogin() {
+      if (!localStorage.getItem("token")) {
+        this.$router.push("/login");
         return;
       }
     }
@@ -131,14 +115,14 @@ export default {
 };
 </script>
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap");
 .menu {
-  font-family: 'Do Hyeon', sans-serif;
+  font-family: "Do Hyeon", sans-serif;
   font-size: 23px;
-  padding-left:10px;
+  padding-left: 10px;
 }
 .gobtn {
-  font-size:12pt;
+  font-size: 12pt;
   font-family: "Nanum Pen Script", cursive;
 }
 </style>

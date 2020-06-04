@@ -4,7 +4,7 @@
       <v-row class="ma-0 pa-0">
         <v-col class="my-0 py-0" cols="2">
           <v-overflow-btn
-            v-model="meeting.main_category"
+            v-model="meeting.mainCategory"
             :items="categories"
             style="font-size:10pt"
             label="카테고리"
@@ -16,7 +16,7 @@
         </v-col>
         <v-col class="my-0 py-0" cols="2">
           <v-overflow-btn
-            v-model="meeting.is_class"
+            v-model="meeting.isClass"
             :items="classform"
             style="font-size:10pt"
             label="형태"
@@ -25,7 +25,7 @@
         </v-col>
         <v-col class="my-0 py-0" cols="2">
           <v-overflow-btn
-            v-model="meeting.is_period"
+            v-model="meeting.isPeriod"
             :items="periodform"
             style="font-size:10pt"
             label="기간"
@@ -34,14 +34,14 @@
         </v-col>
         <v-col v-if="meeting.is_period=='정기'">
           <v-text-field
-            v-model="meeting.period_date"
+            v-model="meeting.periodDate"
             dense
             outlined
             style="font-size:10pt"
             placeholder="주/월 n회"
           ></v-text-field>
         </v-col>
-        <v-col v-if="meeting.is_period=='비정기'">
+        <v-col v-if="meeting.isPeriod=='비정기'">
           <v-menu
             v-model="menu2"
             :close-on-content-click="false"
@@ -54,7 +54,7 @@
               <v-text-field
                 dense
                 outlined
-                v-model="meeting.meeting_date"
+                v-model="meeting.meetingDate"
                 style="font-size:10pt"
                 label="모임 날짜"
                 prepend-icon="mdi-calendar"
@@ -62,7 +62,7 @@
                 v-on="on"
               ></v-text-field>
             </template>
-            <v-date-picker v-model="meeting.meeting_date" @input="menu2 = false"></v-date-picker>
+            <v-date-picker v-model="meeting.meetingDate" @input="menu2 = false"></v-date-picker>
           </v-menu>
         </v-col>
       </v-row>
@@ -142,7 +142,7 @@
         </v-col>
         <v-col>
           <v-text-field
-            v-model="meeting.max_person"
+            v-model="meeting.maxPerson"
             label="모집 인원"
             style="font-size:10pt"
             type="number"
@@ -192,7 +192,7 @@
         <v-col>
           <v-text-field
             class="my-0 py-0"
-            v-model="meeting.ref_url"
+            v-model="meeting.refUrl"
             label="참고 URL) http://k02b105.p.ssafy.io"
             filled
             dense
@@ -243,8 +243,8 @@
         </v-col>
       </v-row>
       <v-row class="mb-5" style="text-align:right; float:right">
-        <v-btn rounded class="mr-2 submitbtn">취소</v-btn>
-        <v-btn rounded class="mr-3 submitbtn" color="orange lighten-1" @click="validate()">등록</v-btn>
+        <v-btn rounded class="mr-2 submitbtn" @click="goback">취소</v-btn>
+        <v-btn rounded class="mr-3 submitbtn" color="orange lighten-1" @click="validate()">수정</v-btn>
       </v-row>
     </v-flex>
   </v-container>
@@ -253,7 +253,7 @@
 import http from "../http-common";
 import { VueEditor } from "vue2-editor";
 export default {
-  name: "ContentWritePage",
+  name: "ContentUpdatePage",
   components: {
     VueEditor
   },
@@ -270,16 +270,16 @@ export default {
     ],
     meeting: {
       writer: "",
-      main_category: "",
+      mainCategory: "",
       title: "",
       tags: "", // 해시태그 띄어쓰기로 구분 (#붙여서 보내기!)
-      is_period: 0,
-      meeting_date: new Date().toISOString().substr(0, 10),
-      period_date: "",
-      is_class: 0,
-      max_person: 0,
+      isPeriod: 0,
+      meetingDate: new Date().toISOString().substr(0, 10),
+      periodDate: "",
+      isClass: 0,
+      maxPerson: 0,
       content: "",
-      ref_url: "",
+      refUrl: "",
       area1: "",
       area2: "",
       address: "",
@@ -349,7 +349,9 @@ export default {
     y: 0,
     rules: [
       value =>
-        !value.length || value.reduce((size, file) => size + file.size, 0) < 10000000 || "이미지는 10 MB 이하로 등록해주세요!"
+        !value.length ||
+        value.reduce((size, file) => size + file.size, 0) < 10000000 ||
+        "이미지는 10 MB 이하로 등록해주세요!"
     ],
     unitform: ["미정", "회비"],
     first_area: [
@@ -397,9 +399,33 @@ export default {
       });
     }
   },
+  mounted(){
+      this.getContentDetail();
+  },
   methods: {
+    goback() {
+      this.$router.push("/contentdetail/" + this.$route.params.seq);
+    },
     handleFilesUploads() {
       this.files = this.$refs.files.$refs.input.files;
+    },
+    getContentDetail() {
+         let config = {
+        headers: { access_token: localStorage.getItem("token") }
+      };
+      http
+        .get(`meeting/${this.$route.params.seq}`, config)
+        .then(response => {
+          console.log(response.data);
+
+          this.meeting = response.data;
+          this.area1 = response.data.area1;
+
+          console.log(this.meeting);
+        })
+        .catch(error => {
+          alert(error);
+        });
     },
     validate() {
       let config = {
@@ -420,6 +446,7 @@ export default {
       console.log("보자!:   ", this.$refs.files.$refs.input.files);
       console.log(this.files);
 
+      formData.append("meeting_id", this.$route.params.seq);
       for (var j = 0; j < this.files.length; j++) {
         let file = this.files[j];
         formData.append("files", file);
@@ -447,11 +474,11 @@ export default {
       formData.append("phone", this.meeting.phone);
 
       http
-        .post("meeting/create", formData, config)
+        .put("meeting/update", formData, config)
         .then(response => {
           console.log(response);
           if (response.status == 200) {
-            alert("성공적으로 등록되었습니다!");
+            alert("성공적으로 수정되었습니다!");
             alert(response.data.meeting_id);
             this.$router.push("/contentdetail/" + response.data.meeting_id);
           }

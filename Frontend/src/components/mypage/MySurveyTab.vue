@@ -9,6 +9,7 @@
         </v-flex>
 
         <v-flex v-else>
+          <span @click="goback" class="mdi mdi-arrow-left-thick pl-10" style="font-size:20pt; color: green; cursor:pointer" ></span>
             <survey :token="token"/>
         </v-flex>
  </v-container>
@@ -25,12 +26,14 @@ export default {
   },
   data(){
       return{
-          token:sessionStorage.getItem('token'),
+          token:localStorage.getItem('token'),
           reSurvey:false
       }
   },
   methods:{
-      
+      goback(){
+        this.reSurvey= false;
+      }
   }
 }
 </script>

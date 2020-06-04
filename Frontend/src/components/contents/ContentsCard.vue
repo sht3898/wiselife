@@ -1,7 +1,7 @@
 <template>
   <v-card :loading="loading" class="mx-auto my-3" width="200" height="350">
     <v-img v-if="content.meetingImages != null && content.isUrl" height="100px" @click="goDetail" :src="content.meetingImages">
-      <div style="z-index:5; position: relative;">
+      <div style=" position: relative;">
         <v-chip
           :color="`green lighten-4`"
           class="black--text"
@@ -10,7 +10,7 @@
           style="top: 0px; left: 5px;"
         >{{ content.area1 }} {{ content.area2 }}</v-chip>
       </div>
-      <v-btn icon style="top: 42px; left: 160px;" @click="btnLike(content)">
+      <v-btn icon style="top: 42px; left: 160px; z-index:5;" @click="btnLike(content)">
         <v-icon v-if="content.isLike == 0">mdi-heart-outline</v-icon>
         <v-icon v-else color="red">mdi-heart</v-icon>
       </v-btn>
@@ -19,7 +19,7 @@
       v-else-if="content.meetingImages != null && !content.isUrl"
       height="100px"
       @click="goDetail"
-      :src="`http://k02b1051.p.ssafy.io/`+ content.meetingImages"
+      :src="`http://k02b1051.p.ssafy.io`+ content.meetingImages"
     >
       <div style="z-index:5; position: relative;">
         <v-chip
@@ -39,7 +39,7 @@
       v-else
       height="100px"
       @click="goDetail"
-      src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQz0g5mlIF4Qn2hRpGGSZIOLioooYg2hmdJkVk1x8ymWW4U-fVx&usqp=CAU"
+      src="@/assets/noimage.png"
     >
       <div style="z-index:5; position: relative;">
         <v-chip
@@ -123,11 +123,12 @@ export default {
   data: () => ({
     loading: false,
     isUrl: false,
-    colors: ["lime", "amber", "orange", "teal", "indigo"]
+    colors: ["red", "amber", "lime", "teal", "indigo"],
   }),
   methods: {
     goDetail() {
-      this.$router.push("/contentdetail/" + this.content.meetingId);
+      window.open('http://localhost:8080/contentdetail/' + this.content.meetingId, '_blank'); 
+      // this.$router.push("/contentdetail/" + this.content.meetingId);
     },
     tagSearch(tagname) {
       this.$router.push("/result/0/" + tagname);
@@ -136,7 +137,7 @@ export default {
       let params = new URLSearchParams();
       params.append("meeting_id", this.content.meetingId);
       let config = {
-        headers: { access_token: sessionStorage.getItem("token") }
+        headers: { access_token: localStorage.getItem("token") }
       };
       http
         .post(`meeting/like`, params, config)
