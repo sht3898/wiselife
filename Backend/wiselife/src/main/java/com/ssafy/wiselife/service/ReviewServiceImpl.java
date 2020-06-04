@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +52,15 @@ public class ReviewServiceImpl implements IReviewService {
 		userMeeting = usermeetingrepo.findByUser(user);
 
 		ArrayList<ShortMeeting> resultList = new ArrayList<>();
-		for (int i = 0; i < userMeeting.size(); i++) {
-			ShortMeeting shortMeeting = new ShortMeeting();
-			meeting_id = userMeeting.get(i).getMeeting().getMeetingId();
-			title = meetingrepo.findTitleByMeetingId(meeting_id);
-			shortMeeting.setMeetingId(meeting_id);
-			shortMeeting.setTitle(title);
-			resultList.add(shortMeeting);
+		for (UserMeeting um : userMeeting) {
+			if (um.getIsActive() != 1) {
+				ShortMeeting shortMeeting = new ShortMeeting();
+				meeting_id = um.getMeeting().getMeetingId();
+				title = meetingrepo.findTitleByMeetingId(meeting_id);
+				shortMeeting.setMeetingId(meeting_id);
+				shortMeeting.setTitle(title);
+				resultList.add(shortMeeting);
+			}
 		}
 
 		return resultList;
@@ -73,84 +76,79 @@ public class ReviewServiceImpl implements IReviewService {
 
 		try {
 			meeting = meetingrepo.findById(review.getMeetingId()).get();
-		} catch (Exception e) {
-			return -2; // 삭제된 게시물
-		}
-
-		try {
 			userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
+			
+			if (userMeeting == null)
+				return -1;
+
 			if (userMeeting.getIsActive() == 1)
 				return 1;
-		} catch (Exception e) {
-			return -1;
-		}
 
-		try {
 			reviewEntity = reviewrepo.findByUserAndMeeting(user, meeting);
-		} catch (Exception e) {
-			reviewEntity = new Review();
-			reviewEntity.setUser(user);
-			reviewEntity.setMeeting(meeting);
-			reviewEntity.setWriter(user.getUsername());
-		}
 
-		// 리뷰 이미지 저장 과정
-		String fileUrl = "";
-		if (!review.getImageFile().isEmpty()) {
-			try {
-				fileUrl = reviewImgConversion(review.getImageFile());
-			} catch (Exception e) {
-				System.out.println("리뷰 이미지 파일 업로드 실패");
+			if (reviewEntity == null) {
+				reviewEntity = new Review();
+				reviewEntity.setUser(user);
+				reviewEntity.setMeeting(meeting);
+				reviewEntity.setWriter(user.getUsername());
 			}
+
+			// 리뷰 이미지 저장 과정
+			String fileUrl = "";
+			if (review.getImageFile() != null) {
+				try {
+					fileUrl = reviewImgConversion(review.getImageFile());
+					System.out.println("리뷰 이미지 파일 업로드 성공");
+				} catch (Exception e) {
+					System.out.println("리뷰 이미지 파일 업로드 실패");
+				}
+			}
+
+			// 리뷰 업데이트
+			reviewEntity.setScore(Double.parseDouble(String.format("%.1f", review.getScore())));
+			reviewEntity.setContent(review.getContent());
+			reviewEntity.setImageUrl(fileUrl);
+			reviewrepo.save(reviewEntity);
+
+			// 별점 평균 저장
+			int avgScore = reviewrepo.avgScoreMeeting(review.getMeetingId());
+			meeting.setScore(avgScore);
+			meetingrepo.save(meeting);
+
+			return userMeeting.getIsActive();
+		} catch (NoSuchElementException e) {
+			return -2; // 삭제된 게시물
 		}
-
-		// 리뷰 업데이트
-		reviewEntity.setScore(Double.parseDouble(String.format("%.1f", review.getScore())));
-		reviewEntity.setContent(review.getContent());
-		reviewEntity.setImageUrl(fileUrl);
-		reviewrepo.save(reviewEntity);
-
-		// 별점 평균 저장
-		int avgScore = reviewrepo.avgScoreMeeting(review.getMeetingId());
-		meeting.setScore(avgScore);
-		meetingrepo.save(meeting);
-
-		return userMeeting.getIsActive();
-
 	}
 
 	@Override
 	public int deleteReview(int review_id, long uid) {
-		Review review = null;
-
 		try {
-			review = reviewrepo.findById(review_id).get();
+			Review review = reviewrepo.findById(review_id).get();
+			if (review.getUser().getUid() == uid) {
+				reviewrepo.delete(review);
+				return 1;
+			} else {
+				return 0;
+			}
 		} catch (Exception e) {
 			return -2;
-		}
-
-		if (review.getUser().getUid() == uid) {
-			reviewrepo.delete(review);
-			return 1;
-		} else {
-			return 0;
 		}
 	}
 
 	@Override
 	public List<DetailReview> showMeetingOfReviewList(int meeting_id) {
 		List<DetailReview> resultList = new ArrayList<>();
-		if (!meetingrepo.existsById(meeting_id)) {
-			return resultList;
+		if (!meetingrepo.existsById(meeting_id)) { // 존재하지 않는 미팅이면 빈값을
+			System.out.println("존재하지 않는 모임/강좌입니다.");
+			return null;
 		} else {
 			List<Review> reviewEntityList = reviewrepo.findByMeetingId(meeting_id);
-			Review reviewEntity = null;
 			DetailReview review = null;
 			Meeting meeting = null;
 			User user = null;
 
-			for (int i = 0; i < reviewEntityList.size(); i++) {
-				reviewEntity = reviewEntityList.get(i);
+			for (Review reviewEntity : reviewEntityList) {
 				review = entityMapper.convertToDomain(reviewEntity, DetailReview.class);
 				user = reviewEntity.getUser();
 				review.setProfileImage(user.getProfileImage());

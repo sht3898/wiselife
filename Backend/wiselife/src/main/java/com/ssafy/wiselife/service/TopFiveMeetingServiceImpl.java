@@ -29,18 +29,16 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 	public Map<String, List<ShortMeeting>> findGenderTopRank() {
 		List<Integer> topFiveMeeting = new ArrayList<>();
 		String title = "";
-		int meeting_id = 0;
-		ShortMeeting topMeeting = new ShortMeeting();
 		Map<String, List<ShortMeeting>> resultMap = new HashMap<>();
 
 		for (int c = 1; c <= 2; c++) {
 			ArrayList<ShortMeeting> resultList = new ArrayList<>();
 			topFiveMeeting = likemeetingrepo.findByGender(c); // 남자
 
-			for (int i = 0; i < topFiveMeeting.size(); i++) {
-				meeting_id = topFiveMeeting.get(i);
-				title = meetingrepo.findTitleByMeetingId(meeting_id);
-				topMeeting.setMeetingId(meeting_id);
+			for (int id : topFiveMeeting) {
+				ShortMeeting topMeeting = new ShortMeeting();
+				title = meetingrepo.findTitleByMeetingId(id);
+				topMeeting.setMeetingId(id);
 				topMeeting.setTitle(title);
 				resultList.add(topMeeting);
 			}
@@ -50,59 +48,49 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 			else
 				resultMap.put("여", resultList);
 		}
-
 		return resultMap;
 	}
 
 	@Override
-	public Map<String, List<ShortMeeting>> findAgesTopRank(long uid) {
+	public List<ShortMeeting> findAgesTopRank(long uid) {
 		List<Integer> topFiveMeeting = new ArrayList<>();
 		String title = "";
-		int meeting_id = 0;
-		ShortMeeting topMeeting = new ShortMeeting();
 		int ages = userrepo.findById(uid).get().getAges();
-		Map<String, List<ShortMeeting>> resultMap = new HashMap<>();
 
 		ArrayList<ShortMeeting> resultList = new ArrayList<>();
 		topFiveMeeting = likemeetingrepo.findByAges(ages);
-
-		for (int i = 0; i < topFiveMeeting.size(); i++) {
-			meeting_id = topFiveMeeting.get(i);
-			title = meetingrepo.findTitleByMeetingId(meeting_id);
-			topMeeting.setMeetingId(meeting_id);
+		
+		for (int id : topFiveMeeting) {
+			ShortMeeting topMeeting = new ShortMeeting();
+			title = meetingrepo.findTitleByMeetingId(id);
+			topMeeting.setMeetingId(id);
 			topMeeting.setTitle(title);
 			resultList.add(topMeeting);
 		}
-		
-		resultMap.put(ages+"", resultList);
-		return resultMap;
+
+		return resultList;
 	}
 
 	@Override
-	public Map<String, List<ShortMeeting>> findAreaTopRank(long uid) {
+	public List<ShortMeeting> findAreaTopRank(long uid) {
 		List<Integer> topFiveMeeting = new ArrayList<>();
 		String title = "";
-		int meeting_id = 0;
-		ShortMeeting topMeeting = new ShortMeeting();
 		User user = userrepo.findById(uid).get();
 		String firstArea = user.getArea1();
 		String secondArea = user.getArea2();
-		Map<String, List<ShortMeeting>> resultMap = new HashMap<>();
-		
+
 		ArrayList<ShortMeeting> resultList = new ArrayList<>();
 		topFiveMeeting = likemeetingrepo.findByArea(firstArea, secondArea);
-		
-		for (int i = 0; i < topFiveMeeting.size(); i++) {
-			meeting_id = topFiveMeeting.get(i);
-			topMeeting.setMeetingId(meeting_id);
-			title = meetingrepo.findTitleByMeetingId(meeting_id);
-			topMeeting.setMeetingId(meeting_id);
+
+		for (int id : topFiveMeeting) {
+			ShortMeeting topMeeting = new ShortMeeting();
+			title = meetingrepo.findTitleByMeetingId(id);
+			topMeeting.setMeetingId(id);
 			topMeeting.setTitle(title);
 			resultList.add(topMeeting);
 		}
 		
-		resultMap.put(firstArea+" "+secondArea, resultList);
-		return resultMap;
+		return resultList;
 	}
 
 }

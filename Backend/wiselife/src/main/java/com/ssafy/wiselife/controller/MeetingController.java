@@ -44,15 +44,16 @@ public class MeetingController {
 	private IKakaoService kakaoservice;
 
 	@PostMapping("/meeting/create")
-	@ApiOperation(value = "모임/강좌 개설하기", consumes = "multipart/form-data", produces="application/text;charset=utf-8")
-	public ResponseEntity<Map<Object, Object>> createMeeting(HttpServletRequest req, @ModelAttribute CreateMeeting meeting) {
+	@ApiOperation(value = "모임/강좌 개설하기", consumes = "multipart/form-data", produces = "application/text;charset=utf-8")
+	public ResponseEntity<Map<Object, Object>> createMeeting(HttpServletRequest req,
+			@ModelAttribute CreateMeeting meeting) {
 		System.out.println("-----모임/강좌 개설-----");
 		System.out.println(meeting.toString());
-		System.out.println("오늘날짜는 : "+new Date());
-		
+		System.out.println("오늘날짜는 : " + new Date());
+
 		Map<Object, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		
+
 		String access_token = null;
 		HashMap<String, Object> userInfo = null;
 		long uid = 0;
@@ -202,7 +203,7 @@ public class MeetingController {
 	public ResponseEntity<Map<Object, String>> saveLikeMeeting(@RequestParam String meeting_id,
 			HttpServletRequest req) {
 		System.out.println("-----모임/강좌 좋아요 요청-----");
-		System.out.println("좋아요 누를 Meeting Id : "+meeting_id);
+		System.out.println("좋아요 누를 Meeting Id : " + meeting_id);
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
 
@@ -292,9 +293,13 @@ public class MeetingController {
 			return new ResponseEntity<>(resultMap, status);
 		}
 
-		List<MeetingOfJoinAttendant> resultList = meetingservice.getMeetingOfAttendantList(Integer.parseInt(meeting_id));
-
-		if (resultList.isEmpty()) {
+		List<MeetingOfJoinAttendant> resultList = meetingservice
+				.getMeetingOfAttendantList(Integer.parseInt(meeting_id));
+		if (resultList == null) {
+			status = HttpStatus.NOT_FOUND;
+			resultMap.put(status, "삭제되었거나 존재하지 않는 모임/강좌");
+			return new ResponseEntity<>(resultMap, status);
+		} else if (resultList.isEmpty()) {
 			status = HttpStatus.BAD_REQUEST;
 			resultMap.put(status, "FAIL");
 			return new ResponseEntity<>(resultMap, status);
@@ -302,7 +307,7 @@ public class MeetingController {
 			return resultList;
 		}
 	}
-	
+
 	@PostMapping("/meeting/attend")
 	@ApiOperation(value = "모임/강좌에 참여하기")
 	public ResponseEntity<Map<Object, String>> joinMeeting(@RequestParam int meeting_id, HttpServletRequest req) {
@@ -323,29 +328,33 @@ public class MeetingController {
 			resultMap.put(status, "로그인을 먼저 진행해주세요");
 			return new ResponseEntity<>(resultMap, status);
 		}
+
 		int result = meetingservice.joinMeeting(uid, meeting_id);
-		
-		if(result == 1) {
+
+		if (result == 1) {
 			status = HttpStatus.OK;
 			resultMap.put(status, "참가 신청 완료");
-		} else if(result == -1) {
+		} else if (result == -1) {
 			status = HttpStatus.NOT_FOUND;
 			resultMap.put(status, "삭제되었거나 존재하지 않는 모임/강좌");
-		} else if(result == -2) {
+		} else if (result == -2) {
 			status = HttpStatus.BAD_REQUEST;
 			resultMap.put(status, "모집인원 초과");
+		} else if (result == -3) {
+			status = HttpStatus.BAD_REQUEST;
+			resultMap.put(status, "개설자는 참가 취소 할 수 없습니다.");
 		} else {
 			status = HttpStatus.OK;
 			resultMap.put(status, "참가 취소");
 		}
-		
+
 		return new ResponseEntity<>(resultMap, status);
 	}
-	
+
 	@PostMapping("/meeting/update/isActive")
 	@ApiOperation(value = "모임/강좌 상태 변경")
-	public  ResponseEntity<Map<Object, Object>> meetingOfUpdateIsActive(@RequestParam int meeting_id, @RequestParam int isActive,
-			HttpServletRequest req) {
+	public ResponseEntity<Map<Object, Object>> meetingOfUpdateIsActive(@RequestParam int meeting_id,
+			@RequestParam int isActive, HttpServletRequest req) {
 		System.out.println("-----모임/강좌 상태 변경-----");
 		Map<Object, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
@@ -363,20 +372,20 @@ public class MeetingController {
 			resultMap.put(status, "로그인을 먼저 진행해주세요");
 			return new ResponseEntity<>(resultMap, status);
 		}
-		
+
 		int result = meetingservice.putMeetingOfUpdateIsActive(uid, meeting_id, isActive);
-		
-		if(result == -1) {
+
+		if (result == -1) {
 			status = HttpStatus.NOT_FOUND;
 			resultMap.put(status, "삭제되었거나 존재하지 않는 모임/강좌");
-		} else if(result == 0) {
+		} else if (result == 0) {
 			status = HttpStatus.UNAUTHORIZED;
 			resultMap.put(status, "NOT PERMISSION");
 		} else {
 			status = HttpStatus.OK;
 			resultMap.put("meeting_id", result);
 		}
-		
+
 		return new ResponseEntity<>(resultMap, status);
 	}
 }

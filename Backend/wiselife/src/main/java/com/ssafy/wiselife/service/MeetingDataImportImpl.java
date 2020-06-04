@@ -72,6 +72,9 @@ public class MeetingDataImportImpl implements IMeetingDataImport {
 
 					// 주소 가공
 					array[13] = array[13].replace("\"", "");
+					
+					// 제목 가공
+					array[22] = array[22].replace("\"", "");
 
 					// 내용 수정
 					array[11] = array[11].substring(1, array[11].length());
@@ -95,7 +98,7 @@ public class MeetingDataImportImpl implements IMeetingDataImport {
 					for (int j = 0; j < len; j++) { // 최대 5개 tag만 저장
 						String tmp = new_tags[j].replace("[", "").replace("]", "").replace("(", "").replace(")", "")
 								.replace(".", "").replace("-", "").replace("#", "").replace("!", "").replace("\'", "")
-								.replace("_", "").replace("\"", "").replace("&", "");
+								.replace("_", "").replace("\"", "").replace("&", "").replace(",", "");
 
 						if (!tmp.isBlank())
 							save_tags += tmp + " ";

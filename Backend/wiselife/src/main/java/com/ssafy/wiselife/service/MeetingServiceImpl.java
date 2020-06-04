@@ -8,8 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.persistence.EntityNotFoundException;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
@@ -99,18 +98,20 @@ public class MeetingServiceImpl implements IMeetingService {
 			// 미팅 이미지 저장 과정
 			List<MultipartFile> files = new ArrayList<>();
 			files = meeting.getFiles();
-			List<String> fileUrlList = null;
-			try {
-				fileUrlList = meetingImgConversion(files, uid);
-				for (String fileUrl : fileUrlList) {
-					MeetingImages meetingImage = new MeetingImages();
-					meetingImage.setImageUrl(fileUrl);
-					meetingImage.setMeeting(meetingEntity);
-					meetingimagesrepo.save(meetingImage);
+
+			if (!files.isEmpty()) {
+				List<String> fileUrlList = meetingImgConversion(files, uid);
+				try {
+					for (String fileUrl : fileUrlList) {
+						MeetingImages meetingImage = new MeetingImages();
+						meetingImage.setImageUrl(fileUrl);
+						meetingImage.setMeeting(meetingEntity);
+						meetingimagesrepo.save(meetingImage);
+					}
+					System.out.println("미팅 이미지 파일 업로드 성공");
+				} catch (Exception e) {
+					System.out.println("미팅 이미지 파일 업로드 실패");
 				}
-				System.out.println("미팅 이미지 파일 업로드 성공");
-			} catch (Exception e) {
-				System.out.println("미팅 이미지 파일 업로드 실패");
 			}
 
 			return meetingEntity.getMeetingId();
@@ -121,25 +122,17 @@ public class MeetingServiceImpl implements IMeetingService {
 
 	@Override
 	public int updateMeeting(int meeting_id, long uid, UpdateMeeting meeting) {
-		User user = userrepo.findById(uid).get();
-		Meeting meetingEntity = null;
-
-		meetingEntity = meetingrepo.findById(meeting_id).get();
-
-		if (meetingEntity == null) {
-			return 0;
-		}
-
 		try {
+			Meeting meetingEntity = meetingrepo.findById(meeting_id).get();
 			Category category = null;
 			category = categoryrepo.findById(meeting.getMainCategory()).get();
 
-			if (category == null) {
-				return -2;
-			}
+			if (category == null)
+				return -2; // 없는 카테고리
 
-			List<UserMeeting> userMeetingList = usermeetingrepo.findByMeeting(meetingEntity);
-			meetingEntity.setUser(user);
+			if (meetingEntity.getUser().getUid() != uid)
+				return 0; // 권한 없음
+
 			meetingEntity.setCategory(category);
 			meetingEntity.setTitle(meeting.getTitle());
 			meetingEntity.setIsPeriod(meeting.getIsPeriod());
@@ -159,38 +152,29 @@ public class MeetingServiceImpl implements IMeetingService {
 			// 미팅 이미지 저장 과정
 			List<MultipartFile> files = new ArrayList<>();
 			files = meeting.getFiles();
-			List<String> fileUrlList = null;
-			try {
-				fileUrlList = meetingImgConversion(files, uid);
-				for (String fileUrl : fileUrlList) {
-					MeetingImages meetingImage = new MeetingImages();
-					meetingImage.setImageUrl(fileUrl);
-					meetingImage.setMeeting(meetingEntity);
-					meetingimagesrepo.save(meetingImage);
-				}
-				System.out.println("미팅 이미지 파일 업로드 성공");
-			} catch (Exception e) {
-				System.out.println("미팅 이미지 파일 업로드 실패");
-			}
 
+			if (!files.isEmpty()) {
+				List<String> fileUrlList = meetingImgConversion(files, uid);
+				try {
+					for (String fileUrl : fileUrlList) {
+						MeetingImages meetingImage = new MeetingImages();
+						meetingImage.setImageUrl(fileUrl);
+						meetingImage.setMeeting(meetingEntity);
+						meetingimagesrepo.save(meetingImage);
+					}
+					System.out.println("미팅 이미지 파일 업로드 성공");
+				} catch (Exception e) {
+					System.out.println("미팅 이미지 파일 업로드 실패");
+				}
+			}
 			meetingrepo.save(meetingEntity);
 
-			// 미팅 이미지 테이블에 저장
-			for (String fileUrl : fileUrlList) {
-				MeetingImages meetingImage = new MeetingImages();
-				meetingImage.setImageUrl(fileUrl);
-				meetingImage.setMeeting(meetingEntity);
-				meetingimagesrepo.save(meetingImage);
-			}
-
 			// UserMeeting테이블 isActive 값도 변경
-			if (meetingEntity.getIsActive() != meeting.getIsActive()) {
-				for (int i = 0; i < userMeetingList.size(); i++) {
-					userMeetingList.get(i).setIsActive(meeting.getIsActive());
-				}
-				usermeetingrepo.saveAll(userMeetingList);
+			List<UserMeeting> userMeetingList = usermeetingrepo.findByMeeting(meetingEntity);
+			for (UserMeeting um : userMeetingList) {
+				um.setIsActive(meeting.getIsActive());
 			}
-
+			usermeetingrepo.saveAll(userMeetingList);
 			return meeting_id;
 		} catch (Exception e) {
 			return -1;
@@ -212,7 +196,7 @@ public class MeetingServiceImpl implements IMeetingService {
 
 			DetailMeeting meeting = entityMapper.convertToDomain(meetingEntity, DetailMeeting.class);
 			meeting.setMainCategory(meetingEntity.getCategory().getCategoryId());
-			
+
 			// 좋아요 확인
 			user = userrepo.findById(uid).get();
 
@@ -242,14 +226,13 @@ public class MeetingServiceImpl implements IMeetingService {
 
 			List<String> imageUrlList = new ArrayList<>();
 			if (!meetingImages.isEmpty()) {
-				for (int i = 0; i < meetingImages.size(); i++) {
-					String imageUrl = meetingImages.get(i).getImageUrl();
-					imageUrlList.add(imageUrl);
+				for (MeetingImages mi : meetingImages) {
+					imageUrlList.add(mi.getImageUrl());
 				}
 			}
-			
+
 			meeting.setMeetingImages(imageUrlList);
-			
+
 			return meeting;
 		} catch (Exception e) {
 			return null;
@@ -258,7 +241,7 @@ public class MeetingServiceImpl implements IMeetingService {
 
 	@Override
 	public int deleteMeeting(int meeting_id, long uid) {
-		Meeting meeting = new Meeting();
+		Meeting meeting = null;
 		try {
 			meeting = meetingrepo.findById(meeting_id).get();
 		} catch (Exception e) {
@@ -266,12 +249,10 @@ public class MeetingServiceImpl implements IMeetingService {
 		}
 
 		// 권한이 없는 사용자라면
-		try {
-			User user = userrepo.findById(uid).get();
-			meeting = meetingrepo.findByMeetingIdAndUser(meeting_id, user);
-		} catch (Exception e) {
+		User user = userrepo.findById(uid).get();
+		Meeting findMeeting = meetingrepo.findByMeetingIdAndUser(meeting_id, user);
+		if(findMeeting == null)
 			return 0;
-		}
 
 		try {
 			meetingrepo.delete(meeting);
@@ -321,29 +302,28 @@ public class MeetingServiceImpl implements IMeetingService {
 		DetailMeeting meeting = null;
 		LikeMeeting likeMeeting = null;
 		List<MeetingImages> meetingImagesList = new ArrayList<>();
-		List<String> imageUrlList = new ArrayList<>();
 
 		ArrayList<DetailMeeting> attendList = new ArrayList<>();
 		ArrayList<DetailMeeting> postList = new ArrayList<>();
 		Map<String, List<DetailMeeting>> resultMap = new HashMap<>();
 
-		for (int i = 0; i < userMeetingList.size(); i++) {
-			long writer_id = userMeetingList.get(i).getMeeting().getUser().getUid();
-			System.out.println("작성자 아이디 :"+writer_id);
-			int meeting_id = userMeetingList.get(i).getMeeting().getMeetingId();
-			meetingEntity = meetingrepo.findById(meeting_id).get();
+		for (UserMeeting us : userMeetingList) {
+			List<String> imageUrlList = new ArrayList<>();
+			meetingEntity = us.getMeeting();
+			long writer_id = meetingEntity.getUser().getUid();
 
 			meeting = modelMapper.map(meetingEntity, DetailMeeting.class);
-			
+			meeting.setMainCategory(meetingEntity.getCategory().getCategoryId());
+
 			// 이 미팅의 작성자가 나인지 확인
 			int value = writer_id == uid ? 0 : 2;
 			meeting.setCheckUser(value);
-			
+
 			// 미팅 이미지 있는지 확인
 			meetingImagesList = meetingimagesrepo.findByMeeting(meetingEntity);
-			if(!meetingImagesList.isEmpty()) {
-				for (int j = 0; j < meetingImagesList.size(); j++) {
-					imageUrlList.add(meetingImagesList.get(i).getImageUrl());
+			if (!meetingImagesList.isEmpty()) {
+				for (MeetingImages mi : meetingImagesList) {
+					imageUrlList.add(mi.getImageUrl());
 				}
 			}
 			meeting.setMeetingImages(imageUrlList);
@@ -355,8 +335,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			} else {
 				meeting.setIsLike(1);
 			}
-			
-			System.out.println("미팅리스트:"+meeting.toString());
+
 			// 참여/모집 나누기
 			if (value == 0) {
 				postList.add(meeting);
@@ -373,23 +352,25 @@ public class MeetingServiceImpl implements IMeetingService {
 
 	@Override
 	public List<MeetingOfJoinAttendant> getMeetingOfAttendantList(int meeting_id) {
-		List<UserMeeting> userMeetingList = usermeetingrepo.findByMeeting(meetingrepo.findById(meeting_id).get());
+		try {
+			List<UserMeeting> userMeetingList = usermeetingrepo.findByMeeting(meetingrepo.findById(meeting_id).get());
+			MeetingOfJoinAttendant user = null;
+			List<MeetingOfJoinAttendant> userList = new ArrayList<>();
+			User userEntity = null;
+			Meeting meeting = null;
 
-		MeetingOfJoinAttendant user = null;
-		List<MeetingOfJoinAttendant> userList = new ArrayList<>();
-		User userEntity = null;
-		Meeting meeting = null;
-
-		for (int i = 0; i < userMeetingList.size(); i++) {
-			userEntity = userMeetingList.get(i).getUser();
-			user = entityMapper.convertToDomain(userEntity, MeetingOfJoinAttendant.class);
-			meeting = userMeetingList.get(i).getMeeting();
-			int value = meeting.getUser().getUid() == user.getUid() ? 0 : 1;
-			user.setCheckUser(value);
-			userList.add(user);
+			for (UserMeeting um : userMeetingList) {
+				userEntity = um.getUser();
+				user = entityMapper.convertToDomain(userEntity, MeetingOfJoinAttendant.class);
+				meeting = um.getMeeting();
+				int value = meeting.getUser().getUid() == user.getUid() ? 0 : 1;
+				user.setCheckUser(value);
+				userList.add(user);
+			}
+			return userList;
+		} catch (NoSuchElementException e) {
+			return null;
 		}
-
-		return userList;
 	}
 
 	// 리뷰 이미지 저장 함수
@@ -430,36 +411,37 @@ public class MeetingServiceImpl implements IMeetingService {
 
 	@Override
 	public int joinMeeting(long uid, int meeting_id) {
-		Meeting meeting = null;
 		User user = userrepo.findByUid(uid);
-
 		try {
-			meeting = meetingrepo.findById(meeting_id).get();
+			Meeting meeting = meetingrepo.findById(meeting_id).get();
+			UserMeeting userMeeting = null;
+			userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
+
+			if (userMeeting != null) {
+				if (userMeeting.getUser().getUid() == uid)
+					return -3; // 개설자는 참가 취소 못함
+
+				userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
+				usermeetingrepo.delete(userMeeting);
+				meeting.setNowPerson(meeting.getNowPerson() - 1);
+				return 0; // 미팅참여취소
+			} else {
+				if (meeting.getNowPerson() == meeting.getMaxPerson()) {
+					return -2; // 모집인원 초과
+				} else {
+					meeting.setNowPerson(meeting.getNowPerson() + 1);
+				}
+
+				userMeeting = new UserMeeting();
+				userMeeting.setIsActive(1);
+				userMeeting.setMeeting(meeting);
+				userMeeting.setUser(user);
+				meetingrepo.save(meeting);
+				usermeetingrepo.save(userMeeting);
+				return 1;
+			}
 		} catch (Exception e) {
 			return -1; // 존재하지 않는 Meeting
-		}
-
-		UserMeeting userMeeting = null;
-		userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
-		if (userMeeting != null) {
-			userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
-			usermeetingrepo.delete(userMeeting);
-			meeting.setNowPerson(meeting.getNowPerson() - 1);
-			return 0; // 미팅참여취소
-		} else {
-			if (meeting.getNowPerson() == meeting.getMaxPerson()) {
-				return -2; // 모집인원 초과
-			} else {
-				meeting.setNowPerson(meeting.getNowPerson() + 1);
-			}
-
-			userMeeting = new UserMeeting();
-			userMeeting.setIsActive(1);
-			userMeeting.setMeeting(meeting);
-			userMeeting.setUser(user);
-			meetingrepo.save(meeting);
-			usermeetingrepo.save(userMeeting);
-			return 1;
 		}
 	}
 
@@ -467,17 +449,17 @@ public class MeetingServiceImpl implements IMeetingService {
 	public int putMeetingOfUpdateIsActive(long uid, int meeting_id, int isActive) {
 		try {
 			Meeting meeting = meetingrepo.findById(meeting_id).get();
-			
+
 			if (meeting.getUser().getUid() == uid) {
 				meeting.setIsActive(isActive);
 			} else {
 				return 0;
 			}
-			
+
 			meetingrepo.save(meeting);
 			return meeting.getMeetingId();
-		} catch (EntityNotFoundException e) {
+		} catch (Exception e) {
 			return -1;
-		} 
+		}
 	}
 }
