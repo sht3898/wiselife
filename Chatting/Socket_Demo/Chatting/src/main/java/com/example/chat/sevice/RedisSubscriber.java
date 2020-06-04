@@ -12,13 +12,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class RedisSubscriber implements MessageListener {
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
-	private final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
-	private final SimpMessageSendingOperations messagingTemplate = null;
+	private final ObjectMapper objectMapper;
+	private final RedisTemplate<String, Object> redisTemplate;
+	private final SimpMessageSendingOperations messagingTemplate;
 
 	@Override
 	public void onMessage(Message message, byte[] pattern) {
