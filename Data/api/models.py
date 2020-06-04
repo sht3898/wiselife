@@ -11,13 +11,13 @@ now = timezone.localtime()
 class User(AbstractBaseUser):
     uid = models.AutoField(primary_key=True)
     username = models.TextField(unique=True)
-    profile_image = models.TextField(null=True)
+    profile_image = models.TextField(blank=True, null=True)
     is_inst = models.IntegerField(default=0)
-    gender = models.IntegerField(null=True)
-    year = models.IntegerField(null=True)
-    ages = models.IntegerField(null=True)
-    area1 = models.TextField(null=True)
-    area2 = models.TextField(null=True)
+    gender = models.IntegerField(blank=True, null=True)
+    year = models.IntegerField(blank=True, null=True)
+    ages = models.IntegerField(blank=True, null=True)
+    area1 = models.TextField(blank=True, null=True)
+    area2 = models.TextField(blank=True, null=True)
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -64,8 +64,8 @@ class Meeting(models.Model):
     max_person = models.IntegerField()
     now_person = models.IntegerField()
     content = models.TextField()
-    ref_url = models.TextField()
-    address = models.TextField()
+    ref_url = models.TextField(blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
     fee = models.IntegerField()
     unit = models.TextField()
     is_active = models.IntegerField()
@@ -73,29 +73,30 @@ class Meeting(models.Model):
     view_cnt = models.IntegerField()
     score = models.FloatField()
     main_category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='meeting')
-    tags = models.TextField()
+    tags = models.TextField(blank=True, null=True)
     title = models.TextField()
-    area1 = models.TextField()
-    area2 = models.TextField()
+    area1 = models.TextField(blank=True, null=True)
+    area2 = models.TextField(blank=True, null=True)
 
     def __str__(self):
             return self.title or ''
 
 class MeetingImages(models.Model):
     meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='meetingImages')
-    image_url = models.TextField()
+    image_url = models.TextField(blank=True, null=True)
 
 class Review(models.Model):
     review_id = models.AutoField(primary_key=True)
+    content = models.TextField(blank=True, null=True)
     uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='review')
     meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='review')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    score = models.IntegerField()
-    image_url = models.TextField()
+    score = models.FloatField()
+    image_url = models.TextField(blank=True, null=True)
 
     def __str__(self):
-            return self.score or ''
+            return str(self.review_id)
 
 class Chatting(models.Model):
     chatting_id = models.AutoField(primary_key=True)
@@ -123,15 +124,15 @@ class Survey(models.Model):
     neuroticism = models.IntegerField()
 
     def __str__(self):
-            return self.survey_id or ''
+            return str(self.survey_id)
 
 class Area(models.Model):
     area_id = models.AutoField(primary_key=True)
-    first_area = models.TextField()
-    second_area = models.TextField(null=True)
+    first_area = models.TextField(blank=True, null=True)
+    second_area = models.TextField(blank=True, null=True)
 
     def __str__(self):
-            return self.first_area or ''
+            return str(self.area_id)
 
 class LikeMeeting(models.Model):
     uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likeMeeting')
