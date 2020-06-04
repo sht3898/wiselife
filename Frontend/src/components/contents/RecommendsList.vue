@@ -52,7 +52,7 @@ export default {
   methods: {
     getList(){
       let config = {
-        headers: { access_token: sessionStorage.getItem("token") }
+        headers: { access_token: localStorage.getItem("token") }
       };
       this.ok = false;
       http

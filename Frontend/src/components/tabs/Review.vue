@@ -56,7 +56,7 @@ export default {
     getAttendant() {
       let config = {
         headers: {
-          access_token: sessionStorage.getItem("token")
+          access_token: localStorage.getItem("token")
         }
       };
       http.get(`meeting/${this.seq}/attendant`, config).then(response => {

@@ -7,6 +7,7 @@ import ResultPage from './views/ResultPage.vue'
 import LoginPage from './views/LoginPage.vue'
 import ContentWritePage from './views/ContentWritePage.vue'
 import ContentDetailPage from './views/ContentDetailPage.vue'
+import ContentUpdatePage from './views/ContentUpdatePage.vue'
 import MyPage from './views/MyPage.vue'
 import SurveyResultPage from './views/SurveyResultPage.vue'
 
@@ -18,7 +19,7 @@ Router.prototype.push = function push(location) {
 Vue.use(Router)
 
 // const requireAuth = () => (to, from, next) => {
-// 	if (sessionStorage.getItem('accessToken') == null) {	
+// 	if (localStorage.getItem('accessToken') == null) {	
 // 		alert("접근하실 수 없습니다. 로그인 해주세요!")	
 // 		return next('/');
 // 	}else{
@@ -65,6 +66,12 @@ export default new Router({
 			path : '/contentdetail/:seq',
 			name : 'contentDetailPage',
 			component: ContentDetailPage,
+			props : true	
+		},
+		{
+			path : '/contentupdate/:seq',
+			name : 'contentUpdatePage',
+			component: ContentUpdatePage,
 			props : true	
 		},
 		{

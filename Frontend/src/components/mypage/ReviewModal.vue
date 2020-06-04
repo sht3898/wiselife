@@ -16,13 +16,22 @@
             accept="image/png, image/jpeg, image/bmp"
             placeholder="이미지 첨부"
             prepend-icon="mdi-camera-enhance"
-            outlined
-            multiple
+            outlined            
             dense
             id="files"
             ref="files"
             v-on:change="handleFilesUploads()"
           ></v-file-input>
+          <p>* 리뷰 이미지는 1장만 등록 가능합니다!</p>
+
+          <v-rating
+          v-model="rating"
+          color="yellow darken-3"
+          background-color="grey darken-1"
+          empty-icon="$ratingFull"
+          half-increments
+          hover
+        ></v-rating>
 
           <v-textarea
             v-model="reviewContent"
@@ -69,9 +78,9 @@ export default {
       files: "",
       rules: [
         value =>
-          !value ||
-          value.size > 100000000 ||
-          "이미지는 10 MB 이하로 등록해주세요!"
+        !value.length ||
+        value.reduce((size, file) => size + file.size, 0) < 3000000 ||
+        "이미지는 3 MB 이하로 등록해주세요!"
       ],
       categories: [
         "전체",
@@ -93,11 +102,11 @@ export default {
     getMymeeting(){
       let config = {
         headers: {
-          access_token: sessionStorage.getItem("token")
+          access_token: localStorage.getItem("token")
         }
       };
       http
-      .get(`meeting/list`, config)
+      .get(`review/check`, config)
       .then(response => {
         console.log(response);
 

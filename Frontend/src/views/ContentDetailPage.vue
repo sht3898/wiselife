@@ -86,17 +86,32 @@
               </span>
 
               <div>
-                 <v-btn class="contentbtn mr-3" color="green lighten-2"  rounded small @click="updateContent()" style="font-size: 12pt;">수정</v-btn>
-          <v-btn class="contentbtn"  rounded small style="font-size: 12pt;">삭제</v-btn>
+                <v-btn
+                  class="contentbtn mr-3"
+                  color="green lighten-2"
+                  rounded
+                  small
+                  @click="updateContent"
+                  style="font-size: 12pt;"
+                >수정</v-btn>
+                <v-btn
+                  class="contentbtn"
+                  rounded
+                  small
+                  style="font-size: 12pt;"
+                  @click="deleteContent"
+                >삭제</v-btn>
               </div>
             </v-list-item>
 
-            <v-carousel cycle height="400" hide-delimiter-background show-arrows-on-hover>
-              <v-carousel-item v-for="(image, i) in meeting.meetingImages" :key="i">
-                <v-img v-if="isUrl" :src="meeting.meetingImages[i]"></v-img>
-                <v-img :src="`http://k02b1051.p.ssafy.io`+ meeting.meetingImages[i]"></v-img>
-              </v-carousel-item>
-            </v-carousel>
+            <div v-if="chk && meeting.meetingImages.length != 0">
+              <v-carousel cycle height="400" hide-delimiter-background show-arrows-on-hover>
+                <v-carousel-item v-for="(image, i) in meeting.meetingImages" :key="i">
+                  <v-img v-if="isUrl" :src="meeting.meetingImages[i]"></v-img>
+                  <v-img v-else :src="`http://k02b1051.p.ssafy.io`+ meeting.meetingImages[i]"></v-img>
+                </v-carousel-item>
+              </v-carousel>
+            </div>
             <v-card-text class="text--primary">
               <v-row class="ml-2">
                 <v-chip
@@ -281,13 +296,33 @@ export default {
   mounted() {
     this.init();
     this.getAttendant();
+    this.checkHost();
   },
   methods: {
-    updateContent(){
-
+    checkHost() {
+      console.log(this.meeting.writer);
+      if (this.meeting.writer == localStorage.getItem("username")) {
+        this.is_writer = true;
+      }
+    },
+    updateContent() {
+      this.$router.push("/contentupdate/" + this.seq);
+    },
+    deleteContent() {
+      let config = {
+        headers: { access_token: localStorage.getItem("token") }
+      };
+      if (confirm("삭제하시겠습니까?") == true) {
+        http
+          .delete(`meeting/delete?meeting_id=` + this.seq, config)
+          .then(response => {
+            console.log(response);
+            alert("삭제되었습니다.");
+            this.$router.push('/');
+          });
+      } 
     },
     kakaotalklink() {
-      //<![CDATA[
       // // 사용할 앱의 JavaScript 키를 설정해 주세요.
       // Kakao.cleanup();
       // Kakao.init("c2d9f09a902e77b8550b754cdb90d407");
@@ -347,7 +382,7 @@ export default {
       let params = new URLSearchParams();
       params.append("meeting_id", this.seq);
       let config = {
-        headers: { access_token: sessionStorage.getItem("token") }
+        headers: { access_token: localStorage.getItem("token") }
       };
       http
         .post(`meeting/attend`, params, config)
@@ -361,7 +396,7 @@ export default {
             this.getAttendant();
             this.meeting.nowPerson--;
           }
-          console.log(response);
+          // console.log(response);
         })
         .catch(error => {
           alert(error);
@@ -371,7 +406,7 @@ export default {
       let params = new URLSearchParams();
       params.append("meeting_id", this.seq);
       let config = {
-        headers: { access_token: sessionStorage.getItem("token") }
+        headers: { access_token: localStorage.getItem("token") }
       };
       http
         .post(`meeting/like`, params, config)
@@ -383,7 +418,7 @@ export default {
             this.meeting.isLike = 1;
             this.meeting.likeCnt++;
           }
-          console.log(response);
+          // console.log(response);
         })
         .catch(error => {
           alert(error);
@@ -392,7 +427,7 @@ export default {
     getAttendant() {
       let config = {
         headers: {
-          access_token: sessionStorage.getItem("token")
+          access_token: localStorage.getItem("token")
         }
       };
       this.attendants = [];
@@ -450,7 +485,7 @@ export default {
 
       let config = {
         headers: {
-          access_token: sessionStorage.getItem("token")
+          access_token: localStorage.getItem("token")
         }
       };
       http
@@ -459,6 +494,7 @@ export default {
           console.log(response.data);
           let this_component = this;
           this.meeting = response.data;
+          this.host = response.data.writer;
           this.chk = true;
           console.log(this.meeting);
           //주소 있으면 지도 찍자!
@@ -506,14 +542,19 @@ export default {
             }
             this.meeting.tags = tags;
           }
-          if(this.meeting.meetingImages != null){
-            if(this.meeting.meetingImages[0].substring(2,3) == "t"){
-              if(this.meeting.meetingImages[0].substring(0,1) == "\""){
+          if (this.meeting.meetingImages.length != 0) {
+            if (this.meeting.meetingImages[0].substring(2, 3) == "t") {
+              if (this.meeting.meetingImages[0].substring(0, 1) == '"') {
                 let length = this.meeting.meetingImages[0].length;
-                this.meeting.meetingImages[0] = this.meeting.meetingImages[0].substring(1,length-1);
+                this.meeting.meetingImages[0] = this.meeting.meetingImages[0].substring(
+                  1,
+                  length - 1
+                );
               }
-              this.meeting.meetingImages = this.meeting.meetingImages[0].split(" ");
-              if(this.meeting.meetingImages[0].substring(0,1) == "h"){
+              this.meeting.meetingImages = this.meeting.meetingImages[0].split(
+                " "
+              );
+              if (this.meeting.meetingImages[0].substring(0, 1) == "h") {
                 this.isUrl = true;
               }
             }
@@ -536,7 +577,6 @@ export default {
 .vhtml >>> .ql-align-right {
   text-align: right;
 }
-
 
 @import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
 .contentstitle {

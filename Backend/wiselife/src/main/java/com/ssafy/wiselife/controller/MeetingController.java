@@ -162,6 +162,7 @@ public class MeetingController {
 	@ApiOperation(value = "모임/강좌 삭제")
 	public ResponseEntity<Map<Object, String>> deleteMeeting(@RequestParam String meeting_id, HttpServletRequest req) {
 		System.out.println("-----모임/강좌 삭제-----");
+		System.out.println(meeting_id);
 		Map<Object, String> resultMap = new HashMap<>();
 		HttpStatus status = null;
 
