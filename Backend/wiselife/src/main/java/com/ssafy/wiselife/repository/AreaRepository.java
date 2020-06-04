@@ -11,4 +11,6 @@ import com.ssafy.wiselife.domain.Area;
 public interface AreaRepository extends JpaRepository<Area, Integer>{
 
 	public List<Area> findByfirstArea(String area);
+	
+	public List<Area> findAll();
 }
