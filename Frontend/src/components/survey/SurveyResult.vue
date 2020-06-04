@@ -2,21 +2,22 @@
   <v-container>
     <v-flex class="ma-auto mb-10">
       <apexchart v-if="chk" type="radar" :options="options" :series="series" height="400px" />
-      <div class="resultcomment" style="text-align:center; float:center">
+      <div class="resultcomment" style="text-align:center;">
         <h3 style="color:Green;">
           {{ username }}
           <span style="color:dimgrey">님은 [</span>
           <span style="color:orange">{{ main_keyword }}</span>
           <span style="color:dimgrey">] 사람입니다.</span>
         </h3>
-        <h4 class="mt-2">결과분석</h4>
+        <div class="tags" style="text-align:center;">
         <v-chip
           v-for="keyword in random_keywords"
           :key="keyword"
           :color="`green lighten-4 mr-1`"
-          class="black--text mt-2"
+          class="tags black--text mt-2"
           label
         >#{{ keyword }}</v-chip>
+        </div>
         <survey-result-text v-if="chk" :mbti="mbti" />
       </div>
     </v-flex>
@@ -313,5 +314,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap");
+.tags {
+  font-family: "Do Hyeon", sans-serif;
+  font-size: 17px;
+}
 </style>
