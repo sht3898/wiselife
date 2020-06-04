@@ -134,16 +134,16 @@ export default {
   }),
   computed: {},
   mounted() {
-    if (sessionStorage.getItem("token") != null) {
+    if (localStorage.getItem("token") != null) {
       this.isLogin = true;
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       const this_component = this;
       Kakao.API.request({
         url: '/v2/user/me',
         success: function(response) {
-          sessionStorage.setItem("username",response.properties.nickname);
-          this_component.name = sessionStorage.getItem("username");
-          sessionStorage.setItem("profile_image", response.properties.profile_image);
+          localStorage.setItem("username",response.properties.nickname);
+          this_component.name = localStorage.getItem("username");
+          localStorage.setItem("profile_image", response.properties.profile_image);
           this_component.profile_image = response.properties.profile_image;
         },
         fail: function(error) {
@@ -181,13 +181,13 @@ export default {
     },
     /////////////////// 회원 ////////////////////////
     getUserName() {
-      this.id = sessionStorage.getItem("id");
+      this.id = localStorage.getItem("id");
     },
 
     logout() {
       let conf = confirm("로그아웃 하시겠습니까?");
       if (conf == true) {
-        sessionStorage.clear();
+        localStorage.clear();
         this.$router.push("/");
         this.$router.go();
       }

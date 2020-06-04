@@ -249,13 +249,13 @@ export default {
       http.post(`user/signup/`, params, config).then(response => {
         if (response.data.status) {
           this.complete = true;
-          sessionStorage.setItem("token", this.token);
-          sessionStorage.setItem("username", response.data.info.username);
+          localStorage.setItem("token", this.token);
+          localStorage.setItem("username", response.data.info.username);
         }
       });
     },
     pass() {
-      sessionStorage.setItem("token", this.token);
+      localStorage.setItem("token", this.token);
       this.$router.push("/");
       location.reload();
     }

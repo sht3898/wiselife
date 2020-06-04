@@ -206,14 +206,14 @@ export default {
         });
     },
     pass() {
-      sessionStorage.setItem("token", this.token);
+      localStorage.setItem("token", this.token);
       this.$router.push("/");
       location.reload();
     },
     getUserInfo() {
       let config = {
         headers: {
-          access_token: sessionStorage.getItem("token")
+          access_token: localStorage.getItem("token")
         }
       };
       http.get(`user/info`, config).then(response => {
@@ -270,7 +270,7 @@ export default {
       };
       let config = {
         headers: {
-          access_token: sessionStorage.getItem("token")
+          access_token: localStorage.getItem("token")
         }
       };
       http.put(`user/update`, params, config).then(response => {
@@ -283,7 +283,7 @@ export default {
     withdraw() {
       let config = {
         headers: {
-          access_token: sessionStorage.getItem("token")
+          access_token: localStorage.getItem("token")
         }
       };
       if (confirm("탈퇴하시겠습니까?") == true) {
@@ -293,7 +293,7 @@ export default {
             if (response.data.status == "success") {
               console.log(response);
               alert("탈퇴 하였습니다.");
-                sessionStorage.clear();
+                localStorage.clear();
                 this.$router.push("/");
                 location.reload();
             } else {

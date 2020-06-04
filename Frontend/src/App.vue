@@ -24,7 +24,7 @@ export default {
     };
   },
   created(){
-    this.isLogin = sessionStorage.getItem("token");
+    this.isLogin = localStorage.getItem("token");
     if(!this.isLogin){
       this.$router.push('/login');
     }

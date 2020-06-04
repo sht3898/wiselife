@@ -168,7 +168,7 @@ export default {
       this.ok = false;
       var page_list = [];
       for (var i = (this.page - 1) * 12; i < (this.page - 1) * 12 + 12; i++) {
-        if(i == this.contentslist.length){
+        if (i == this.contentslist.length) {
           break;
         }
         page_list.push(this.contentslist[i]);
@@ -208,7 +208,7 @@ export default {
     },
     userInfo() {
       let config = {
-        headers: { access_token: sessionStorage.getItem("token") }
+        headers: { access_token: localStorage.getItem("token") }
       };
       http
         .get(`user/info/`, config)
@@ -224,7 +224,7 @@ export default {
     },
     search() {
       let config = {
-        headers: { access_token: sessionStorage.getItem("token") }
+        headers: { access_token: localStorage.getItem("token") }
       };
       let keyword = "";
       if (this.$route.params.keyword != null) {
@@ -239,16 +239,44 @@ export default {
             this.contentslist = [];
           } else {
             this.contentslist = response.data;
+
+
             for (var i = 0; i < this.contentslist.length; i++) {
-              this.contentslist[i].tags = this.contentslist[i].tags.split(" ");
-              let meetingImages = this.contentslist[i].meetingImages;
-              if (meetingImages != null) {
-                this.contentslist[i].meetingImages = meetingImages[0];
-                if (meetingImages[0].substring(0, 1) == "h") {
-                  this.contentslist[i].isUrl = true;
-                } else {
-                  this.contentslist[i].isUrl = false;
+              if (this.contentslist[i].tags != null) {
+                let split_tags = this.contentslist[i].tags.split(" ");
+                let tags = [];
+                for (var j in split_tags) {
+                  tags.push(split_tags[j]);
                 }
+                this.contentslist[i].tags = tags;
+              }
+              if (this.contentslist[i].meetingImages.length != 0) {
+                if (
+                  this.contentslist[i].meetingImages[0].substring(2, 3) == "t"
+                ) {
+                  if (
+                    this.contentslist[i].meetingImages[0].substring(0, 1) == '"'
+                  ) {
+                    let length = this.contentslist[i].meetingImages[0].length;
+                    this.contentslist[i].meetingImages[0] = this.contentslist[
+                      i
+                    ].meetingImages[0].substring(1, length - 1);
+                  }
+                  this.contentslist[i].meetingImages = this.contentslist[
+                    i
+                  ].meetingImages[0].split(" ")[0];
+                  if (
+                    this.contentslist[i].meetingImages[0].substring(0, 1) == "h"
+                  ) {
+                    this.contentslist[i].isUrl = true;
+                  } else {
+                    this.contentslist[i].isUrl = false;
+                  }
+                }else{
+                  this.contentslist[i].meetingImages = this.contentslist[i].meetingImages[0];
+                }
+              }else{
+                this.contentslist[i].meetingImages = null;
               }
             }
             this.pagelength = Math.floor(this.contentslist.length / 12) + 1;

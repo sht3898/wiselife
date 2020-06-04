@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       chk: false,
-      username: sessionStorage.getItem("username"),
+      username: localStorage.getItem("username"),
       keywords: [],
       mbti: "",
       main_keyword: "",
@@ -139,7 +139,7 @@ export default {
     getSurveyResult() {
       let config = {
         headers: {
-          access_token: sessionStorage.getItem("token")
+          access_token: localStorage.getItem("token")
         }
       };
       http.get(`user/info`, config).then(response => {

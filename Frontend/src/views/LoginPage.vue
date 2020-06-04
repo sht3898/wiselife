@@ -63,7 +63,7 @@ export default {
     };
   },
   mounted() {
-    if (sessionStorage.getItem("token")) {
+    if (localStorage.getItem("token")) {
       this.$router.push("/");
     }
   },
@@ -92,8 +92,8 @@ export default {
                     alert("회원 정보를 가져오는데 실패했습니다!");
                   }
                 });
-                sessionStorage.setItem("token", authObj.access_token);
-                sessionStorage.setItem("username", username);
+                localStorage.setItem("token", authObj.access_token);
+                localStorage.setItem("username", username);
                 this_component.$router.go();
               } else {
                 this_component.isMember = false;
