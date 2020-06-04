@@ -30,16 +30,17 @@
             label
           >진행중</v-chip>
           <v-chip v-else :color="`red lighten-4`" class="black--text mr-3" label>마감</v-chip>
+          
           <v-chip
             v-if="meeting.checkUser==1 && meeting.nowPerson != meeting.maxPerson"
-            color="primary"
+            :color="`teal lighten-4`"
             class="black--text"
             label
             @click="attendMeeting()"
           >신청하기</v-chip>
           <v-chip
             v-if="meeting.checkUser==1 && meeting.nowPerson == meeting.maxPerson"
-            color="primary"
+            :color="`teal lighten-4`"
             class="black--text"
             label
             disabled
@@ -70,7 +71,7 @@
               <span class="mdi mdi-eye-outline ml-4" style="color:#e9c04c"></span>
               <span class="grey--text ml-2">{{ meeting.viewCnt }}</span>
               <!-- 카톡링크전송 -->
-              <span class="mx-4">
+              <span class="mx-4 mt-2">
                 <a
                   href="javascript:;"
                   @click="kakaotalklink"
@@ -85,7 +86,7 @@
                 </a>
               </span>
 
-              <div>
+              <div v-if="meeting.checkUser==0">
                 <v-btn
                   class="contentbtn mr-3"
                   color="green lighten-2"
@@ -276,7 +277,6 @@ export default {
       geocoder: "",
       map: "",
       marker: "",
-      is_writer: false,
       writer: {},
       categories: [
         "전체",
@@ -296,15 +296,8 @@ export default {
   mounted() {
     this.init();
     this.getAttendant();
-    this.checkHost();
   },
   methods: {
-    checkHost() {
-      console.log(this.meeting.writer);
-      if (this.meeting.writer == localStorage.getItem("username")) {
-        this.is_writer = true;
-      }
-    },
     updateContent() {
       this.$router.push("/contentupdate/" + this.seq);
     },
