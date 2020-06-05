@@ -273,6 +273,7 @@ export default {
     VueEditor
   },
   data: () => ({
+    username:"",
     customToolbar: [
       ["bold", "italic", "underline"],
       [{ list: "ordered" }, { list: "bullet" }],
@@ -430,6 +431,7 @@ export default {
         .then(response => {
           console.log(response.data);
           this.userinst = response.data.info.userinfo.isInst;
+          this.username = response.data.info.userinfo.username;
         })
         .catch(error => {
           alert(error);
@@ -504,7 +506,7 @@ export default {
         let file = this.files[j];
         formData.append("files", file);
       }
-      formData.append("writer", localStorage.getItem("username"));
+      formData.append("writer", this.username);
       formData.append("title", this.meeting.title);
       formData.append("isPeriod", this.period_key[this.meeting.isPeriod]);
       formData.append("meetingDate", this.meeting.meetingDate);
