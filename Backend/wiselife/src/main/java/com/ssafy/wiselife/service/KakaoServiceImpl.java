@@ -113,7 +113,7 @@ public class KakaoServiceImpl implements IKakaoService {
 			String nickname = properties.getAsJsonObject().get("nickname").getAsString();
 			String profile_image="";
 			if(properties.getAsJsonObject().get("profile_image")==null) {
-				profile_image="";
+				profile_image="https://img.pngio.com/deafult-profile-icon-png-image-free-download-searchpngcom-profile-icon-png-673_673.png";
 			}else {
 				profile_image = properties.getAsJsonObject().get("profile_image").getAsString();
 			}
