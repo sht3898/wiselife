@@ -188,7 +188,7 @@ export default {
       let conf = confirm("로그아웃 하시겠습니까?");
       if (conf == true) {
         localStorage.clear();
-        this.$router.push("/");
+        // this.$router.push("/");
         this.$router.go();
       }
     },
