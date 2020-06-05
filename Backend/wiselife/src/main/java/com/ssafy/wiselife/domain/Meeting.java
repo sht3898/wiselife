@@ -55,23 +55,27 @@ public class Meeting {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date meetingDate;
 	
+	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4")
 	private String periodDate;
 	
 	private int isClass;
-	
 	private int maxPerson;
 	private int nowPerson;
 	
 	@Column(columnDefinition = "LONGTEXT CHARACTER SET utf8mb4")
 	private String content;
 	
+	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4")
 	private String refUrl;
 	
 	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4")
 	private String address;
 	
 	private int fee;
+	
+	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4")
 	private String unit;
+	
 	private int isActive;
 	private int likeCnt;
 	private int viewCnt;
@@ -79,8 +83,11 @@ public class Meeting {
 	
 	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4")
 	private String tags;
+	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4")
 	private String area1;
+	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4")
 	private String area2;
+	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4")
 	private String phone;
 	
 	@ManyToOne
