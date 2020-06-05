@@ -17,42 +17,74 @@
           >{{ categories[meeting.mainCategory] }}</v-chip>
         </v-col>
         <v-col style="text-align:right">
-          <v-chip
-            v-if="meeting.isActive == 1"
-            :color="`blue lighten-4`"
-            class="black--text mr-3"
-            label
-          >모집중</v-chip>
-          <v-chip
-            v-else-if="meeting.isActive == 2"
-            :color="`green lighten-4`"
-            class="black--text mr-3"
-            label
-          >진행중</v-chip>
-          <v-chip v-else :color="`red lighten-4`" class="black--text mr-3" label>마감</v-chip>
-
-          <v-chip
-            v-if="meeting.checkUser==1 && meeting.nowPerson != meeting.maxPerson"
-            :color="`teal lighten-4`"
-            class="black--text"
-            label
-            @click="attendMeeting()"
-          >신청하기</v-chip>
-          <v-chip
-            v-if="meeting.checkUser==1 && meeting.nowPerson == meeting.maxPerson"
-            :color="`teal lighten-4`"
-            class="black--text"
-            label
-            disabled
-            @click="attendMeeting()"
-          >신청하기</v-chip>
-          <v-chip
-            v-if="meeting.checkUser==2"
-            color="warning"
-            class="black--text"
-            label
-            @click="attendMeeting()"
-          >탈퇴하기</v-chip>
+          <div v-if="meeting.checkUser == 0">
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-chip
+                  v-if="meeting.isActive == 1"
+                  :color="`blue lighten-4`"
+                  class="blinking black--text mr-3"
+                  label
+                  v-on="on"
+                  @click="btnActive(2)"
+                >모집중</v-chip>
+                <v-chip
+                  v-else-if="meeting.isActive == 2"
+                  :color="`green lighten-4`"
+                  class="blinking black--text mr-3"
+                  label
+                  v-on="on"
+                  @click="btnActive(0)"
+                >진행중</v-chip>
+                <v-chip
+                  v-else
+                  :color="`red lighten-4`"
+                  class="blinking black--text mr-3"
+                  label
+                  v-on="on"
+                  @click="btnActive(1)"
+                >마감</v-chip>
+              </template>
+              <span style="font-size:8pt;">상태를 변경하려면 클릭하세요!</span>
+            </v-tooltip>
+          </div>
+          <div v-else>
+            <v-chip
+              v-if="meeting.isActive == 1"
+              :color="`blue lighten-4`"
+              class="black--text mr-3"
+              label
+            >모집중</v-chip>
+            <v-chip
+              v-else-if="meeting.isActive == 2"
+              :color="`green lighten-4`"
+              class="black--text mr-3"
+              label
+            >진행중</v-chip>
+            <v-chip v-else :color="`red lighten-4`" class="black--text mr-3" label>마감</v-chip>
+            <v-chip
+              v-if="meeting.checkUser==1 && meeting.nowPerson != meeting.maxPerson"
+              :color="`teal lighten-4`"
+              class="black--text"
+              label
+              @click="attendMeeting()"
+            >신청하기</v-chip>
+            <v-chip
+              v-if="meeting.checkUser==1 && meeting.nowPerson == meeting.maxPerson"
+              :color="`teal lighten-4`"
+              class="black--text"
+              label
+              disabled
+              @click="attendMeeting()"
+            >신청하기</v-chip>
+            <v-chip
+              v-if="meeting.checkUser==2"
+              color="warning"
+              class="black--text"
+              label
+              @click="attendMeeting()"
+            >탈퇴하기</v-chip>
+          </div>
         </v-col>
       </v-row>
       <v-divider></v-divider>
@@ -68,7 +100,7 @@
                 <v-icon v-else color="red">mdi-heart</v-icon>
               </v-btn>
               <span class="topscore ma-auto">{{ meeting.likeCnt }}</span>
-              <span class="mdi mdi-eye-outline ml-4" style="color:#e9c04c"></span>
+              <span class="mdi mdi-eye-outline ml-4" style="color:grey"></span>
               <span class="grey--text ml-2">{{ meeting.viewCnt }}</span>
               <!-- 카톡링크전송 -->
               <span class="mx-4 mt-2">
@@ -108,11 +140,7 @@
             <div v-if="chk && meeting.meetingImages.length != 0">
               <v-carousel cycle height="400" hide-delimiter-background show-arrows-on-hover>
                 <v-carousel-item v-for="(image, i) in meeting.meetingImages" :key="i">
-                  <v-img
-                    v-if="isUrl"
-                    :src="meeting.meetingImages[i]"
-                    class="imgs"
-                  />
+                  <v-img v-if="isUrl" :src="meeting.meetingImages[i]" class="imgs" />
                   <v-img
                     v-else
                     :src="`http://k02b1051.p.ssafy.io`+ meeting.meetingImages[i]"
@@ -278,6 +306,7 @@ export default {
   },
   data() {
     return {
+      active_list: [{ title: "마감" }, { title: "모집" }, { title: "진행" }],
       menu: false,
       chk: false,
       isUrl: false,
@@ -308,6 +337,34 @@ export default {
     this.getAttendant();
   },
   methods: {
+    btnActive(active) {
+      let config = {
+        headers: { access_token: localStorage.getItem("token") }
+      };
+      let params = new URLSearchParams();
+      params.append("meeting_id", this.seq);
+      params.append("isActive", active);
+      http
+        .put(`meeting/update/isActive`, params, config)
+        .then(() => {
+          switch (active) {
+            case 0:
+              this.meeting.isActive = 0;
+              break;
+            case 1:
+              this.meeting.isActive = 1;
+              break;
+            case 2:
+              this.meeting.isActive = 2;
+              break;
+          }
+        })
+        .catch(error => {
+          alert("hi");
+          console.log(error);
+          alert(error);
+        });
+    },
     updateContent() {
       this.$router.push("/contentupdate/" + this.seq);
     },
@@ -591,8 +648,37 @@ export default {
   font-family: "Nanum Pen Script", cursive;
 }
 
-.imgs{
+.imgs {
   width: auto !important;
   max-height: 100%;
+}
+.blinking {
+  -webkit-animation: blink 3s ease-in-out infinite alternate;
+  -moz-animation: blink 3s ease-in-out infinite alternate;
+  animation: blink 3s ease-in-out infinite alternate;
+}
+@-webkit-keyframes blink {
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-moz-keyframes blink {
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>

@@ -69,7 +69,6 @@ export default {
   },
   methods: {
     login() {
-      this.clickBtn = true;
       let this_component = this;
       Kakao.Auth.login({
         success: function(authObj) {
@@ -99,6 +98,7 @@ export default {
                 localStorage.setItem("username", username);
                 this_component.$router.go();
               } else {
+                this_component.clickBtn = true;
                 this_component.isMember = false;
                 this_component.token = authObj.access_token;
               }
@@ -109,6 +109,9 @@ export default {
           alert("로그인에 실패하였습니다! 다시 시도해주세요!");
           this.clickBtn = false;
           return;
+        },
+        always: function(){
+          this.clickBtn = false;
         }
       });
     },
