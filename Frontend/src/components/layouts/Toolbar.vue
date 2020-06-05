@@ -149,6 +149,8 @@ export default {
         fail: function(error) {
           console.log(error);
           alert("회원 정보를 가져오는데 실패했습니다.");
+          localStorage.clear();
+          this_component.$router.go();
         }
       });
     }
