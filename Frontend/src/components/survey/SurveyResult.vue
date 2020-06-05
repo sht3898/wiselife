@@ -214,14 +214,7 @@ export default {
               break;
           }
           this.main_keyword = main_keywords[key_index];
-          var min = 100;
-          var min_index = 0;
-          for(var i = 0; i < 5; i++){
-            if(min > gap[i] && minus_gap[i] >= 0){
-              min_index = i;
-              min = gap[i];
-            }
-          }
+
           if (this.survey.extraversion < this.avg.extraversion) {
             this.mbti += "I";
             this.keywords.push(

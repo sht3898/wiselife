@@ -16,7 +16,6 @@
   </div>
 </template>
 <script>
-import http from "../../http-common.js";
 import Review from "./Review";
 import Chatting from "./Chatting";
 

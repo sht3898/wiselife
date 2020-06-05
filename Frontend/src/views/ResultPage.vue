@@ -148,13 +148,6 @@ export default {
       return this.$route.params.keyword;
     },
     category: function() {
-      for (var i = 0; i < this.categories.length; i++) {
-        if (this.categories[i].key == this.$route.params.category) {
-          this.categories[i].clicked = true;
-        } else {
-          this.categories[i].clicked = false;
-        }
-      }
       this.search();
       return this.$route.params.category;
     }
@@ -186,12 +179,12 @@ export default {
             }
           }
         } else {
-          for (var i = 0; i < this.contentslist.length; i++) {
+          for (var j = 0; j < this.contentslist.length; j++) {
             if (
-              this.contentslist[i].area1 == this.myarea1 &&
-              this.contentslist[i].area2 == this.myarea2
+              this.contentslist[j].area1 == this.myarea1 &&
+              this.contentslist[j].area2 == this.myarea2
             ) {
-              contents.push(this.contentslist[i]);
+              contents.push(this.contentslist[j]);
             }
           }
         }
@@ -199,8 +192,8 @@ export default {
         this.page = 1;
         this.pagination();
       } else {
-        for (var i = 0; i < this.sortingFilter.length; i++) {
-          this.sortingFilter[i].clicked = false;
+        for (var k = 0; k < this.sortingFilter.length; k++) {
+          this.sortingFilter[k].clicked = false;
         }
         this.page = 1;
         this.search();
@@ -223,6 +216,13 @@ export default {
         });
     },
     search() {
+      for (var i = 0; i < this.categories.length; i++) {
+        if (this.categories[i].key == this.$route.params.category) {
+          this.categories[i].clicked = true;
+        } else {
+          this.categories[i].clicked = false;
+        }
+      }
       let config = {
         headers: { access_token: localStorage.getItem("token") }
       };
@@ -239,7 +239,6 @@ export default {
             this.contentslist = [];
           } else {
             this.contentslist = response.data;
-
 
             for (var i = 0; i < this.contentslist.length; i++) {
               if (this.contentslist[i].tags != null) {
@@ -272,10 +271,12 @@ export default {
                   } else {
                     this.contentslist[i].isUrl = false;
                   }
-                }else{
-                  this.contentslist[i].meetingImages = this.contentslist[i].meetingImages[0];
+                } else {
+                  this.contentslist[i].meetingImages = this.contentslist[
+                    i
+                  ].meetingImages[0];
                 }
-              }else{
+              } else {
                 this.contentslist[i].meetingImages = null;
               }
             }
@@ -333,6 +334,7 @@ export default {
           });
           break;
       }
+      this.page = 1;
       this.pagination();
       this.ok = true;
     },
