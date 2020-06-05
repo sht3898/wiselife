@@ -145,15 +145,26 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingEntity.setFee(meeting.getFee());
 			meetingEntity.setUnit(meeting.getUnit());
 			meetingEntity.setIsActive(meeting.getIsActive());
-			meetingEntity.setTags(meeting.getTags());
+			String[] tags = meeting.getTags().split(",");
+			String new_tags = "";
+			for (int i = 0; i < tags.length; i++) {
+				new_tags += tags[i].substring(1, tags[i].length()) + " ";
+			}
+			meetingEntity.setTags(new_tags.substring(0, new_tags.length() - 1));
 			meetingEntity.setPhone(meeting.getPhone());
 			meetingEntity.setUpdatedAt(new Date());
 
-			// 미팅 이미지 저장 과정
+			// 미팅 이미지 수정 과정
+			List<MeetingImages> meetingImagesList = new ArrayList<>();
 			List<MultipartFile> files = new ArrayList<>();
 			files = meeting.getFiles();
+			meetingImagesList = meetingimagesrepo.findByMeeting(meetingEntity);
 
 			if (!files.isEmpty()) {
+				for (MeetingImages mi : meetingImagesList) {
+					meetingimagesrepo.delete(mi);
+				}
+
 				List<String> fileUrlList = meetingImgConversion(files, uid);
 				try {
 					for (String fileUrl : fileUrlList) {
@@ -251,7 +262,7 @@ public class MeetingServiceImpl implements IMeetingService {
 		// 권한이 없는 사용자라면
 		User user = userrepo.findById(uid).get();
 		Meeting findMeeting = meetingrepo.findByMeetingIdAndUser(meeting_id, user);
-		if(findMeeting == null)
+		if (findMeeting == null)
 			return 0;
 
 		try {
