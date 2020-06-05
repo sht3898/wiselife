@@ -353,26 +353,26 @@ public class MeetingController {
 	}
 
 	@PostMapping("/meeting/update/isActive")
-	@ApiOperation(value = "모임/강좌 상태 변경")
+	@ApiOperation(value = "모임/강좌 상태 변경")//HttpServletRequest req
 	public ResponseEntity<Map<Object, Object>> meetingOfUpdateIsActive(@RequestParam int meeting_id,
-			@RequestParam int isActive, HttpServletRequest req) {
+			@RequestParam int isActive, long uid) {
 		System.out.println("-----모임/강좌 상태 변경-----");
 		Map<Object, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 
 		String access_token = null;
 		HashMap<String, Object> userInfo = null;
-		long uid = 0;
-
-		try {
-			access_token = req.getHeader("access_token");
-			userInfo = kakaoservice.getUserInfo(access_token);
-			uid = (long) userInfo.get("id");
-		} catch (Exception e) {
-			status = HttpStatus.UNAUTHORIZED;
-			resultMap.put(status, "로그인을 먼저 진행해주세요");
-			return new ResponseEntity<>(resultMap, status);
-		}
+//		long uid = 0;
+//
+//		try {
+//			access_token = req.getHeader("access_token");
+//			userInfo = kakaoservice.getUserInfo(access_token);
+//			uid = (long) userInfo.get("id");
+//		} catch (Exception e) {
+//			status = HttpStatus.UNAUTHORIZED;
+//			resultMap.put(status, "로그인을 먼저 진행해주세요");
+//			return new ResponseEntity<>(resultMap, status);
+//		}
 
 		int result = meetingservice.putMeetingOfUpdateIsActive(uid, meeting_id, isActive);
 

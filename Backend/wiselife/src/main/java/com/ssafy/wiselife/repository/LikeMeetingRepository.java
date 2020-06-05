@@ -29,7 +29,7 @@ public interface LikeMeetingRepository extends JpaRepository<LikeMeeting, LikeMe
 	public List<Integer> findByArea(@Param("area1") String firstArea, @Param("area2") String secondArea);
 	
 	@Query(value = "SELECT m.meeting_id FROM USER u, LIKE_MEETING l, MEETING m WHERE u.uid = l.uid AND l.meeting_id = m.meeting_id "
-			+ "AND m.area2 = :area2 AND m.area1 = :area1 OR m.area1 = :shortFirstArea GROUP BY l.meeting_id ORDER BY COUNT(*) DESC LIMIT 5", nativeQuery = true)
+			+ "AND m.area2 = :area2 AND (m.area1 = :area1 OR m.area1 LIKE :shortFirstArea) GROUP BY l.meeting_id ORDER BY COUNT(*) DESC LIMIT 5", nativeQuery = true)
 	public List<Integer> findByAreas(@Param("area1") String firstArea, @Param("shortFirstArea") String shortFirstArea, @Param("area2") String secondArea);
 
 }
