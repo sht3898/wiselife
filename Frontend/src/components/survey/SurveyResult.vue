@@ -10,13 +10,13 @@
           <span style="color:dimgrey">] 사람입니다.</span>
         </h3>
         <div class="tags" style="text-align:center;">
-        <v-chip
-          v-for="keyword in random_keywords"
-          :key="keyword"
-          :color="`green lighten-4 mr-1`"
-          class="tags black--text mt-2"
-          label
-        >#{{ keyword }}</v-chip>
+          <v-chip
+            v-for="keyword in random_keywords"
+            :key="keyword"
+            :color="`green lighten-4 mr-1`"
+            class="tags black--text mt-2"
+            label
+          >#{{ keyword }}</v-chip>
         </div>
         <survey-result-text v-if="chk" :mbti="mbti" />
       </div>
@@ -38,7 +38,7 @@ export default {
   data() {
     return {
       chk: false,
-      username: localStorage.getItem("username"),
+      username: "",
       keywords: [],
       mbti: "",
       main_keyword: "",
@@ -134,9 +134,24 @@ export default {
     };
   },
   mounted() {
+    this.getUserInfo();
     this.getSurveyResult();
   },
   methods: {
+    getUserInfo() {
+      let config = {
+        headers: { access_token: localStorage.getItem("token") }
+      };
+      http
+        .get(`user/info/`, config)
+        .then(response => {
+          this.username = response.data.info.userinfo.username;
+        })
+        .catch(error => {
+          alert(error);
+          this.$router.push("/");
+        });
+    },
     getSurveyResult() {
       let config = {
         headers: {
@@ -290,7 +305,7 @@ export default {
               this.neuroticism_keywords[5]
             );
           }
-          
+
           for (var i = 0; i < 3; i++) {
             var index = Math.floor(Math.random() * 15);
             if (!this.random_keywords.includes(this.keywords[index])) {
