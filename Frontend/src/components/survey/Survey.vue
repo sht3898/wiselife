@@ -27,7 +27,7 @@
                 <span class="screen_out">텍스트 선택지</span>
                 <v-btn
                   text
-                   min-width="0"
+                  min-width="0"
                   class="btn_dot btn_dot1"
                   :class="{btn_active: (question.answer==1)}"
                   @click="clickDot1(question)"
@@ -71,7 +71,7 @@
                 </v-btn>
                 <v-btn
                   text
-                   min-width="0"
+                  min-width="0"
                   class="btn_dot btn_dot5"
                   :class="{btn_active: (question.answer==5)}"
                   @click="clickDot5(question)"
@@ -257,11 +257,33 @@ export default {
           answer: 0
         }
       ],
-      ticksLabels: ["전혀 그렇지 않다", " ", " ", " ", "매우 그렇다"]
+      ticksLabels: ["전혀 그렇지 않다", " ", " ", " ", "매우 그렇다"],
+      chkuser: 0,
+      surveyid: 0
     };
   },
-  mounted: {},
+  mounted() {
+    this.chkSurvey();
+  },
   methods: {
+    chkSurvey() {
+      let config = {
+        headers: {
+          access_token: localStorage.getItem("token")
+        }
+      };
+      http.get(`user/info`, config).then(response => {
+        console.log(response);
+        if (response.data.status == "success") {
+          if (response.data.info.survey == null) {
+            this.chkuser = 1;
+          }else{
+          this.surveyid=response.data.info.survey.surveyId;
+          }
+         
+        }
+      });
+    },
     validate() {
       var answers = [];
       let minus = [1, 2, 4, 8, 10, 11, 19, 21, 22, 27, 28, 29];
@@ -302,6 +324,7 @@ export default {
       agreeableness = ((agreeableness / 30) * 100).toFixed(0);
       neuroticism = ((neuroticism / 30) * 100).toFixed(0);
 
+      
       let data = {
         openness: openness,
         conscientiousness: conscientiousness,
@@ -317,11 +340,20 @@ export default {
       };
 
       console.log(data);
-      http.post(`user/survey`, data, config).then(response => {
-        if (response.data.status) {
-          this.$router.push("/surveyresult");
-        }
-      });
+      if (this.chkuser == 1) {
+        http.post(`user/survey`, data, config).then(response => {
+          if (response.data.status) {
+            this.$router.push("/surveyresult");
+          }
+        });
+      } else {
+        http.put(`user/survey/update`, data, config).then(response => {
+          if (response.data.status) {
+            alert("수정되었습니다!");
+           this.$router.push("/surveyresult");
+          }
+        });
+      }
     },
     clickDot1(question) {
       question.answer = 1;

@@ -1,5 +1,7 @@
 <template>
-  <v-card :loading="loading" class="mx-auto my-3" width="200" height="350">
+<v-hover
+v-slot:default="{ hover }" >
+  <v-card outlined :elevation="hover ? 5 : 0" :loading="loading" class="mx-auto my-3" width="200" height="340">
     <v-img v-if="content.meetingImages != null && content.isUrl" height="100px" @click="goDetail" :src="content.meetingImages">
       <div style=" position: relative;">
         <v-chip
@@ -27,7 +29,7 @@
           class="black--text"
           label
           small
-          style="top: 0px; left: 5px;"
+          style="top: 3px; left: 5px;"
         >{{ content.area1 }} {{ content.area2 }}</v-chip>
       </div>
       <v-btn icon style="top: 42px; left: 160px;" @click="btnLike(content)">
@@ -58,23 +60,24 @@
     
     <v-card-title
       class="contenttitle"
-      style="font-weight:bold; height:95px"
+      style="font-weight:bold; height:60px"
       @click="goDetail"
     >{{ content.title }}</v-card-title>
 
     <v-card-text style="height:175px">
-      <div class="mx-0 mt-2" style="height:80px;">
+      <div class="mx-0 mt-2" style="height:110px;">
         <v-chip
           v-for="(tag, index) in content.tags"
           :key="tag"
           :color="`${colors[index]} lighten-3`"
           class="mr-2"
           label
-          x-small
+          small
+          style="height:18px"
           @click="tagSearch(tag)"
         >#{{ tag }}</v-chip>
       </div>
-      <v-row align="center" class="mx-0" style="height:20px;">
+      <v-row align="center" class="mx-2" style="height:20px;">
         <v-rating
           v-if="content.score != 0"
           :value="content.score"
@@ -89,7 +92,7 @@
       </v-row>
       <v-row class="mx-0" style="height:20px">
         <v-col>
-          <span class="mdi mdi-eye-outline" style="color:#e9c04c"></span>
+          <span class="mdi mdi-eye-outline" style="color:grey"></span>
           <span class="grey--text ml-2">{{ content.viewCnt }}</span>
         </v-col>
         <v-col>
@@ -99,6 +102,7 @@
       </v-row>
     </v-card-text>
   </v-card>
+</v-hover>
 </template>
 
 <script>

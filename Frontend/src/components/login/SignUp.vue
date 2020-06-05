@@ -1,11 +1,11 @@
 <template>
-  <v-container v-if="!complete" class="signUp">
+  <v-container v-if="!complete" class="ma-auto">
     <v-flex class="ma-auto" lg8 sm12>
-    <h3>회원정보 입력</h3>
+    <p class="infotitle">회원정보 입력</p>
     <v-row>
-      <v-col cols="2" class="mt-5">
+      <v-col cols="3" class="mt-5">
         <span style="color:dimgray;">
-          <strong>gender</strong>
+          <strong>Gender</strong>
         </span>
       </v-col>
       <v-radio-group v-model="gender" row class="ml-3">
@@ -18,9 +18,9 @@
       </v-radio-group>
     </v-row>
     <v-row>
-      <v-col cols="2" class="mt-5">
+      <v-col cols="3" class="mt-5">
         <span style="color:dimgray;">
-          <strong>birth</strong>
+          <strong>Birth</strong>
         </span>
       </v-col>
       <v-col class="px-0 py-0">
@@ -31,7 +31,7 @@
     </v-row>
 
     <v-row>
-      <v-col cols="2" class="mt-5">
+      <v-col cols="3" class="mt-5">
         <span style="color:dimgray;">
           <strong>Area</strong>
         </span>
@@ -49,9 +49,9 @@
     </v-row>
 
     <v-row>
-      <v-col cols="2" class="mt-5">
+      <v-col cols="3" class="mt-5">
         <span style="color:dimgray;">
-          <strong>instructor</strong>
+          <strong>Instructor</strong>
         </span>
       </v-col>
       <v-radio-group v-model="instructor" row class="ml-3">
@@ -64,8 +64,9 @@
       </v-radio-group>
     </v-row>
 
-    <h3>관심 카테고리</h3>
-    <p style="font-size:9pt">복수 선택 가능합니다.</p>
+    <span class="infotitle">관심 카테고리</span>
+       <span style="text-align:right; float: right; font-size:9pt">(복수 선택 가능합니다.)</span>
+  
     <v-row justify="space-around">
       <v-col v-for="category in categories" :key="category.name" class="mt-5">
         <v-img
@@ -264,10 +265,12 @@ export default {
 };
 </script>
 <style scoped>
-.signUp {
-  margin: auto;
-}
 .green {
   background-color: green;
+}
+@import url("https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap");
+.infotitle {
+  font-family: "Do Hyeon", sans-serif;
+  font-size: 23px;
 }
 </style>
