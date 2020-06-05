@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="container">
-      <div>
+      <div v-if="ok">
         <v-row>
           <v-col cols="12" sm="7">
             <VideoDetail :selectedVideo="selectedVideo" :videos="videos" />
@@ -33,9 +33,10 @@ export default {
   name: "Youtube",
   data() {
     return {
-      video: null,
+      ok:false,
+      video: "",
       videos: [],
-      selectedVideo: null,
+      selectedVideo: "",
       searchkeyword: [
         "집에서 즐기는 취미",
         "집에서 즐기는 홈",
@@ -73,6 +74,7 @@ export default {
           this.videos = videos;
           // get the first video (before one is selected --this is the default)
           this.selectedVideo = videos[0];
+          this.ok=true;
         }
       );
     },
