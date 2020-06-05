@@ -36,7 +36,7 @@
 export default {
   name: "ReviewContent",
   props: {
-    review: { type: Object, default: {} }
+    review: { type: Object, default: () => ({}) }
     // - review_id (int) : 리뷰 아이디 pk
     // - uid(Long) : 유저 id fk
     // - meeting_id : 미팅 id fk

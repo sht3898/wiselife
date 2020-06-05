@@ -117,7 +117,6 @@
 </template>
 
 <script>
-import http from "../../http-common";
 
 export default {
   name: "Toolbar",
@@ -136,7 +135,6 @@ export default {
   mounted() {
     if (localStorage.getItem("token") != null) {
       this.isLogin = true;
-      const token = localStorage.getItem("token");
       const this_component = this;
       Kakao.API.request({
         url: '/v2/user/me',

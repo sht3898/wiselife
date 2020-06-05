@@ -9,13 +9,12 @@
 </template>
 <script>
 import ContentsCard from "./ContentsCard";
-import http from "../../http-common";
 export default {
   name: "ContentsList",
   props: {
     contentslist: {
       type: Array,
-      default: []
+      default:()=>([])
     }
   },
   components: {

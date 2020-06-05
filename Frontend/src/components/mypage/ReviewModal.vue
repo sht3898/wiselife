@@ -164,12 +164,14 @@ export default {
           http
             .post("/review", formData)
             .then(response => {
+              console.log(response);
               // console.log("SUCCESS!!");
               this.$router.push({name:'review'});
               // console.log(response);
               // this.result = response.;
             })
-            .catch(ex => {
+            .catch(error => {
+              console.log(error);
               // console.log("FAILURE!!");
             });
          

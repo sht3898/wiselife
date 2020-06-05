@@ -490,7 +490,10 @@ export default {
             this.$router.push("/contentdetail/" + response.data.meeting_id);
           }
         })
-        .catch(ex => {});
+        .catch(error => {
+          console.log(error);
+          alert("에러! 등록 실패!");
+        });
     },
     edit(index, item) {
       if (!this.editing) {
