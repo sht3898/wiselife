@@ -1,6 +1,6 @@
 <template>
   <v-container>
-   <v-flex class="ma-auto my-5" lg9>
+    <v-flex class="ma-auto my-5" lg9>
       <v-card outlined>
         <p class="infotext ml-5 mt-3">필수 항목 - 강좌/모임에 대한 정보를 입력해주세요!</p>
         <v-row class="ma-0 pa-0">
@@ -79,6 +79,38 @@
         </v-row>
 
         <v-row>
+          <v-col class="my-0 py-0 ml-2">
+            <v-text-field
+              v-model="meeting.maxPerson"
+              label="모집 인원"
+              style="font-size:10pt"
+              type="number"
+              :min="meeting.nowPerson"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+          <v-col class="my-0 py-0">
+            <v-overflow-btn
+              class="my-0 py-0"
+              v-model="meeting.unit"
+              :items="unitform"
+              style="font-size:10pt"
+              label="모임비"
+              dense
+            ></v-overflow-btn>
+          </v-col>
+          <v-col class="my-0 py-0 ml-0 pl-0" v-if="meeting.unit=='회비'">
+            <v-text-field
+              v-model="meeting.fee"
+              type="number"
+              style="font-size:9pt"
+              suffix="원"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+
           <v-col class="my-0 mr-0 pr-0 py-0">
             <v-container id="dropdown-example-2" class="py-0">
               <v-overflow-btn
@@ -91,7 +123,7 @@
               ></v-overflow-btn>
             </v-container>
           </v-col>
-          <v-col class="ma-0 pa-0">
+          <v-col class="ma-0 pa-0 mr-3">
             <v-container id="dropdown-example-2" class="py-0">
               <v-overflow-btn
                 class="my-0 py-0"
@@ -103,39 +135,9 @@
               ></v-overflow-btn>
             </v-container>
           </v-col>
-
-          <v-col class="my-0 py-0">
-            <v-text-field
-              v-model="meeting.maxPerson"
-              label="모집 인원"
-              style="font-size:10pt"
-              type="number"
-              outlined
-              dense
-            ></v-text-field>
-          </v-col>
-          <v-col class="my-0 py-0 mr-3 pr-3">
-            <v-overflow-btn
-              class="my-0 py-0"
-              v-model="meeting.unit"
-              :items="unitform"
-              style="font-size:10pt"
-              label="모임비"
-              dense
-            ></v-overflow-btn>
-          </v-col>
-          <v-col class="my-0 py-0 ml-0 pl-0 mr-3 pr-3" v-if="meeting.unit=='회비'">
-            <v-text-field
-              v-model="meeting.fee"
-              type="number"
-              style="font-size:9pt"
-              suffix="원"
-              outlined
-              dense
-            ></v-text-field>
-          </v-col>
         </v-row>
       </v-card>
+      <v-alert class="mt-3" outlined type="warning" dense border="left" style="font-size:10pt;">등록되어 있던 이미지는 삭제됩니다. 새로 등록해주세요!</v-alert>
       <v-row>
         <v-col cols="5">
           <v-file-input
@@ -153,7 +155,7 @@
             v-on:change="handleFilesUploads()"
           ></v-file-input>
         </v-col>
-        <v-col cols="6" >
+        <v-col cols="6">
           <v-text-field
             v-model="meeting.address"
             class="my-0 py-0"
@@ -326,6 +328,7 @@ export default {
       기타: 8
     },
     classform: ["강좌", "모임"],
+    meetingform: ["모임"],
     class_key: {
       강좌: 1,
       모임: 0
@@ -362,7 +365,7 @@ export default {
     y: 0,
     rules: [
       value =>
-        !value.length ||
+        !value ||
         value.reduce((size, file) => size + file.size, 0) < 10000000 ||
         "이미지는 10 MB 이하로 등록해주세요!"
     ],
@@ -387,7 +390,7 @@ export default {
       "제주특별자치도"
     ],
     second_area: [],
-     userinst: ""
+    userinst: ""
   }),
   watch: {
     area1: "getSecondArea",
@@ -413,10 +416,25 @@ export default {
       });
     }
   },
-  mounted(){
-      this.getContentDetail();
+  mounted() {
+    this.getUserInfo();
+    this.getContentDetail();
   },
   methods: {
+    getUserInfo() {
+      let config = {
+        headers: { access_token: localStorage.getItem("token") }
+      };
+      http
+        .get(`user/info/`, config)
+        .then(response => {
+          console.log(response.data);
+          this.userinst = response.data.info.userinfo.isInst;
+        })
+        .catch(error => {
+          alert(error);
+        });
+    },
     goback() {
       this.$router.push("/contentdetail/" + this.$route.params.seq);
     },
@@ -424,20 +442,37 @@ export default {
       this.files = this.$refs.files.$refs.input.files;
     },
     getContentDetail() {
-         let config = {
+      let config = {
         headers: { access_token: localStorage.getItem("token") }
       };
       http
         .get(`meeting/${this.$route.params.seq}`, config)
         .then(response => {
-          console.log(response.data);
 
           this.meeting = response.data;
+
+          /////////데이터 정제//////////
+          this.meeting.mainCategory = this.categories[
+            this.meeting.mainCategory - 1
+          ];
+          if (this.meeting.isClass == 0) {
+            this.meeting.isClass = "모임";
+          } else {
+            this.meeting.isClass = "강좌";
+          }
+          if (this.meeting.isPeriod == 0) {
+            this.meeting.isPeriod = "비정기";
+            this.meeting.meetingDate = this.meeting.meetingDate.substring(
+              0,
+              10
+            );
+          } else {
+            this.meeting.isPeriod = "정기";
+          }
+          if (this.meeting.tags != null || this.meeting.tags != "") {
+            this.hashtag = this.meeting.tags.split(" ");
+          }
           this.area1 = response.data.area1;
-
-          this.userinst = response.data.isInst;
-
-          console.log(this.meeting);
         })
         .catch(error => {
           alert(error);
@@ -451,12 +486,14 @@ export default {
       };
       this.meeting.address = document.getElementById("sample6_address").value;
       this.meeting.area1 = this.area1;
+      this.meeting.tags = "";
       for (var i = 0; i < this.hashtag.length; i++) {
         if (i == 5) {
           break;
         }
         this.meeting.tags += "#" + this.hashtag[i].text + ",";
       }
+
       //////////// 이미지 업로드 //////////////
       let formData = new FormData();
       console.log("보자!:   ", this.$refs.files.$refs.input.files);
@@ -469,26 +506,25 @@ export default {
       }
       formData.append("writer", localStorage.getItem("username"));
       formData.append("title", this.meeting.title);
-      formData.append("isPeriod", this.period_key[this.meeting.is_period]);
-      formData.append("meetingDate", this.meeting.meeting_date);
-      formData.append("periodDate", this.meeting.period_date);
-      formData.append("isClass", this.class_key[this.meeting.is_class]);
-      formData.append("maxPerson", this.meeting.max_person);
+      formData.append("isPeriod", this.period_key[this.meeting.isPeriod]);
+      formData.append("meetingDate", this.meeting.meetingDate);
+      formData.append("periodDate", this.meeting.periodDate);
+      formData.append("isClass", this.class_key[this.meeting.isClass]);
+      formData.append("maxPerson", this.meeting.maxPerson);
       formData.append("content", this.meeting.content);
-      formData.append("refUrl", this.meeting.ref_url);
+      formData.append("refUrl", this.meeting.refUrl);
       formData.append("address", this.meeting.address);
       formData.append("fee", this.meeting.fee);
       formData.append("unit", this.meeting.unit);
       formData.append(
         "mainCategory",
-        this.category_key[this.meeting.main_category]
+        this.category_key[this.meeting.mainCategory]
       );
       formData.append("tags", this.meeting.tags);
-      formData.append("review_content", this.content);
       formData.append("area1", this.meeting.area1);
       formData.append("area2", this.meeting.area2);
       formData.append("phone", this.meeting.phone);
-
+      formData.append("isActive", this.meeting.isActive);
       http
         .put("meeting/update", formData, config)
         .then(response => {

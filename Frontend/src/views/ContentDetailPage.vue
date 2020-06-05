@@ -30,7 +30,7 @@
             label
           >진행중</v-chip>
           <v-chip v-else :color="`red lighten-4`" class="black--text mr-3" label>마감</v-chip>
-          
+
           <v-chip
             v-if="meeting.checkUser==1 && meeting.nowPerson != meeting.maxPerson"
             :color="`teal lighten-4`"
@@ -108,22 +108,32 @@
             <div v-if="chk && meeting.meetingImages.length != 0">
               <v-carousel cycle height="400" hide-delimiter-background show-arrows-on-hover>
                 <v-carousel-item v-for="(image, i) in meeting.meetingImages" :key="i">
-                  <v-img v-if="isUrl" :src="meeting.meetingImages[i]"></v-img>
-                  <v-img v-else :src="`http://k02b1051.p.ssafy.io`+ meeting.meetingImages[i]"></v-img>
+                  <v-img
+                    v-if="isUrl"
+                    :src="meeting.meetingImages[i]"
+                    class="imgs"
+                  />
+                  <v-img
+                    v-else
+                    :src="`http://k02b1051.p.ssafy.io`+ meeting.meetingImages[i]"
+                    class="imgs"
+                  />
                 </v-carousel-item>
               </v-carousel>
             </div>
             <v-card-text class="text--primary">
               <v-row class="ml-2">
-                <v-chip
-                  v-for="(tag, index) in meeting.tags"
-                  :key="tag"
-                  :color="`${colors[index]} lighten-3`"
-                  class="black--text mr-2 my-1"
-                  label
-                  small
-                >#{{ tag }}</v-chip>
-                <v-col style="text-align:right; color:LightGrey" cols="12" sm="6">
+                <v-col cols="12" sm="8">
+                  <v-chip
+                    v-for="(tag, index) in meeting.tags"
+                    :key="tag"
+                    :color="`${colors[index]} lighten-3`"
+                    class="black--text mr-2 my-1"
+                    label
+                    small
+                  >#{{ tag }}</v-chip>
+                </v-col>
+                <v-col style="text-align:right; color:LightGrey" cols="12" sm="4">
                   <span class="mdi mdi-pencil ml-4" style="color:Grey">작성일</span>
                   <span class="grey--text ml-2">{{ meeting.createdAt }}</span>
                 </v-col>
@@ -311,9 +321,9 @@ export default {
           .then(response => {
             console.log(response);
             alert("삭제되었습니다.");
-            this.$router.push('/');
+            this.$router.push("/");
           });
-      } 
+      }
     },
     kakaotalklink() {
       // // 사용할 앱의 JavaScript 키를 설정해 주세요.
@@ -579,5 +589,10 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap");
 .contentbtn {
   font-family: "Nanum Pen Script", cursive;
+}
+
+.imgs{
+  width: auto !important;
+  max-height: 100%;
 }
 </style>
