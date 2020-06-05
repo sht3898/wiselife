@@ -6,8 +6,8 @@
           <h3 class="infotext ma-auto" style="text-align:center; color:purple;">당신은 {{ name }}!</h3>
           <v-img class="personality ma-auto mt-1" :src="getImgUrl(url)" />
         </v-col>
-        <v-col cols="12" sm="6">
-          <h4 v-for="content in text" :key="content" class="contents my-1" style="text-align:left;">
+        <v-col cols="12" sm="6" class="ma-auto">
+          <h4 v-for="content in text" :key="content" class="contents" style="text-align:left;">
             - {{ content }}
             <br />
           </h4>
@@ -19,7 +19,7 @@
           v-for="act in activity"
           :key="act"
           class="mt-2 my-2 mx-1"
-          style="background-color:lightblue;"
+          style="background-color:#FFCC80;"
           label
         >#{{ act }}</v-chip>
       </div>
@@ -305,7 +305,7 @@ export default {
             if (!this.activity.includes(activity_list[index])) {
               this.activity[k] = activity_list[index];
             } else {
-              i--;
+              k--;
             }
           }
           this.chk = true;

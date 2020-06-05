@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-flex class="ma-auto mt-5" lg10>
+    <v-flex class="ma-auto mt-5" lg8>
       <survey-result />
       <div class="ma-auto mb-10" style="text-align:center;">
         <v-btn rounded class="homebtn green lighten-1" style="color:white; font-size: 13pt;" @click="gobackhome">

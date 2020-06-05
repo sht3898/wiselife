@@ -7,7 +7,8 @@
           <v-btn rounded class="reviewbtn orange lighten-1" @click="insertReview">리뷰 작성 ✒️</v-btn>
         </span>
       </p>
-      <attend-meeting-list :attendlist="this.attendmeetinglist" />
+      <v-content v-if="notattend" class="my-10" style="text-align:center; color:grey; font-weight:bold"> 참여한 강좌/모임이 없습니다! </v-content>
+      <attend-meeting-list v-else :attendlist="this.attendmeetinglist" />
     </v-container>
     <!-- 리뷰 modal -->
     <v-dialog v-model="dialog" max-width="800">
@@ -28,6 +29,7 @@
 
     <v-container fluid mb-12>
       <p class="menu">등록한 강좌/모임</p>
+      <v-content v-if="notcreate" class="my-10" style="text-align:center; color:grey; font-weight:bold"> 등록한 강좌/모임이 없습니다! </v-content>
       <create-meeting-list :createlist="this.createmeetinglist" />
     </v-container>
   </v-flex>
@@ -48,7 +50,9 @@ export default {
     return {
       dialog: false,
       attendmeetinglist: [],
-      createmeetinglist: []
+      createmeetinglist: [],
+      notattend: false,
+      notcreate: false
     };
   },
   methods: {
@@ -65,11 +69,15 @@ export default {
         console.log(response);
 
         this.attendmeetinglist = response.data.참여;
+        if(this.attendmeetinglist.length==0){
+            this.notattend=true
+        }
 
         this.createmeetinglist = response.data.등록;
+        if(this.createmeetinglist.length==0){
+            this.notcreate=true
+        }
 
-        console.log(this.attendmeetinglist);
-        console.log(this.createmeetinglist);
 
         for (var i = 0; i < this.attendmeetinglist.length; i++) {
           if (this.attendmeetinglist[i].tags != null) {

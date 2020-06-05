@@ -1,52 +1,60 @@
 <template>
-  <v-card class="ma-auto pa-1 mt-5" outlined >
+  <v-card class="ma-auto pa-1 mt-5" outlined>
     <v-row>
       <v-col cols="12" sm="6" class="my-2 py-1">
-       <p class="toptitle" style="text-align:center">성별</p>
-          <v-row>
-            <v-col cols="12" sm="6">
-             
-              <h5 style="text-align:center">남</h5>
-              <v-list two-line>
-                <v-list-item-group multiple>
-                  <template v-for="(item, index) in menlist">
-                    <v-list-item :key="item.title">
-                      <template>
-                        <v-list-item-content>
-                          <span>{{ranking[index]}}</span>
-                          <v-list-item-title   class="meetingtitle" v-text="item.title"></v-list-item-title>
-                        </v-list-item-content>
-                      </template>
-                    </v-list-item>
-
-                    <v-divider v-if="index + 1 < menlist.length" :key="index"></v-divider>
-                  </template>
-                </v-list-item-group>
-              </v-list>
-            </v-col>
-            <v-col cols="12" sm="6"  class="ma-0 pa-0">
-              <h5 style="text-align:center">여</h5>
-              <v-list two-line>
-                <v-list-item-group multiple>
-                  <template v-for="(item, index) in womenlist">
-                    <v-list-item :key="item.title">
-                      <template>
-                        <v-list-item-content>
-                          <v-row>
-                          <v-col cols="1"><span>{{ranking[index]}}</span></v-col>
-                          <v-col cols="10"><v-list-item-title   class="meetingtitle" v-text="item.title"></v-list-item-title>
+        <p class="toptitle" style="text-align:center">성별</p>
+        <v-row class="ma-auto">
+          <v-col cols="12" sm="6" class="ma-0 pa-0">
+            <h5 style="text-align:center">남</h5>
+            <v-list two-line>
+              <v-list-item-group multiple>
+                <template v-for="(item, index) in menlist">
+                  <v-list-item :key="item.title">
+                    <template>
+                      <v-list-item-content>
+                        <v-row>
+                          <v-col cols="1">
+                            <span>{{ranking[index]}}</span>
                           </v-col>
-                          </v-row>
-                        </v-list-item-content>
-                      </template>
-                    </v-list-item>
+                          <v-col cols="10">
+                            <v-list-item-title class="meetingtitle" v-text="item.title" @click="goDetail(item.meetingId)"></v-list-item-title>
+                          </v-col>
+                        </v-row>
+                      </v-list-item-content>
+                    </template>
+                  </v-list-item>
 
-                    <v-divider v-if="index + 1 < womenlist.length" :key="index"></v-divider>
-                  </template>
-                </v-list-item-group>
-              </v-list>
-            </v-col>
-          </v-row>
+                  <v-divider v-if="index + 1 < menlist.length" :key="index"></v-divider>
+                </template>
+              </v-list-item-group>
+            </v-list>
+          </v-col>
+          <v-col cols="12" sm="6" class="ma-0 pa-0">
+            <h5 style="text-align:center">여</h5>
+            <v-list two-line>
+              <v-list-item-group multiple>
+                <template v-for="(item, index) in womenlist">
+                  <v-list-item :key="item.title">
+                    <template>
+                      <v-list-item-content>
+                        <v-row>
+                          <v-col cols="1">
+                            <span>{{ranking[index]}}</span>
+                          </v-col>
+                          <v-col cols="10">
+                            <v-list-item-title class="meetingtitle" v-text="item.title" @click="goDetail(item.meetingId)"></v-list-item-title>
+                          </v-col>
+                        </v-row>
+                      </v-list-item-content>
+                    </template>
+                  </v-list-item>
+
+                  <v-divider v-if="index + 1 < womenlist.length" :key="index"></v-divider>
+                </template>
+              </v-list-item-group>
+            </v-list>
+          </v-col>
+        </v-row>
       </v-col>
       <v-col cols="12" sm="3">
         <div class="mx-auto">
@@ -58,8 +66,14 @@
                 <v-list-item :key="item.title">
                   <template>
                     <v-list-item-content>
-                      <span>{{ranking[index]}}</span>
-                      <v-list-item-title  class="meetingtitle" v-text="item.title"></v-list-item-title>
+                      <v-row>
+                        <v-col cols="1">
+                          <span>{{ranking[index]}}</span>
+                        </v-col>
+                        <v-col cols="10">
+                          <v-list-item-title class="meetingtitle" v-text="item.title" @click="goDetail(item.meetingId)"></v-list-item-title>
+                        </v-col>
+                      </v-row>
                     </v-list-item-content>
                   </template>
                 </v-list-item>
@@ -80,8 +94,14 @@
                 <v-list-item :key="item.title">
                   <template>
                     <v-list-item-content>
-                      <span>{{ranking[index]}}</span>
-                      <v-list-item-title class="meetingtitle" v-text="item.title"></v-list-item-title>
+                      <v-row>
+                        <v-col cols="1">
+                          <span>{{ranking[index]}}</span>
+                        </v-col>
+                        <v-col cols="10">
+                          <v-list-item-title class="meetingtitle" v-text="item.title" @click="goDetail(item.meetingId)"></v-list-item-title>
+                        </v-col>
+                      </v-row>
                     </v-list-item-content>
                   </template>
                 </v-list-item>
@@ -116,6 +136,9 @@ export default {
     this.getUserInfo();
   },
   methods: {
+    goDetail(seq){
+      window.open('http://localhost:8080/contentdetail/' + seq, '_blank');
+    },
     getUserInfo() {
       let config = {
         headers: { access_token: localStorage.getItem("token") }
@@ -158,10 +181,10 @@ export default {
   font-family: "Jua", sans-serif;
 }
 .theme--light.v-card.v-card--outlined {
-    border: thick solid #AED581;
-    border-radius: 12px;
+  border: thick solid #aed581;
+  border-radius: 12px;
 }
 .meetingtitle {
-  font-size:9pt;
+  font-size: 9pt;
 }
 </style>
