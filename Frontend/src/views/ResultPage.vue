@@ -35,10 +35,23 @@
       </span>
     </v-flex>
     <v-flex class="ma-auto" lg10 xs12>
+      <v-row  v-if="!ok" justify="center" align="center">
+        <div class="text-center ma-12">
+          <v-progress-circular
+            indeterminate
+            :rotate="0"
+            :size="32"
+            :value="0"
+            :width="4"
+            color="light-blue"
+            class="ma-auto"
+          />
+        </div>
+      </v-row>
       <contents-list v-if="ok" :contentslist="page_list" />
     </v-flex>
     <div class="text-center">
-      <v-pagination v-model="page" :length="pagelength" circle color="success"></v-pagination>
+      <v-pagination v-model="page" :total-visible="7" :length="pagelength" circle color="success"></v-pagination>
     </div>
   </v-container>
 </template>
@@ -189,6 +202,7 @@ export default {
           }
         }
         this.contentslist = contents;
+        this.pagelength = Math.floor(this.contentslist.length / 12) + 1;
         this.page = 1;
         this.pagination();
       } else {
@@ -227,7 +241,10 @@ export default {
         headers: { access_token: localStorage.getItem("token") }
       };
       let keyword = "";
-      if (this.$route.params.keyword != null) {
+      if (
+        this.$route.params.keyword != null &&
+        this.$route.params.keyword != "undefined"
+      ) {
         keyword = this.$route.params.keyword;
       }
       this.ok = false;
@@ -247,6 +264,7 @@ export default {
                 for (var j in split_tags) {
                   tags.push(split_tags[j]);
                 }
+                tags = Array.from(new Set(tags));
                 this.contentslist[i].tags = tags;
               }
               if (this.contentslist[i].meetingImages.length != 0) {
@@ -281,7 +299,11 @@ export default {
               }
             }
             this.pagelength = Math.floor(this.contentslist.length / 12) + 1;
-            this.pagination();
+            if (this.myarea == 1) {
+              this.getMyArea();
+            } else {
+              this.pagination();
+            }
           }
         })
         .catch(err => {
@@ -295,9 +317,14 @@ export default {
         }
       }
       category.clicked = true;
-      this.$router.push(
-        "/result/" + category.key + "/" + this.$route.params.keyword
-      );
+      let keyword = "";
+      if (
+        this.$route.params.keyword != null &&
+        this.$route.params.keyword != "undefined"
+      ) {
+        keyword = this.$route.params.keyword;
+      }
+      this.$router.push("/result/" + category.key + "/" + keyword);
     },
     clickSorting(sorting) {
       this.ok = false;

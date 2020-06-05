@@ -79,6 +79,38 @@
         </v-row>
 
         <v-row>
+          <v-col class="my-0 py-0 ml-2">
+            <v-text-field
+              v-model="meeting.max_person"
+              label="모집 인원"
+              style="font-size:10pt"
+              type="number"
+              min="1"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+          <v-col class="my-0 py-0">
+            <v-overflow-btn
+              class="my-0 py-0"
+              v-model="meeting.unit"
+              :items="unitform"
+              style="font-size:10pt"
+              label="모임비"
+              dense
+            ></v-overflow-btn>
+          </v-col>
+          <v-col class="my-0 py-0 ml-0 pl-0" v-if="meeting.unit=='회비'">
+            <v-text-field
+              v-model="meeting.fee"
+              type="number"
+              style="font-size:9pt"
+              suffix="원"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+          
           <v-col class="my-0 mr-0 pr-0 py-0">
             <v-container id="dropdown-example-2" class="py-0">
               <v-overflow-btn
@@ -91,7 +123,7 @@
               ></v-overflow-btn>
             </v-container>
           </v-col>
-          <v-col class="ma-0 pa-0">
+          <v-col class="ma-0 pa-0 mr-3">
             <v-container id="dropdown-example-2" class="py-0">
               <v-overflow-btn
                 class="my-0 py-0"
@@ -102,37 +134,6 @@
                 dense
               ></v-overflow-btn>
             </v-container>
-          </v-col>
-
-          <v-col class="my-0 py-0">
-            <v-text-field
-              v-model="meeting.max_person"
-              label="모집 인원"
-              style="font-size:10pt"
-              type="number"
-              outlined
-              dense
-            ></v-text-field>
-          </v-col>
-          <v-col class="my-0 py-0 mr-3 pr-3">
-            <v-overflow-btn
-              class="my-0 py-0"
-              v-model="meeting.unit"
-              :items="unitform"
-              style="font-size:10pt"
-              label="모임비"
-              dense
-            ></v-overflow-btn>
-          </v-col>
-          <v-col class="my-0 py-0 ml-0 pl-0 mr-3 pr-3" v-if="meeting.unit=='회비'">
-            <v-text-field
-              v-model="meeting.fee"
-              type="number"
-              style="font-size:9pt"
-              suffix="원"
-              outlined
-              dense
-            ></v-text-field>
           </v-col>
         </v-row>
       </v-card>
@@ -363,7 +364,7 @@ export default {
     y: 0,
     rules: [
       value =>
-        !value.length ||
+        !value ||
         value.reduce((size, file) => size + file.size, 0) < 10000000 ||
         "이미지는 10 MB 이하로 등록해주세요!"
     ],
@@ -475,7 +476,6 @@ export default {
         this.category_key[this.meeting.main_category]
       );
       formData.append("tags", this.meeting.tags);
-      formData.append("review_content", this.content);
       formData.append("area1", this.meeting.area1);
       formData.append("area2", this.meeting.area2);
       formData.append("phone", this.meeting.phone);

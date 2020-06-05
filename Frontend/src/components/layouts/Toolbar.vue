@@ -1,58 +1,54 @@
 <template>
   <div>
-    
     <v-app-bar class="toolbar" id="app-toolbar" flat color="white">
-       <!-- 모바일 화면 -->
+      <!-- 모바일 화면 -->
       <v-toolbar-title class="hidden-sm-and-up">
         <v-img :src="getImgUrl('wiselife.png')" height="55px" width="125px" @click="gohome()" />
       </v-toolbar-title>
       <v-toolbar-items class="hidden-sm-and-up">
-          <v-row class="ml-1">
-            <v-col cols="7">
-          <v-text-field
-            prefix="🔎"
-            placeholder=" 검색"
-            @keyup.enter="goSearch(researchValue)"
-            filled
-            rounded
-            dense
-            v-model="researchValue"
-          ></v-text-field>
-            </v-col>
-        <v-col class="ma-0 pa-0 mt-3">
-          <v-btn fab small class="infotext orange lighten-2" @click="insertContent">✒️</v-btn>
-        
-          <v-btn text v-if="isLogin" class="text-center ma-0 pa-0">
-            <v-menu offset-y open-on-hover>
-              <template v-slot:activator="{ on }">
-                  
-                <v-avatar size="38px" v-on="on">
-                    <img :src="profile_image"/>
-                  </v-avatar>            
-               
-              </template>
+        <v-row class="ml-1">
+          <v-col cols="7">
+            <v-text-field
+              prefix="🔎"
+              placeholder=" 검색"
+              @keyup.enter="goSearch(researchValue)"
+              filled
+              rounded
+              dense
+              v-model="researchValue"
+            ></v-text-field>
+          </v-col>
+          <v-col class="ma-0 pa-0 mt-3">
+            <v-btn fab small class="infotext orange lighten-2" @click="insertContent">✒️</v-btn>
 
-              <v-list dense shaped width="150px">
-                
-                <v-list-item @click="entermypage">
-                  <v-list-item-action>
-                    <v-list-item-content
-                      style="font-weight:bold; font-size:10pt; color:dimgrey"
-                    >My Page</v-list-item-content>
-                  </v-list-item-action>
-                </v-list-item>
-                <v-list-item @click="logout">
-                  <v-list-item-action>
-                    <v-list-item-content
-                      style="font-weight:bold; font-size:10pt; color:dimgrey"
-                    >Logout</v-list-item-content>
-                  </v-list-item-action>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-btn>
-        </v-col>
-          </v-row>
+            <v-btn text v-if="isLogin" class="text-center ma-0 pa-0">
+              <v-menu offset-y open-on-hover>
+                <template v-slot:activator="{ on }">
+                  <v-avatar size="38px" v-on="on">
+                    <img :src="profile_image" />
+                  </v-avatar>
+                </template>
+
+                <v-list dense shaped width="150px">
+                  <v-list-item @click="entermypage">
+                    <v-list-item-action>
+                      <v-list-item-content
+                        style="font-weight:bold; font-size:10pt; color:dimgrey"
+                      >My Page</v-list-item-content>
+                    </v-list-item-action>
+                  </v-list-item>
+                  <v-list-item @click="logout">
+                    <v-list-item-action>
+                      <v-list-item-content
+                        style="font-weight:bold; font-size:10pt; color:dimgrey"
+                      >Logout</v-list-item-content>
+                    </v-list-item-action>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-toolbar-items>
 
       <!-- 전체화면 -->
@@ -85,14 +81,13 @@
                   style="padding-bottom:15px; font-size:16pt; color:dimgrey"
                 >
                   <v-avatar size="40px">
-                    <img :src="profile_image"/>
+                    <img :src="profile_image" />
                   </v-avatar>
                   {{name}} 님
                 </span>
               </template>
 
               <v-list dense shaped width="150px">
-                
                 <v-list-item @click="entermypage">
                   <v-list-item-action>
                     <v-list-item-content
@@ -117,7 +112,7 @@
 </template>
 
 <script>
-
+import http from "../../http-common.js";
 export default {
   name: "Toolbar",
   components: {},
@@ -128,30 +123,12 @@ export default {
     isLogin: false,
     email: "",
     name: "",
-    profile_image:"",
+    profile_image: "",
     researchValue: ""
   }),
   computed: {},
   mounted() {
-    if (localStorage.getItem("token") != null) {
-      this.isLogin = true;
-      const this_component = this;
-      Kakao.API.request({
-        url: '/v2/user/me',
-        success: function(response) {
-          localStorage.setItem("username",response.properties.nickname);
-          this_component.name = localStorage.getItem("username");
-          localStorage.setItem("profile_image", response.properties.profile_image);
-          this_component.profile_image = response.properties.profile_image;
-        },
-        fail: function(error) {
-          console.log(error);
-          alert("회원 정보를 가져오는데 실패했습니다.");
-          localStorage.clear();
-          this_component.$router.go();
-        }
-      });
-    }
+    this.getUserInfo();
     this.onResponsiveInverted();
     window.addEventListener("resize", this.onResponsiveInverted);
   },
@@ -159,6 +136,29 @@ export default {
     window.removeEventListener("resize", this.onResponsiveInverted);
   },
   methods: {
+    getUserInfo() {
+      if (localStorage.getItem("token") != null) {
+        let config = {
+          headers: { access_token: localStorage.getItem("token") }
+        };
+        http
+          .get(`user/info/`, config)
+          .then(response => {
+            console.log(response.data);
+            this.profile_image = response.data.info.userinfo.profileImage;
+            this.name = response.data.info.userinfo.username;
+          })
+          .catch(error => {
+            alert(error);
+            this.$router.push("/");
+          });
+          this.isLogin = true;
+      }else{
+        alert("로그인이 필요합니다!");
+        this.$router.push("/");
+        location.reload();
+      }
+    },
     onResponsiveInverted() {
       if (window.innerWidth < 900) {
         this.responsive = true;
@@ -195,7 +195,7 @@ export default {
     /////////////////////////////////////////////////////
     entermypage() {
       this.$router.push("/mypage");
-    },    
+    }
   }
 };
 </script>
@@ -211,7 +211,7 @@ export default {
   padding-top: 20px;
   position: absolute;
 }
-.mobiletoolbar{
+.mobiletoolbar {
   min-height: 100px;
   max-width: 375px;
   margin: auto;
