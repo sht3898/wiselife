@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +17,7 @@ import com.ssafy.wiselife.domain.Meeting;
 import com.ssafy.wiselife.domain.Review;
 import com.ssafy.wiselife.domain.User;
 import com.ssafy.wiselife.domain.UserMeeting;
-import com.ssafy.wiselife.dto.MeetingDTO.ShortMeeting;
+import com.ssafy.wiselife.dto.MeetingDTO.CheckMeetingOfReview;
 import com.ssafy.wiselife.dto.ReviewDTO.DetailReview;
 import com.ssafy.wiselife.dto.ReviewDTO.WriteReview;
 import com.ssafy.wiselife.mapper.EntityMapper;
@@ -41,28 +42,25 @@ public class ReviewServiceImpl implements IReviewService {
 
 	@Autowired
 	private EntityMapper entityMapper;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@Override // Review 작성 가능한 Meeting 목록 조회
-	public List<ShortMeeting> userOfJoinMeetingList(long uid) {
+	public List<CheckMeetingOfReview> userOfJoinMeetingList(long uid) {
 		List<UserMeeting> userMeeting = new ArrayList<>();
 		User user = userrepo.findById(uid).get();
-		int meeting_id = 0;
-		String title = "";
 
 		userMeeting = usermeetingrepo.findByUser(user);
 
-		ArrayList<ShortMeeting> resultList = new ArrayList<>();
+		ArrayList<CheckMeetingOfReview> resultList = new ArrayList<>();
 		for (UserMeeting um : userMeeting) {
-			if (um.getIsActive() != 1) {
-				ShortMeeting shortMeeting = new ShortMeeting();
-				meeting_id = um.getMeeting().getMeetingId();
-				title = meetingrepo.findTitleByMeetingId(meeting_id);
-				shortMeeting.setMeetingId(meeting_id);
-				shortMeeting.setTitle(title);
-				resultList.add(shortMeeting);
+			if (um.getIsActive() != 1 && um.getMeeting().getUser() != user) {
+				CheckMeetingOfReview meeting = modelMapper.map(um.getMeeting(), CheckMeetingOfReview.class);
+				meeting.setMainCategory(um.getMeeting().getCategory().getCategoryId());
+				resultList.add(meeting);
 			}
 		}
-
 		return resultList;
 	}
 

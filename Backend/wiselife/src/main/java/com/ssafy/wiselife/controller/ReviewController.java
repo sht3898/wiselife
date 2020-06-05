@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.wiselife.dto.MeetingDTO.ShortMeeting;
+import com.ssafy.wiselife.dto.MeetingDTO.CheckMeetingOfReview;
 import com.ssafy.wiselife.dto.ReviewDTO.DetailReview;
 import com.ssafy.wiselife.dto.ReviewDTO.WriteReview;
 import com.ssafy.wiselife.service.IKakaoService;
@@ -59,7 +59,7 @@ public class ReviewController {
 			return new ResponseEntity<>(resultMap, status);
 		}
 
-		List<ShortMeeting> resultList = reviewservice.userOfJoinMeetingList(uid);
+		List<CheckMeetingOfReview> resultList = reviewservice.userOfJoinMeetingList(uid);
 		status = HttpStatus.OK;
 
 		if (resultList.isEmpty()) {

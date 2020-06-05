@@ -110,5 +110,20 @@ public class MeetingDTO {
 		private int meetingId;
 		private String title;
 	}
+	
+	@Getter @Setter @ToString
+	public static class CheckMeetingOfReview{
+		private int meetingId;
+		private String title;
+		private String writer;
+		private int isClass;
+		private int isPeriod;
+		private String periodDate;
+		private Date meetingDate;
+		private String area1;
+		private String area2;
+		private int mainCategory;
+		
+	}
 
 }

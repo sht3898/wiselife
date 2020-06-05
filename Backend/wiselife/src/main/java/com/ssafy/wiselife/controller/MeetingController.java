@@ -352,7 +352,7 @@ public class MeetingController {
 		return new ResponseEntity<>(resultMap, status);
 	}
 
-	@PostMapping("/meeting/update/isActive")
+	@PutMapping("/meeting/update/isActive")
 	@ApiOperation(value = "모임/강좌 상태 변경")
 	public ResponseEntity<Map<Object, Object>> meetingOfUpdateIsActive(@RequestParam int meeting_id,
 			@RequestParam int isActive, HttpServletRequest req) {
