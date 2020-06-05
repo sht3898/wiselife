@@ -112,26 +112,25 @@ public class UserServiceImpl implements IUserService {
 		// TODO Auto-generated method stub
 		User user = userrepo.findByUid(uid);
 		Survey survey = surveyrepo.findByUser(user);
+		
+		
 
-		Survey surveyentity = null;
-
-		if (survey != null) {
-			surveyentity = new Survey();
-
-			surveyentity.setAgreeableness(surveydto.getAgreeableness());
-			surveyentity.setConscientiousness(surveydto.getConscientiousness());
-			surveyentity.setExtraversion(surveydto.getExtraversion());
-			surveyentity.setNeuroticism(surveydto.getNeuroticism());
-			surveyentity.setOpenness(surveydto.getOpenness());
+		if (survey != null) {			
+			survey.setAgreeableness(surveydto.getAgreeableness());
+			survey.setConscientiousness(surveydto.getConscientiousness());
+			survey.setExtraversion(surveydto.getExtraversion());
+			survey.setNeuroticism(surveydto.getNeuroticism());
+			survey.setOpenness(surveydto.getOpenness());
 
 		} else {
-			surveyentity = modelMapper.map(surveydto, Survey.class);
+			survey = new Survey();
+			survey = modelMapper.map(surveydto, Survey.class);
 		}
 
 		try {
 
-			surveyentity.setUser(user);
-			surveyrepo.save(surveyentity);
+			survey.setUser(user);
+			surveyrepo.save(survey);
 			return surveydto;
 
 		} catch (Exception e) {
