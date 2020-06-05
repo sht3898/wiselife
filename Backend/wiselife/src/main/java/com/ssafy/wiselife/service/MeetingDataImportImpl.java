@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,9 +77,6 @@ public class MeetingDataImportImpl implements IMeetingDataImport {
 			int index = 0;
 
 			while ((line = br.readLine()) != null) {
-//				if (cnt > 500)
-//					break;
-
 				imgLine = brImg.readLine();
 				if (cnt != 0) {
 					String array[] = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
@@ -108,8 +104,6 @@ public class MeetingDataImportImpl implements IMeetingDataImport {
 
 					// 카테고리 분류
 					int main_category = findCategory(array[22]);
-//					if (main_category == 8)
-//						main_category = findCategory(array[11]);
 					array[20] = main_category + "";
 
 					// 태그 저장
@@ -240,30 +234,5 @@ public class MeetingDataImportImpl implements IMeetingDataImport {
 			}
 		}
 		return 8; // 기타
-	}
-
-	public static String patternMatches(String content) {
-		String[] tmp = content.split(" ");
-		String result = "";
-
-		if (Pattern.matches("[!]{2,}", content) || Pattern.matches("[.]{2,}", content)) {
-			System.out.println(content);
-			for (int i = 0; i < tmp.length; i++) {
-				if (Pattern.matches("[!]{2,}", tmp[i]) || Pattern.matches("[.]{2,}", tmp[i])) { // !가 한 번 보다 많으면 true를
-																								// 출력
-					tmp[i] += "<br>";
-				}
-				result += tmp[i] + " ";
-			}
-		} else {
-			for (int i = 0; i < tmp.length; i++) {
-				char[] t = tmp[i].toCharArray();
-				if (t[t.length - 1] == '.' || t[t.length - 1] == '!' || t[0] == 'ㅡ') {
-					tmp[i] += "<br>";
-				}
-				result += tmp[i] + " ";
-			}
-		}
-		return result.substring(0, result.length() - 1);
 	}
 }
