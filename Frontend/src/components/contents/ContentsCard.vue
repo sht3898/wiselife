@@ -2,7 +2,7 @@
 <v-hover
 v-slot:default="{ hover }" >
   <v-card outlined :elevation="hover ? 5 : 0" :loading="loading" class="mx-auto my-3" width="200" height="340">
-    <v-img v-if="content.meetingImages != null && content.isUrl" height="100px" @click="goDetail" :src="content.meetingImages">
+    <v-img v-if="content.meetingImages != null && content.isUrl" height="100px" :src="content.meetingImages">
       <div style=" position: relative;">
         <v-chip
           :color="`green lighten-4`"
@@ -20,7 +20,6 @@ v-slot:default="{ hover }" >
     <v-img
       v-else-if="content.meetingImages != null && !content.isUrl"
       height="100px"
-      @click="goDetail"
       :src="`http://k02b1051.p.ssafy.io`+ content.meetingImages"
     >
       <div style="z-index:5; position: relative;">
@@ -40,7 +39,6 @@ v-slot:default="{ hover }" >
     <v-img
       v-else
       height="100px"
-      @click="goDetail"
       src="@/assets/noimage.png"
     >
       <div style="z-index:5; position: relative;">
@@ -58,9 +56,10 @@ v-slot:default="{ hover }" >
       </v-btn>
     </v-img>
     
+    
     <v-card-title
       class="contenttitle"
-      style="font-weight:bold; height:60px"
+      style="font-weight:bold; height:60px; cursor:pointer"
       @click="goDetail"
     >{{ content.title }}</v-card-title>
 
@@ -73,7 +72,7 @@ v-slot:default="{ hover }" >
           class="mr-2"
           label
           small
-          style="height:18px"
+          style="height:18px; cursor:pointer"
           @click="tagSearch(tag)"
         >#{{ tag }}</v-chip>
       </div>
@@ -106,6 +105,7 @@ v-slot:default="{ hover }" >
 </template>
 
 <script>
+import http from "../../http-common"
 export default {
   name: "ContentsCard",
   props: {

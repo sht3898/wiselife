@@ -35,24 +35,38 @@
       </span>
     </v-flex>
     <v-flex class="ma-auto" lg10 xs12>
-      <v-row  v-if="!ok" justify="center" align="center">
-        <div class="text-center ma-12">
+      <v-row v-if="!ok" justify="center" align="center">
+        <v-content class="text-center progress">
           <v-progress-circular
             indeterminate
             :rotate="0"
-            :size="32"
+            :size="50"
             :value="0"
-            :width="4"
-            color="light-blue"
+            :width="7"
+            color="orange"
             class="ma-auto"
           />
-        </div>
+        </v-content>
       </v-row>
-      <contents-list v-if="ok" :contentslist="page_list" />
+      <div v-else>
+        <v-content
+          v-if="contentslist.length == 0"
+          class="my-10"
+          style="text-align:center; color:grey; font-weight:bold"
+        >검색된 강좌/모임이 없습니다!</v-content>
+
+        <contents-list v-else :contentslist="page_list" />
+        <div v-if="contentslist.length != 0" class="text-center">
+          <v-pagination
+            v-model="page"
+            :total-visible="7"
+            :length="pagelength"
+            circle
+            color="success"
+          ></v-pagination>
+        </div>
+      </div>
     </v-flex>
-    <div class="text-center">
-      <v-pagination v-model="page" :total-visible="7" :length="pagelength" circle color="success"></v-pagination>
-    </div>
   </v-container>
 </template>
 <script>
@@ -254,6 +268,7 @@ export default {
           console.log(response);
           if (response.data.OK != null) {
             this.contentslist = [];
+            this.ok = true;
           } else {
             this.contentslist = response.data;
 
@@ -387,5 +402,9 @@ export default {
 .sort {
   font-weight: bold;
   color: darkorange !important;
+}
+.progress {
+  margin: 100px;
+  padding: 100px;
 }
 </style>

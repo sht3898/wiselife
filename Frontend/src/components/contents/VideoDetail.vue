@@ -3,8 +3,7 @@
     <div class="video-wrapper">
       <iframe :src="`https://www.youtube.com/embed/${this.selectedVideo.id.videoId}`"></iframe>
     </div>
-    <p class="subtitle">{{ selectedVideo.snippet.title }}</p>
-    <p>{{ selectedVideo.snippet.description }}</p>
+    <p class="mt-3 subtitle">{{ selectedVideo.snippet.title }}</p>
   </div>
 </template>
 
@@ -31,4 +30,10 @@ export default {
     width: 100%;
     height: 100%;
   }
+  @import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
+  .subtitle {
+  font-size: 13pt;
+  font-family: "Jua", sans-serif;
+  color:dimgray;
+}
 </style>

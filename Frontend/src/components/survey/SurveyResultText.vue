@@ -293,14 +293,17 @@ export default {
           this.text = this.results[i].text;
           this.url = this.results[i].url;
           this.name = this.results[i].name;
-          let activity_list = [];
+          let activity_list = this.results[i].activity;
           for (var j = 0; j < this.results[i].index.length; j++) {
             activity_list = activity_list.concat(
               this.activities[this.results[i].index[j]]
             );
           }
           activity_list = Array.from(new Set(activity_list));
-          for (var k = 0; k < 5; k++) {
+          for (var k = 0; k < activity_list.length; k++) {
+            if(k==5){
+              break;
+            }
             var index = Math.floor(Math.random() * (activity_list.length - 1));
             if (!this.activity.includes(activity_list[index])) {
               this.activity[k] = activity_list[index];
