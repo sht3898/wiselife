@@ -6,6 +6,11 @@
         <recommends-list></recommends-list>
       </v-container>
 
+      <v-container fluid>
+        <p class="menu">슬기로운 집콕 생활</p>
+        <youtube></youtube>
+      </v-container>
+
       <v-container fluid mb-8>
         <p class="menu">
           전체 카테고리
@@ -34,11 +39,13 @@
 <script>
 import RecommendsList from "@/components/contents/RecommendsList";
 import TopFive from "@/components/contents/TopFive";
+import Youtube from "@/components/contents/Youtube";
 export default {
   name: "Home",
   components: {
     RecommendsList,
-    TopFive
+    TopFive,
+    Youtube
   },
   data() {
     return {
