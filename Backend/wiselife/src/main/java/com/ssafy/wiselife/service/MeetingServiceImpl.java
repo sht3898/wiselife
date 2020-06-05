@@ -460,14 +460,16 @@ public class MeetingServiceImpl implements IMeetingService {
 	public int putMeetingOfUpdateIsActive(long uid, int meeting_id, int isActive) {
 		try {
 			Meeting meeting = meetingrepo.findById(meeting_id).get();
-
+			UserMeeting usermeeting = usermeetingrepo.findByUserAndMeeting(userrepo.findById(uid).get(), meeting);
 			if (meeting.getUser().getUid() == uid) {
 				meeting.setIsActive(isActive);
+				usermeeting.setIsActive(isActive);
 			} else {
 				return 0;
 			}
 
 			meetingrepo.save(meeting);
+			usermeetingrepo.save(usermeeting);
 			return meeting.getMeetingId();
 		} catch (Exception e) {
 			return -1;

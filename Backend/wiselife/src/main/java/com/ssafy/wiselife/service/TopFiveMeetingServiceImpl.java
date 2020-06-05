@@ -109,7 +109,7 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 
 			for (int i = 0; i < originArea4.size(); i++) {
 				if (originArea4.get(i).equals(firstArea)) {
-					shortFirstArea = shortArea4[i];
+					shortFirstArea = shortArea4[i]+"%";
 				}
 			}
 			topFiveMeeting = likemeetingrepo.findByAreas(firstArea, shortFirstArea, secondArea);
@@ -118,7 +118,7 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 
 			for (int i = 0; i < originArea5.size(); i++) {
 				if (originArea5.get(i).equals(firstArea)) {
-					shortFirstArea = shortArea5[i];
+					shortFirstArea = shortArea5[i]+"%";
 				}
 			}
 			topFiveMeeting = likemeetingrepo.findByAreas(firstArea, shortFirstArea, secondArea);
