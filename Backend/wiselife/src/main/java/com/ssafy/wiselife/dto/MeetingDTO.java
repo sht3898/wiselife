@@ -1,5 +1,6 @@
 package com.ssafy.wiselife.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class MeetingDTO {
 		private String area1;
 		private String area2;
 		private String phone;
-		private List<MultipartFile> files;
+		private List<MultipartFile> files = new ArrayList<>();
 	}
 	
 	@Getter @Setter
@@ -54,7 +55,7 @@ public class MeetingDTO {
 		private String phone;
 		private String area1;
 		private String area2;
-		private List<MultipartFile> files;
+		private List<MultipartFile> files = new ArrayList<>();;
 	}
 	
 	@Getter @Setter @ToString

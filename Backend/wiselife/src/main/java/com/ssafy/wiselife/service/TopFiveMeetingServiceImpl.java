@@ -8,8 +8,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ssafy.wiselife.domain.Area;
 import com.ssafy.wiselife.domain.User;
 import com.ssafy.wiselife.dto.MeetingDTO.ShortMeeting;
+import com.ssafy.wiselife.repository.AreaRepository;
 import com.ssafy.wiselife.repository.LikeMeetingRepository;
 import com.ssafy.wiselife.repository.MeetingRepository;
 import com.ssafy.wiselife.repository.UserRepository;
@@ -24,6 +26,9 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 
 	@Autowired
 	private UserRepository userrepo;
+
+	@Autowired
+	private AreaRepository arearepo;
 
 	@Override
 	public Map<String, List<ShortMeeting>> findGenderTopRank() {
@@ -59,7 +64,7 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 
 		ArrayList<ShortMeeting> resultList = new ArrayList<>();
 		topFiveMeeting = likemeetingrepo.findByAges(ages);
-		
+
 		for (int id : topFiveMeeting) {
 			ShortMeeting topMeeting = new ShortMeeting();
 			title = meetingrepo.findTitleByMeetingId(id);
@@ -79,8 +84,45 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 		String firstArea = user.getArea1();
 		String secondArea = user.getArea2();
 
+		List<Area> areaList = arearepo.findAll();
+		List<String> originArea4 = new ArrayList<>();
+		List<String> originArea5 = new ArrayList<>();
+
+		for (Area area : areaList) {
+			String tmp = area.getFirstArea();
+			if (tmp.length() == 4)
+				originArea4.add(tmp);
+			else if (tmp.length() >= 5)
+				originArea5.add(tmp);
+		}
+
+		// 지역 찾기
+		String[] shortArea4 = { "충북", "충남", "전북", "전남", "경북", "경남" };
+		String[] shortArea5 = { "서울", "부산", "대구", "인천", "광주", "대전", "울산", "세종", "제주" };
+
 		ArrayList<ShortMeeting> resultList = new ArrayList<>();
-		topFiveMeeting = likemeetingrepo.findByArea(firstArea, secondArea);
+
+		if (firstArea.length() == 3) {
+			topFiveMeeting = likemeetingrepo.findByArea(firstArea, secondArea);
+		} else if (firstArea.length() >= 5) {
+			String shortFirstArea = "";
+
+			for (int i = 0; i < originArea4.size(); i++) {
+				if (originArea4.get(i).equals(firstArea)) {
+					shortFirstArea = shortArea4[i];
+				}
+			}
+			topFiveMeeting = likemeetingrepo.findByAreas(firstArea, shortFirstArea, secondArea);
+		} else {
+			String shortFirstArea = "";
+
+			for (int i = 0; i < originArea5.size(); i++) {
+				if (originArea5.get(i).equals(firstArea)) {
+					shortFirstArea = shortArea5[i];
+				}
+			}
+			topFiveMeeting = likemeetingrepo.findByAreas(firstArea, shortFirstArea, secondArea);
+		}
 
 		for (int id : topFiveMeeting) {
 			ShortMeeting topMeeting = new ShortMeeting();
@@ -89,7 +131,7 @@ public class TopFiveMeetingServiceImpl implements ITopFiveMeetingService {
 			topMeeting.setTitle(title);
 			resultList.add(topMeeting);
 		}
-		
+
 		return resultList;
 	}
 
