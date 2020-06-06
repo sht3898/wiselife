@@ -277,7 +277,7 @@
                   </v-row>
                   <div
                     id="map"
-                    style="max-width:400px; max-height:200px; width:100vw; height:30vw;margin-top:10px;display:none"
+                    style="max-width:400px; max-height:200px; width:80vw; height:30vw;margin-top:10px;display:none"
                   ></div>
                 </v-col>
               </v-row>

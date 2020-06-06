@@ -19,21 +19,26 @@
             <v-col cols="1.5">모임 유형</v-col>
             <v-col cols="2.5">모임 날짜</v-col>
           </v-row>
-          <v-card
-            v-for="meeting in attendmeetinglist"
-            :key="meeting.meetingId"
-            @click="pickMeeting(meeting)"
-          >
-            <v-row class="ma-auto" style="text-align:center;">
-              <v-col cols="1.5">{{ meeting.mainCategory }}</v-col>
-              <v-col cols="3.5">{{ meeting.title }}</v-col>
-              <v-col cols="1.5">{{ meeting.writer }}</v-col>
-              <v-col cols="2.5">{{ meeting.area1 }} {{ meeting.area2 }}</v-col>
-              <v-col cols="1.5">{{ meeting.isClass }}</v-col>
-              <v-col v-if="meeting.isPeriod == '정기'" cols="2.5">{{ meeting.periodDate }}</v-col>
-              <v-col v-else cols="2.5">{{ meeting.meetingDate }}</v-col>
-            </v-row>
-          </v-card>
+          <v-hover v-slot:default="{ hover }">
+            <v-card
+              v-for="meeting in attendmeetinglist"
+              :key="meeting.meetingId"
+              outlined
+              :elevation="hover ? 5 : 0"
+              class="my-1"
+              @click="pickMeeting(meeting)"
+            >
+              <v-row class="ma-auto" style="text-align:center;">
+                <v-col cols="1.5">{{ meeting.mainCategory }}</v-col>
+                <v-col cols="3.5">{{ meeting.title }}</v-col>
+                <v-col cols="1.5">{{ meeting.writer }}</v-col>
+                <v-col cols="2.5">{{ meeting.area1 }} {{ meeting.area2 }}</v-col>
+                <v-col cols="1.5">{{ meeting.isClass }}</v-col>
+                <v-col v-if="meeting.isPeriod == '정기'" cols="2.5">{{ meeting.periodDate }}</v-col>
+                <v-col v-else cols="2.5">{{ meeting.meetingDate }}</v-col>
+              </v-row>
+            </v-card>
+          </v-hover>
         </v-tab-item>
         <v-tab-item>
           <v-content
@@ -41,29 +46,50 @@
             class="my-10"
             style="text-align:center; color:grey; font-weight:bold"
           >작성할 강좌/모임을 선택해주세요!</v-content>
-          <v-container v-else-if="pick != 0 && !wrote" class="pa-3 mt-5">
-            <v-file-input
-              :rules="rules"
-              accept="image/png, image/jpeg, image/bmp"
-              placeholder="이미지 첨부"
-              prepend-icon="mdi-camera-enhance"
-              outlined
-              dense
-              id="files"
-              ref="files"
-              v-on:change="handleFilesUploads()"
-            ></v-file-input>
-            <p>* 리뷰 이미지는 1장만 등록 가능합니다!</p>
-
-            <v-rating
-              v-model="attendmeetinglist.rating"
-              color="yellow darken-3"
-              background-color="grey darken-1"
-              empty-icon="$ratingFull"
-              half-increments
-              hover
-            ></v-rating>
-
+          <v-container v-else-if="pick != 0 && !wrote" class="ma-auto">
+            <v-card outlined>
+              <v-row>
+                <v-col class="mt-2 text-center" cols="12" sm="6">
+                  <span class="picktitle">{{ picktitle }}</span>
+                </v-col>
+                <v-col class="text-center" cols="12" sm="6">
+                  <v-rating
+                    v-model="rating"
+                    color="yellow darken-3"
+                    background-color="grey lighten-1"
+                    empty-icon="$ratingFull"
+                    half-increments
+                    hover
+                  ></v-rating>
+                </v-col>
+              </v-row>
+              <v-divider></v-divider>
+              <v-row>
+                <v-col class="mt-3 pl-5" cols="12" sm="6">
+                  <v-file-input
+                    :rules="rules"
+                    accept="image/png, image/jpeg, image/bmp"
+                    placeholder="이미지 첨부"
+                    prepend-icon="mdi-camera-enhance"
+                    outlined
+                    dense
+                    id="files"
+                    ref="files"
+                    v-on:change="handleFilesUploads()"
+                  ></v-file-input>
+                </v-col>
+                <v-col class="pr-5" cols="12" sm="6">
+                  <v-alert
+                    class="mt-3"
+                    outlined
+                    type="warning"
+                    dense
+                    border="left"
+                    style="font-size:9pt;"
+                  >리뷰 이미지는 1장만 등록 가능합니다!</v-alert>
+                </v-col>
+              </v-row>
+            </v-card>
             <v-textarea
               v-model="reviewContent"
               background-color="amber lighten-4"
@@ -84,6 +110,41 @@
               <!-- <v-btn class="reviewbtn" rounded small style="font-size: 12pt;">삭제</v-btn> -->
             </div>
           </v-container>
+          <v-container>
+            <v-row>
+              <v-col class="mt-2 pl-5" cols="12" sm="9">
+                <span class="picktitle">{{ picktitle }}</span>
+              </v-col>
+              <v-col class="pl-5" cols="12" sm="3">
+                <v-row>
+                  <v-col  style="padding-top:10px" >
+                    <v-rating
+                      :value="picked.score"
+                      background-color="white"
+                      color="amber"
+                      dense
+                      half-increments
+                      readonly
+                      small                                           
+                    ></v-rating>
+                  </v-col>
+                  <v-col>
+                    <span class="topscore ml-1">{{ picked.score }}</span>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+            <v-row height="100px">
+              <v-col cols="3">
+                <v-card width="180" outlined>
+                  <v-img :src="`http://k02b1051.p.ssafy.io`+ picked.imageUrl" />
+                </v-card>
+              </v-col>
+              <v-col cols="9">
+                <v-card outlined class="pa-3" width="100%" height="100%">{{ picked.content }}</v-card>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-tab-item>
       </v-tabs-items>
     </v-flex>
@@ -98,23 +159,12 @@ export default {
     return {
       tab: null,
       pick: 0,
+      picktitle: "",
+      rating: 0,
       wrote: false,
-      expanded: [],
-      singleExpand: false,
-      headers: [
-        { text: "카테고리", value: "mainCategory" },
-        {
-          text: "강좌/모임명",
-          align: "start",
-          value: "title"
-        },
-        { text: "호스트", value: "writer" },
-        { text: "모임 유형", value: "isPeriod" },
-        { text: "모임 날짜", value: "meetingDate" },
-
-        { text: "", value: "data-table-expand" }
-      ],
       attendmeetinglist: [],
+      reviewlist: [],
+      picked: {},
       reviewContent: "",
       files: "",
       rules: [
@@ -135,60 +185,85 @@ export default {
     };
   },
   mounted() {
-    this.getMymeeting();
+    this.getMyMeeting();
+    this.getMyReview();
   },
   methods: {
     pickMeeting(meeting) {
       this.pick = meeting.meetingId;
+      this.picktitle = meeting.title;
+      this.reviewContent = "";
+      this.rating = 0;
+      this.files = "";
+      this.wrote = false;
+      for (var i = 0; i < this.reviewlist.length; i++) {
+        if (this.reviewlist[i].meetingId == this.pick) {
+          this.picked = this.reviewlist[i];
+          this.wrote = true;
+          break;
+        }
+      }
+      this.tab = 1;
+    },
+    getMyReview() {
       let config = {
         headers: {
           access_token: localStorage.getItem("token")
         }
       };
       http
-        .get(`review/list/meeting_id=` + meeting.meetingId, config)
+        .get(`review/user`, config)
         .then(response => {
-          console.log(response);
-          if(response.data.OK != null){
-            this.wrote = false;
-          }else{
-            this.wrote = true;
+          if (response.data.OK != null) {
+            this.reviewlist = [];
+          } else {
+            this.reviewlist = response.data;
+            console.log(response.data);
           }
-          this.tab = 1;
         })
-        .catch(() => {});
+        .catch(() => {
+          // alert("토큰 만료! 다시 로그인 해주세요!");
+          // localStorage.clear();
+          // this.$router.go();
+        });
     },
-    getMymeeting() {
+    getMyMeeting() {
       let config = {
         headers: {
           access_token: localStorage.getItem("token")
         }
       };
-      http.get(`review/check`, config).then(response => {
-        console.log(response);
-
-        this.attendmeetinglist = response.data;
-        for (var i = 0; i < this.attendmeetinglist.length; i++) {
-          if (this.attendmeetinglist[i].isPeriod == "0") {
-            this.attendmeetinglist[i].isPeriod = "비정기";
-          } else {
-            this.attendmeetinglist[i].isPeriod = "정기";
+      http
+        .get(`review/check`, config)
+        .then(response => {
+          console.log(response);
+          this.attendmeetinglist = response.data;
+          for (var i = 0; i < this.attendmeetinglist.length; i++) {
+            if (this.attendmeetinglist[i].isPeriod == "0") {
+              this.attendmeetinglist[i].isPeriod = "비정기";
+            } else {
+              this.attendmeetinglist[i].isPeriod = "정기";
+            }
+            if (this.attendmeetinglist[i].isClass == "0") {
+              this.attendmeetinglist[i].isClass = "모임";
+            } else {
+              this.attendmeetinglist[i].isClass = "강좌";
+            }
+            this.attendmeetinglist[i].mainCategory = this.categories[
+              this.attendmeetinglist[i].mainCategory
+            ];
+            if (this.attendmeetinglist[i].meetingDate != "") {
+              this.attendmeetinglist[i].meetingDate = this.dateParsing(
+                this.attendmeetinglist[i].meetingDate
+              );
+            }
           }
-          if (this.attendmeetinglist[i].isClass == "0") {
-            this.attendmeetinglist[i].isClass = "모임";
-          } else {
-            this.attendmeetinglist[i].isClass = "강좌";
-          }
-          this.attendmeetinglist[i].mainCategory = this.categories[
-            this.attendmeetinglist[i].mainCategory
-          ];
-          if (this.attendmeetinglist[i].meetingDate != "") {
-            this.attendmeetinglist[i].meetingDate = this.dateParsing(
-              this.attendmeetinglist[i].meetingDate
-            );
-          }
-        }
-      });
+        })
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
+        });
     },
     dateParsing(beforeParsing) {
       const t = beforeParsing.indexOf("T");
@@ -203,38 +278,51 @@ export default {
       return realdate;
     },
     handleFilesUploads() {
-      this.files = this.$refs.files.files;
+      console.log(this.$refs);
+      this.files = this.$refs.files.$refs.input.files[0];
     },
     writeReview() {
       if (this.reviewContent == "") {
         alert("내용을 입력해주세요.");
         return;
       }
+      if (this.rating == 0) {
+        alert("평점을 입력해주세요!");
+        return;
+      }
       if (this.files == "") {
         alert("이미지를 등록해주세요.");
         return;
       }
+      let config = {
+        headers: {
+          access_token: localStorage.getItem("token")
+        }
+      };
       let formData = new FormData();
-      for (var i = 0; i < this.files.length; i++) {
-        let file = this.files[i];
-        formData.append("files", file);
+      // for (var i = 0; i < this.files.length; i++) {
+      //   let file = this.files[i];
+      // }
+      formData.append("meetingId", this.pick);
+      formData.append("content", this.reviewContent);
+      formData.append("score", this.rating);
+      formData.append("imageFile", this.files);
+
+      for (var key of formData.keys()) {
+        console.log(key);
       }
-      formData.append("budget_num", this.budgetInfo.budget_num);
-      // alert("budget_num: " + this.budgetInfo.budget_num);
-      formData.append("reviewContent", this.reviewContent);
-      // alert("reviewContent: " + this.reviewContent);
+
+      for (var value of formData.values()) {
+        console.log(value);
+      }
+
       http
-        .post("/review", formData)
+        .post("/review/write", formData, config)
         .then(response => {
           console.log(response);
-          // console.log("SUCCESS!!");
-          this.$router.push({ name: "review" });
-          // console.log(response);
-          // this.result = response.;
         })
         .catch(error => {
           console.log(error);
-          // console.log("FAILURE!!");
         });
     }
   }
@@ -247,21 +335,13 @@ export default {
   font-family: "Nanum Pen Script", cursive;
 }
 @import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
-.contenttitle {
+.picktitle {
+  font-family: "Jua", sans-serif;
+  font-size: 23px;
+}
+@import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
+.topscore {
   font-size: 15pt;
   font-family: "Jua", sans-serif;
-  /* 한 줄 자르기 */
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis; /* 여러 줄 자르기 추가 스타일 */
-  white-space: normal;
-  line-height: 1.2;
-  height: 3.6em;
-  text-align: left;
-  word-wrap: break-word;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
 }
 </style>
