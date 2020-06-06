@@ -19,6 +19,7 @@ import com.ssafy.wiselife.domain.User;
 import com.ssafy.wiselife.domain.UserMeeting;
 import com.ssafy.wiselife.dto.MeetingDTO.CheckMeetingOfReview;
 import com.ssafy.wiselife.dto.ReviewDTO.DetailReview;
+import com.ssafy.wiselife.dto.ReviewDTO.MyDetailReview;
 import com.ssafy.wiselife.dto.ReviewDTO.WriteReview;
 import com.ssafy.wiselife.mapper.EntityMapper;
 import com.ssafy.wiselife.repository.MeetingRepository;
@@ -185,5 +186,23 @@ public class ReviewServiceImpl implements IReviewService {
 		}
 
 		return fileUrl;
+	}
+
+	@Override
+	public List<MyDetailReview> getMyReview(long uid) {
+		User user = userrepo.findById(uid).get();
+		try {
+			List<Review> reviewEntityList = user.getReviewList();
+			List<MyDetailReview> resultList = new ArrayList<>();
+			for (int i = 0; i < reviewEntityList.size(); i++) {
+				Review reviewEntity = reviewEntityList.get(i);
+				MyDetailReview review = entityMapper.convertToDomain(reviewEntity, MyDetailReview.class);
+				review.setMeetingId(reviewEntity.getMeeting().getMeetingId());
+				resultList.add(review);
+			}
+			return resultList;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

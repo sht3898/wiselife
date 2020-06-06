@@ -1,6 +1,8 @@
 package com.ssafy.wiselife.dto;
 
 
+import java.util.Date;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Getter;
@@ -28,5 +30,16 @@ public class ReviewDTO {
 		private String imageUrl;
 		private String content;
 		private int checkUser; //0-작성자, 1-참여자
+		private Date updatedAt;
+	}
+	
+	@Getter @Setter @ToString
+	public static class MyDetailReview {
+		private int meetingId;
+		private int reviewId;
+		private double score;
+		private String imageUrl;
+		private String content;
+		private Date updatedAt;
 	}
 }

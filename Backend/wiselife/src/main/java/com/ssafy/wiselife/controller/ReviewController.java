@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.wiselife.dto.MeetingDTO.CheckMeetingOfReview;
 import com.ssafy.wiselife.dto.ReviewDTO.DetailReview;
+import com.ssafy.wiselife.dto.ReviewDTO.MyDetailReview;
 import com.ssafy.wiselife.dto.ReviewDTO.WriteReview;
 import com.ssafy.wiselife.service.IKakaoService;
 import com.ssafy.wiselife.service.IReviewService;
@@ -170,5 +171,39 @@ public class ReviewController {
 		} else {
 			return resultList;
 		}
+	}
+	
+	@GetMapping("/review/user")
+	@ApiOperation(value = "내가 작성한 리뷰")
+	public Object myReview(HttpServletRequest req) {
+		System.out.println("-----내가 작성한 리뷰 목록-----");
+		Map<HttpStatus, String> resultMap = new HashMap<>();
+		HttpStatus status = null;
+
+		String access_token = null;
+		HashMap<String, Object> userInfo = null;
+		long uid = 0;
+
+		try {
+			access_token = req.getHeader("access_token");
+			userInfo = kakaoservice.getUserInfo(access_token);
+			uid = (long) userInfo.get("id");
+		} catch (Exception e) {
+			status = HttpStatus.UNAUTHORIZED;
+			resultMap.put(status, "로그인을 먼저 진행해주세요");
+			return new ResponseEntity<>(resultMap, status);
+		}
+		
+		List<MyDetailReview> resultList = reviewservice.getMyReview(uid);
+		if(resultList == null) {
+			status = HttpStatus.BAD_REQUEST;
+			resultMap.put(status, "삭제되었거나 존재하지 않는 모임/강좌");
+			return new ResponseEntity<>(resultMap, status);
+		} else if(resultList.isEmpty()) {
+			status = HttpStatus.OK;
+			resultMap.put(status, "NO DATA");
+			return new ResponseEntity<>(resultMap, status);
+		} 
+		return resultList;
 	}
 }
