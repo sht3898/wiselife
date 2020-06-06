@@ -129,6 +129,7 @@
                 class="my-0 py-0"
                 v-model="meeting.area2"
                 :items="second_area"
+                hide-no-data
                 style="font-size:10pt"
                 label="시/군/구"
                 dense
@@ -429,7 +430,6 @@ export default {
       http
         .get(`user/info/`, config)
         .then(response => {
-          console.log(response.data);
           this.userinst = response.data.info.userinfo.isInst;
           this.username = response.data.info.userinfo.username;
         })
@@ -498,9 +498,6 @@ export default {
 
       //////////// 이미지 업로드 //////////////
       let formData = new FormData();
-      console.log("보자!:   ", this.$refs.files.$refs.input.files);
-      console.log(this.files);
-
       formData.append("meeting_id", this.$route.params.seq);
       for (var j = 0; j < this.files.length; j++) {
         let file = this.files[j];
@@ -530,15 +527,13 @@ export default {
       http
         .put("meeting/update", formData, config)
         .then(response => {
-          console.log(response);
           if (response.status == 200) {
             alert("성공적으로 수정되었습니다!");
             alert(response.data.meeting_id);
             this.$router.push("/contentdetail/" + response.data.meeting_id);
           }
         })
-        .catch(error => {
-          console.log(error);
+        .catch(() => {
           alert("에러! 업데이트 실패!");
         });
     },

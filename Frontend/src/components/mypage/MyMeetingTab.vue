@@ -110,112 +110,121 @@ export default {
           access_token: localStorage.getItem("token")
         }
       };
-      http.get(`meeting/list`, config).then(response => {
-        console.log(response);
-
-        this.attendmeetinglist = response.data.참여;
-        if (this.attendmeetinglist.length == 0) {
-          this.notattend = true;
-        }
-
-        this.createmeetinglist = response.data.등록;
-        if (this.createmeetinglist.length == 0) {
-          this.notcreate = true;
-        }
-
-        for (var i = 0; i < this.attendmeetinglist.length; i++) {
-          if (this.attendmeetinglist[i].tags != null) {
-            let split_tags = this.attendmeetinglist[i].tags.split(" ");
-            let tags = [];
-            for (var j in split_tags) {
-              tags.push(split_tags[j]);
-            }
-            tags = Array.from(new Set(tags));
-            this.attendmeetinglist[i].tags = tags;
+      http
+        .get(`meeting/list`, config)
+        .then(response => {
+          this.attendmeetinglist = response.data.참여;
+          if (this.attendmeetinglist.length == 0) {
+            this.notattend = true;
           }
-          if (this.attendmeetinglist[i].meetingImages.length != 0) {
-            if (
-              this.attendmeetinglist[i].meetingImages[0].substring(2, 3) == "t"
-            ) {
+
+          this.createmeetinglist = response.data.등록;
+          if (this.createmeetinglist.length == 0) {
+            this.notcreate = true;
+          }
+
+          for (var i = 0; i < this.attendmeetinglist.length; i++) {
+            if (this.attendmeetinglist[i].tags != null) {
+              let split_tags = this.attendmeetinglist[i].tags.split(" ");
+              let tags = [];
+              for (var j in split_tags) {
+                tags.push(split_tags[j]);
+              }
+              tags = Array.from(new Set(tags));
+              this.attendmeetinglist[i].tags = tags;
+            }
+            if (this.attendmeetinglist[i].meetingImages.length != 0) {
               if (
-                this.attendmeetinglist[i].meetingImages[0].substring(0, 1) ==
-                '"'
+                this.attendmeetinglist[i].meetingImages[0].substring(2, 3) ==
+                "t"
               ) {
-                let length = this.attendmeetinglist[i].meetingImages[0].length;
+                if (
+                  this.attendmeetinglist[i].meetingImages[0].substring(0, 1) ==
+                  '"'
+                ) {
+                  let length = this.attendmeetinglist[i].meetingImages[0]
+                    .length;
+                  this.attendmeetinglist[
+                    i
+                  ].meetingImages[0] = this.attendmeetinglist[
+                    i
+                  ].meetingImages[0].substring(1, length - 1);
+                }
                 this.attendmeetinglist[
                   i
-                ].meetingImages[0] = this.attendmeetinglist[
+                ].meetingImages = this.attendmeetinglist[
                   i
-                ].meetingImages[0].substring(1, length - 1);
-              }
-              this.attendmeetinglist[i].meetingImages = this.attendmeetinglist[
-                i
-              ].meetingImages[0].split(" ")[0];
-              if (
-                this.attendmeetinglist[i].meetingImages[0].substring(0, 1) ==
-                "h"
-              ) {
-                this.attendmeetinglist[i].isUrl = true;
+                ].meetingImages[0].split(" ")[0];
+                if (
+                  this.attendmeetinglist[i].meetingImages[0].substring(0, 1) ==
+                  "h"
+                ) {
+                  this.attendmeetinglist[i].isUrl = true;
+                } else {
+                  this.attendmeetinglist[i].isUrl = false;
+                }
               } else {
-                this.attendmeetinglist[i].isUrl = false;
+                this.attendmeetinglist[
+                  i
+                ].meetingImages = this.attendmeetinglist[i].meetingImages[0];
               }
             } else {
-              this.attendmeetinglist[i].meetingImages = this.attendmeetinglist[
-                i
-              ].meetingImages[0];
+              this.attendmeetinglist[i].meetingImages = null;
             }
-          } else {
-            this.attendmeetinglist[i].meetingImages = null;
           }
-        }
 
-        for (var m = 0; m < this.createmeetinglist.length; m++) {
-          if (this.createmeetinglist[m].tags != null) {
-            let split_tags = this.createmeetinglist[m].tags.split(" ");
-            let tags = [];
-            for (var n in split_tags) {
-              tags.push(split_tags[n]);
+          for (var m = 0; m < this.createmeetinglist.length; m++) {
+            if (this.createmeetinglist[m].tags != null) {
+              let split_tags = this.createmeetinglist[m].tags.split(" ");
+              let tags = [];
+              for (var n in split_tags) {
+                tags.push(split_tags[n]);
+              }
+              tags = Array.from(new Set(tags));
+              this.createmeetinglist[m].tags = tags;
             }
-            tags = Array.from(new Set(tags));
-            this.createmeetinglist[m].tags = tags;
-          }
-          if (this.createmeetinglist[m].meetingImages.length != 0) {
-            if (
-              this.createmeetinglist[m].meetingImages[0].substring(2, 3) == "t"
-            ) {
+            if (this.createmeetinglist[m].meetingImages.length != 0) {
               if (
-                this.createmeetinglist[m].meetingImages[0].substring(0, 1) ==
-                '"'
+                this.createmeetinglist[m].meetingImages[0].substring(2, 3) ==
+                "t"
               ) {
-                let length = this.createmeetinglist[m].meetingImages[0].length;
+                if (
+                  this.createmeetinglist[m].meetingImages[0].substring(0, 1) ==
+                  '"'
+                ) {
+                  let length = this.createmeetinglist[m].meetingImages[0]
+                    .length;
+                  this.createmeetinglist[
+                    m
+                  ].meetingImages[0] = this.createmeetinglist[
+                    m
+                  ].meetingImages[0].substring(1, length - 1);
+                }
                 this.createmeetinglist[
                   m
-                ].meetingImages[0] = this.createmeetinglist[
+                ].meetingImages = this.createmeetinglist[
                   m
-                ].meetingImages[0].substring(1, length - 1);
-              }
-              this.createmeetinglist[m].meetingImages = this.createmeetinglist[
-                m
-              ].meetingImages[0].split(" ")[0];
-              if (
-                this.createmeetinglist[m].meetingImages[0].substring(0, 1) ==
-                "h"
-              ) {
-                this.createmeetinglist[m].isUrl = true;
+                ].meetingImages[0].split(" ")[0];
+                if (
+                  this.createmeetinglist[m].meetingImages[0].substring(0, 1) ==
+                  "h"
+                ) {
+                  this.createmeetinglist[m].isUrl = true;
+                } else {
+                  this.createmeetinglist[m].isUrl = false;
+                }
               } else {
-                this.createmeetinglist[m].isUrl = false;
+                this.createmeetinglist[
+                  m
+                ].meetingImages = this.createmeetinglist[m].meetingImages[0];
               }
             } else {
-              this.createmeetinglist[m].meetingImages = this.createmeetinglist[
-                m
-              ].meetingImages[0];
+              this.createmeetinglist[m].meetingImages = null;
             }
-          } else {
-            this.createmeetinglist[m].meetingImages = null;
           }
-        }
-        this.ok = true;
-      });
+          this.ok = true;
+        })
+        .catch(() => {});
     }
   },
   mounted() {
@@ -263,7 +272,7 @@ export default {
     opacity: 1;
   }
 }
-.progress{
+.progress {
   margin: 50px;
   padding: 50px;
 }

@@ -61,14 +61,12 @@ export default {
           config
         )
         .then(response => {
-          console.log(response);
           this.items = response.data;
           for (var i = 0; i < this.items.length; i++) {
             this.items[i].tags = this.items[i].tags.split(" ");
           }
           this.items[i].tags = Array.from(new Set(this.items[i].tags));
           this.ok = true;
-          console.log(this.items);
         })
         .catch(err => {
           alert(err);

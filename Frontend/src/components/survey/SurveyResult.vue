@@ -84,18 +84,12 @@ export default {
         "예민한"
       ],
 
-      survey: {
-        openness: 73.7,
-        conscientiousness: 53.3,
-        extraversion: 60,
-        agreeableness: 63,
-        neuroticism: 13.3
-      },
+      survey: {},
       avg: {
-        openness: 66,
-        conscientiousness: 59,
-        extraversion: 51,
-        agreeableness: 55,
+        openness: 67,
+        conscientiousness: 64,
+        extraversion: 60,
+        agreeableness: 60,
         neuroticism: 55
       },
       series: [

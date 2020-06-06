@@ -87,8 +87,7 @@ export default {
                   success: function(response) {
                     username = response.properties.nickname;
                   },
-                  fail: function(error) {
-                    console.log(error);
+                  fail: function() {
                     alert("회원 정보를 가져오는데 실패했습니다!");
                     localStorage.clear();
                     this_component.$router.go();
@@ -104,8 +103,7 @@ export default {
               }
             });
         },
-        fail: function(err) {
-          console.log(err);
+        fail: function() {
           alert("로그인에 실패하였습니다! 다시 시도해주세요!");
           this.clickBtn = false;
           return;

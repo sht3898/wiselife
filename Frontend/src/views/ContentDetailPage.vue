@@ -233,7 +233,9 @@
                             </v-list-item-avatar>
                             <v-list-item-content>
                               <v-list-item-title>호스트 : {{ writer.username }}</v-list-item-title>
-                              <v-list-item-subtitle>문의 : {{ meeting.phone }}</v-list-item-subtitle>
+                              <v-list-item-subtitle
+                                v-if="meeting.phone != ''"
+                              >문의 : {{ meeting.phone }}</v-list-item-subtitle>
                             </v-list-item-content>
                             <v-list-item-action>
                               <v-btn icon @click="menu = false">
@@ -255,7 +257,7 @@
                       </v-card>
                     </v-menu>
                   </v-row>
-                  <v-row>
+                  <v-row v-if="meeting.refUrl != ''">
                     <v-chip :color="`grey lighten-4`" class="black--text mr-3" label small>
                       <span class="mdi mdi-dark mdi-link mr-1" style="font-size:15pt;" />참고 URL
                     </v-chip>
@@ -360,8 +362,6 @@ export default {
           }
         })
         .catch(error => {
-          alert("hi");
-          console.log(error);
           alert(error);
         });
     },
@@ -375,10 +375,13 @@ export default {
       if (confirm("삭제하시겠습니까?") == true) {
         http
           .delete(`meeting/delete?meeting_id=` + this.seq, config)
-          .then(response => {
-            console.log(response);
+          .then(() => {
             alert("삭제되었습니다.");
             this.$router.push("/");
+          })
+          .catch(() => {
+            alert("삭제 실패! 다시 시도해주세요!");
+            return;
           });
       }
     },
@@ -456,7 +459,6 @@ export default {
             this.getAttendant();
             this.meeting.nowPerson--;
           }
-          // console.log(response);
         })
         .catch(error => {
           alert(error);
@@ -478,7 +480,6 @@ export default {
             this.meeting.isLike = 1;
             this.meeting.likeCnt++;
           }
-          // console.log(response);
         })
         .catch(error => {
           alert(error);
@@ -551,12 +552,10 @@ export default {
       http
         .get(`meeting/${this.$route.params.seq}`, config)
         .then(response => {
-          console.log(response.data);
           let this_component = this;
           this.meeting = response.data;
           this.host = response.data.writer;
           this.chk = true;
-          console.log(this.meeting);
           //주소 있으면 지도 찍자!
           if (this.meeting.address != null) {
             this.geocoder.addressSearch(this.meeting.address, function(

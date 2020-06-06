@@ -234,7 +234,6 @@ export default {
       http
         .get(`user/info/`, config)
         .then(response => {
-          console.log(response.data);
           this.myarea1 = response.data.info.userinfo.area1;
           this.myarea2 = response.data.info.userinfo.area2;
         })
@@ -265,7 +264,6 @@ export default {
       http
         .get(`search/${this.$route.params.category}?keyword=` + keyword, config)
         .then(response => {
-          console.log(response);
           if (response.data.OK != null) {
             this.contentslist = [];
             this.ok = true;
@@ -321,9 +319,7 @@ export default {
             }
           }
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch(() => {});
     },
     clickCategory(category) {
       for (var i = 0; i < this.categories.length; i++) {
