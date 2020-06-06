@@ -273,7 +273,6 @@ export default {
         }
       };
       http.get(`user/info`, config).then(response => {
-        console.log(response);
         if (response.data.status == "success") {
           if (response.data.info.survey == null) {
             this.chkuser = 1;
@@ -339,7 +338,6 @@ export default {
         }
       };
 
-      console.log(data);
       if (this.chkuser == 1) {
         http.post(`user/survey`, data, config).then(response => {
           if (response.data.status) {

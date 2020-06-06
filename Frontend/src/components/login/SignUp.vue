@@ -1,88 +1,88 @@
 <template>
   <v-container v-if="!complete" class="ma-auto">
     <v-flex class="ma-auto" lg8 sm12>
-    <p class="infotitle">회원정보 입력</p>
-    <v-row>
-      <v-col cols="3" class="mt-5">
-        <span style="color:dimgray;">
-          <strong>Gender</strong>
-        </span>
-      </v-col>
-      <v-radio-group v-model="gender" row class="ml-3">
-        <v-col>
-          <v-radio color="green" label=" 남" value="1" />
+      <p class="infotitle">회원정보 입력</p>
+      <v-row>
+        <v-col cols="3" class="mt-5">
+          <span style="color:dimgray;">
+            <strong>Gender</strong>
+          </span>
         </v-col>
-        <v-col style="padding-left:90px">
-          <v-radio color="green" label=" 여" value="2" />
+        <v-radio-group v-model="gender" row class="ml-3">
+          <v-col>
+            <v-radio color="green" label=" 남" value="1" />
+          </v-col>
+          <v-col style="padding-left:90px">
+            <v-radio color="green" label=" 여" value="2" />
+          </v-col>
+        </v-radio-group>
+      </v-row>
+      <v-row>
+        <v-col cols="3" class="mt-5">
+          <span style="color:dimgray;">
+            <strong>Birth</strong>
+          </span>
         </v-col>
-      </v-radio-group>
-    </v-row>
-    <v-row>
-      <v-col cols="3" class="mt-5">
-        <span style="color:dimgray;">
-          <strong>Birth</strong>
-        </span>
-      </v-col>
-      <v-col class="px-0 py-0">
-        <v-container id="dropdown-example-2">
-          <v-overflow-btn v-model="birth" :items="years" label="연도" dense />
-        </v-container>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="3" class="mt-5">
-        <span style="color:dimgray;">
-          <strong>Area</strong>
-        </span>
-      </v-col>
-      <v-col class="px-0 py-0">
-        <v-container id="dropdown-example-2" class="py-0">
-          <v-overflow-btn v-model="area1" :items="first_area" label="도/시" dense />
-        </v-container>
-      </v-col>
-      <v-col class="px-0 py-0">
-        <v-container id="dropdown-example-2" class="py-0">
-          <v-overflow-btn v-model="area2" :items="second_area" label="시/군/구" dense />
-        </v-container>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="3" class="mt-5">
-        <span style="color:dimgray;">
-          <strong>Instructor</strong>
-        </span>
-      </v-col>
-      <v-radio-group v-model="instructor" row class="ml-3">
-        <v-col>
-          <v-radio color="green" label=" 강사" value="1" />
+        <v-col class="px-0 py-0">
+          <v-container id="dropdown-example-2">
+            <v-overflow-btn v-model="birth" :items="years" label="연도" dense />
+          </v-container>
         </v-col>
-        <v-col style="padding-left:60px">
-          <v-radio color="green" label=" 일반 회원" value="0" />
+      </v-row>
+
+      <v-row>
+        <v-col cols="3" class="mt-5">
+          <span style="color:dimgray;">
+            <strong>Area</strong>
+          </span>
         </v-col>
-      </v-radio-group>
-    </v-row>
+        <v-col class="px-0 py-0">
+          <v-container id="dropdown-example-2" class="py-0">
+            <v-overflow-btn v-model="area1" :items="first_area" label="도/시" dense />
+          </v-container>
+        </v-col>
+        <v-col class="px-0 py-0">
+          <v-container id="dropdown-example-2" class="py-0">
+            <v-overflow-btn v-model="area2" :items="second_area" label="시/군/구" hide-no-data dense />
+          </v-container>
+        </v-col>
+      </v-row>
 
-    <span class="infotitle">관심 카테고리</span>
-       <span style="text-align:right; float: right; font-size:9pt">(복수 선택 가능합니다.)</span>
-  
-    <v-row justify="space-around">
-      <v-col v-for="category in categories" :key="category.name" class="mt-5">
-        <v-img
-          :src="getImgUrl(category.url)"
-          width="70px"
-          style="border-radius:12px; margin:auto"
-          :class="{green: category.clicked}"
-          @click="category.clicked = !category.clicked"
-        />
-        <div class="subheading" style="font-size:10pt; text-align:center;">{{ category.name }}</div>
-      </v-col>
-    </v-row>
+      <v-row>
+        <v-col cols="3" class="mt-5">
+          <span style="color:dimgray;">
+            <strong>Instructor</strong>
+          </span>
+        </v-col>
+        <v-radio-group v-model="instructor" row class="ml-3">
+          <v-col>
+            <v-radio color="green" label=" 강사" value="1" />
+          </v-col>
+          <v-col style="padding-left:60px">
+            <v-radio color="green" label=" 일반 회원" value="0" />
+          </v-col>
+        </v-radio-group>
+      </v-row>
 
-    <div class="btn py-3" style="float:right">
-      <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">가입!</v-btn>
-    </div>
+      <span class="infotitle">관심 카테고리</span>
+      <span style="text-align:right; float: right; font-size:9pt">(복수 선택 가능합니다.)</span>
+
+      <v-row justify="space-around">
+        <v-col v-for="category in categories" :key="category.name" class="mt-5">
+          <v-img
+            :src="getImgUrl(category.url)"
+            width="70px"
+            style="border-radius:12px; margin:auto"
+            :class="{green: category.clicked}"
+            @click="category.clicked = !category.clicked"
+          />
+          <div class="subheading" style="font-size:10pt; text-align:center;">{{ category.name }}</div>
+        </v-col>
+      </v-row>
+
+      <div class="btn py-3" style="float:right">
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">가입!</v-btn>
+      </div>
     </v-flex>
   </v-container>
   <v-container v-else>
@@ -90,7 +90,6 @@
     <div class="btn pb-5" style="float:right">
       <v-btn color="grey lighten-3" class="mr-4" @click="pass()">건너뛰기</v-btn>
     </div>
-    
   </v-container>
 </template>
 <script>

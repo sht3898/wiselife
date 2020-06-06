@@ -17,7 +17,11 @@
                             <span>{{ranking[index]}}</span>
                           </v-col>
                           <v-col cols="10">
-                            <v-list-item-title class="meetingtitle" v-text="item.title" @click="goDetail(item.meetingId)"></v-list-item-title>
+                            <v-list-item-title
+                              class="meetingtitle"
+                              v-text="item.title"
+                              @click="goDetail(item.meetingId)"
+                            ></v-list-item-title>
                           </v-col>
                         </v-row>
                       </v-list-item-content>
@@ -42,7 +46,11 @@
                             <span>{{ranking[index]}}</span>
                           </v-col>
                           <v-col cols="10">
-                            <v-list-item-title class="meetingtitle" v-text="item.title" @click="goDetail(item.meetingId)"></v-list-item-title>
+                            <v-list-item-title
+                              class="meetingtitle"
+                              v-text="item.title"
+                              @click="goDetail(item.meetingId)"
+                            ></v-list-item-title>
                           </v-col>
                         </v-row>
                       </v-list-item-content>
@@ -71,7 +79,11 @@
                           <span>{{ranking[index]}}</span>
                         </v-col>
                         <v-col cols="10">
-                          <v-list-item-title class="meetingtitle" v-text="item.title" @click="goDetail(item.meetingId)"></v-list-item-title>
+                          <v-list-item-title
+                            class="meetingtitle"
+                            v-text="item.title"
+                            @click="goDetail(item.meetingId)"
+                          ></v-list-item-title>
                         </v-col>
                       </v-row>
                     </v-list-item-content>
@@ -99,7 +111,11 @@
                           <span>{{ranking[index]}}</span>
                         </v-col>
                         <v-col cols="10">
-                          <v-list-item-title class="meetingtitle" v-text="item.title" @click="goDetail(item.meetingId)"></v-list-item-title>
+                          <v-list-item-title
+                            class="meetingtitle"
+                            v-text="item.title"
+                            @click="goDetail(item.meetingId)"
+                          ></v-list-item-title>
                         </v-col>
                       </v-row>
                     </v-list-item-content>
@@ -136,8 +152,13 @@ export default {
     this.getUserInfo();
   },
   methods: {
-    goDetail(seq){
-      window.open('http://localhost:8080/contentdetail/' + seq, '_blank');
+    goDetail(seq) {
+      if(this.$route.name == "myPage"){
+        window.open('http://k02b1051.p.ssafy.io/contentdetail/' + seq, '_blank'); 
+      }
+      else{
+        this.$router.push("/contentdetail/" + seq);
+      }
     },
     getUserInfo() {
       let config = {
@@ -146,16 +167,16 @@ export default {
       http
         .get(`user/info/`, config)
         .then(response => {
-          console.log(response.data);
           this.ages = response.data.info.userinfo.ages;
           this.area =
             response.data.info.userinfo.area1 +
             " " +
             response.data.info.userinfo.area2;
         })
-        .catch(error => {
-          alert(error);
-          this.$router.push("/");
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     },
     getTopFive() {
@@ -163,7 +184,6 @@ export default {
         headers: { access_token: localStorage.getItem("token") }
       };
       http.get(`toplank`, config).then(response => {
-        console.log(response);
         this.menlist = response.data.성별.남;
         this.womenlist = response.data.성별.여;
         this.ageslist = response.data.연령;

@@ -131,8 +131,12 @@ export default {
   }),
   methods: {
     goDetail() {
-      window.open('http://localhost:8080/contentdetail/' + this.content.meetingId, '_blank'); 
-      // this.$router.push("/contentdetail/" + this.content.meetingId);
+      if(this.$route.name == "myPage"){
+        window.open('http://k02b1051.p.ssafy.io/contentdetail/' + this.content.meetingId, '_blank'); 
+      }
+      else{
+        this.$router.push("/contentdetail/" + this.content.meetingId);
+      }
     },
     tagSearch(tagname) {
       this.$router.push("/result/0/" + tagname);
@@ -154,8 +158,8 @@ export default {
             this.content.likeCnt++;
           }
         })
-        .catch(error => {
-          alert(error);
+        .catch(() => {
+          alert("")
         });
     }
   }

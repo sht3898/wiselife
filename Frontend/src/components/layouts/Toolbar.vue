@@ -144,7 +144,6 @@ export default {
         http
           .get(`user/info/`, config)
           .then(response => {
-            console.log(response.data);
             this.profile_image = response.data.info.userinfo.profileImage;
             this.name = response.data.info.userinfo.username;
           })

@@ -43,7 +43,7 @@
         </v-col>
         <v-col class="px-0 py-0">
           <v-container id="dropdown-example-2" class="py-0">
-            <v-overflow-btn v-model="area2" :items="second_area" label="시/군/구" dense></v-overflow-btn>
+            <v-overflow-btn v-model="area2" :items="second_area" hide-no-data label="시/군/구" dense></v-overflow-btn>
           </v-container>
         </v-col>
       </v-row>
@@ -190,19 +190,18 @@ export default {
       this.$refs.form.reset();
     },
     getSecondArea() {
+      this.second_area = [];
       if (this.area1.charAt(this.area1.length - 1) == "시") {
         this.second_area.push("전체");
       }
       http
         .get(`area/${this.area1}`)
         .then(response => {
-          console.log(response.data);
           for (var i = 0; i < response.data.length; i++) {
             this.second_area.push(response.data[i]);
           }
         })
-        .catch(err => {
-          console.log(err);
+        .catch(() => {
         });
     },
     pass() {
@@ -218,7 +217,6 @@ export default {
       };
       http.get(`user/info`, config).then(response => {
         if (response.data.status == "success") {
-          console.log(response);
           let userinfo = response.data.info.userinfo;
           this.birth = userinfo.year;
           this.gender = userinfo.gender.toString();
@@ -291,7 +289,6 @@ export default {
           .delete(`user`, config)
           .then(response => {
             if (response.data.status == "success") {
-              console.log(response);
               alert("탈퇴 하였습니다.");
                 localStorage.clear();
                 this.$router.push("/");
