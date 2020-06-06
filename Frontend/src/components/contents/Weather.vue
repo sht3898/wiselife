@@ -1,47 +1,53 @@
 <template>
-  <div>
-    <span>city : {{city}}</span><br/>
-    <span>weather : {{weather}}</span><br/>
-    <span>humidity : {{humidity}}</span><br/>
-    <span>temp_min :{{temp_min}}</span><br/>
-    <span>temp_max :{{temp_max}}</span><br/>
-  </div>
+  <span class="px-3" style="color:dimgrey; font-size:10pt;">
+    <v-row>
+      <span class="px-1 city">{{city}} </span>
+     <span class="px-1">
+    <v-img v-if="ok"
+            :src="getIcon()"
+            width="15px"
+          />
+     </span>
+    <span  class="px-1" style="color:darkred">{{temp_max}} °</span> /<span class="pl-1" style="color:darkblue">{{temp_min}} ° </span>
+    </v-row>
+  </span>
 </template>
 
 <script>
-import http from "../http-common";
+import http from "../../http-common";
 
 export default {
-  name: "weather",
+  name: "Weather",
   data() {
     return {
       city: "",
+      ok:false,
       weather: "",
       humidity: "",
-      temp_min: "",
-      temp_max: "",
+      temp_min: 0.0,
+      temp_max: 0.0,
       latitude: 0.0,
       longitude: 0.0
     };
   },
-  mounted() {
+  created() {
     this.getLocation();
   },
   methods: {
     searchWeather(latitude, longitude) {
       http
         .get(
-          `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=585008f316bb47798b7db47bef017803`
+          `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=585008f316bb47798b7db47bef017803&units=metric`
         )
         .then(result => {
           this.city = result.data.name;
           this.weather = result.data.weather[0].main;
-          this.humidity = result.data.main.humidity;
-          this.temp_min = result.data.main.temp_min;
-          this.temp_max = result.data.main.temp_max;
+          this.temp_min=result.data.main.temp_min;
+          this.temp_max=result.data.main.temp_max;
+          this.ok=true;
         })
-        .catch(error=>{
-            console.log(error);
+        .catch(error => {
+          console.log(error);
         });
     },
     getLocation() {
@@ -67,10 +73,18 @@ export default {
       } else {
         alert("GPS를 지원하지 않습니다");
       }
+    },
+    getIcon(){
+      return require("../../assets/weather/" + this.weather +".png");    
     }
   }
 };
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap");
+.city {
+  font-family: "Nanum Pen Script", cursive;
+  font-size: 15px;
+}
 </style>
