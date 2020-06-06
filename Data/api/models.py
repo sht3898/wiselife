@@ -9,15 +9,15 @@ now = timezone.localtime()
 
 # Create your models here.
 class User(AbstractBaseUser):
-    uid = models.AutoField(primary_key=True)
-    username = models.TextField(unique=True)
-    profile_image = models.TextField(blank=True, null=True)
-    is_inst = models.IntegerField(default=0)
-    gender = models.IntegerField(blank=True, null=True)
-    year = models.IntegerField(blank=True, null=True)
+    uid = models.BigIntegerField(primary_key=True)
     ages = models.IntegerField(blank=True, null=True)
     area1 = models.TextField(blank=True, null=True)
     area2 = models.TextField(blank=True, null=True)
+    gender = models.IntegerField(blank=True, null=True)
+    is_inst = models.IntegerField(default=0)
+    profile_image = models.TextField(blank=True, null=True)
+    username = models.CharField(max_length=255, unique=True)
+    year = models.IntegerField(blank=True, null=True)
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -37,19 +37,31 @@ class User(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return self.is_superuser
 
+    class Meta:
+        managed = False
+        db_table = 'user'
 
 
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
-    category_name = models.TextField()
     category_description = models.TextField()
+    category_name = models.TextField()
 
     def __str__(self):
             return self.category_name or ''
 
+    class Meta:
+        managed = False
+        db_table = 'category'
+
 class InterestCategory(models.Model):
-    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='interestCategory')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='interestCategory')
     uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interestCategory')
+
+    class Meta:
+        managed = False
+        db_table = 'interest_category'
+        unique_together = (('category', 'uid'),)
 
 class Meeting(models.Model):
     meeting_id = models.AutoField(primary_key=True)
@@ -57,6 +69,7 @@ class Meeting(models.Model):
     writer = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    address = models.TextField(blank=True, null=True)
     is_period = models.IntegerField()
     meeting_date = models.DateTimeField()
     period_date = models.TextField()
@@ -65,7 +78,6 @@ class Meeting(models.Model):
     now_person = models.IntegerField()
     content = models.TextField()
     ref_url = models.TextField(blank=True, null=True)
-    address = models.TextField(blank=True, null=True)
     fee = models.IntegerField()
     unit = models.TextField()
     is_active = models.IntegerField()
@@ -80,23 +92,38 @@ class Meeting(models.Model):
 
     def __str__(self):
             return self.title or ''
+    
+    class Meta:
+        managed = False
+        db_table = 'meeting'
 
 class MeetingImages(models.Model):
-    meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='meetingImages')
+    meeting_images_id = models.AutoField(primary_key=True)
     image_url = models.TextField(blank=True, null=True)
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='meetingImages')
+
+    class Meta:
+        managed = False
+        db_table = 'meeting_images'
 
 class Review(models.Model):
     review_id = models.AutoField(primary_key=True)
     content = models.TextField(blank=True, null=True)
     uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='review')
-    meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='review')
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='review')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     score = models.FloatField()
     image_url = models.TextField(blank=True, null=True)
+    writer = models.TextField(blank=True, null=True)
 
     def __str__(self):
             return str(self.review_id)
+        
+    class Meta:
+        managed = False
+        db_table = 'review'
+
 
 class Chatting(models.Model):
     chatting_id = models.AutoField(primary_key=True)
@@ -109,10 +136,20 @@ class Chatting(models.Model):
     def __str__(self):
             return self.chatting or ''
 
+    class Meta:
+        managed = False
+        db_table = 'chatting'
+
 class UserMeeting(models.Model):
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='userMeeting')
     uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='userMeeting')
-    meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='userMeeting')
     is_active = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'user_meeting'
+        unique_together = (('meeting', 'uid'),)
+
 
 class Survey(models.Model):
     survey_id = models.AutoField(primary_key=True)
@@ -126,6 +163,11 @@ class Survey(models.Model):
     def __str__(self):
             return str(self.survey_id)
 
+    class Meta:
+        managed = False
+        db_table = 'survey'
+
+
 class Area(models.Model):
     area_id = models.AutoField(primary_key=True)
     first_area = models.TextField(blank=True, null=True)
@@ -134,6 +176,16 @@ class Area(models.Model):
     def __str__(self):
             return str(self.area_id)
 
+    class Meta:
+        managed = False
+        db_table = 'area'
+
+
 class LikeMeeting(models.Model):
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='likeMeeting')
     uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likeMeeting')
-    meeting_id = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name='likeMeeting')
+
+    class Meta:
+        managed = False
+        db_table = 'like_meeting'
+        unique_together = (('meeting', 'uid'),)
