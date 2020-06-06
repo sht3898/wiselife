@@ -84,7 +84,11 @@ export default {
           this.area1 = response.data.info.userinfo.area1;
           this.area2 = response.data.info.userinfo.area2;
 
+          if(this.area2 == "전체"){
+            this.area2 = "";
+          }
           var keyword = this.area1 + " " + this.area2;
+          console.log(keyword)
 
           var geocoder = new kakao.maps.services.Geocoder();
           const page = this;
