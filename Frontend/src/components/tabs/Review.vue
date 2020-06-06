@@ -2,30 +2,39 @@
   <v-container class="ma-auto">
     <v-card outlined class="pa-3 mb-2" width="100%" height="100%">
       <v-row>
-        <v-col style="text-align:right">
-          <span class="toptitle">평균 평점</span>
-          <span class="topscore ml-2">{{ score }}</span>
+        <v-col cols="12" sm="6">
+          <v-row>
+            <v-col>
+              <span class="toptitle mt-1" style="text-align:right; float:right">평균 평점</span>
+            </v-col>
+            <v-col>
+              <v-rating
+                :value="score"
+                background-color="white"
+                color="amber"
+                dense
+                half-increments
+                readonly
+                medium
+              />
+            </v-col>
+            <v-col cols="2">
+              <span class="topscore ml-2">{{ score }}</span>
+            </v-col>
+          </v-row>
         </v-col>
-        <v-col>
-          <v-rating
-            :value="score"
-            background-color="white"
-            color="amber"
-            dense
-            half-increments
-            readonly
-            medium
-          />
-        </v-col>
-        <v-col cols="5">
+        <v-col cols="12" sm="6" class="mt-3 text-center">
           <span class="toptitle">참여자 평균 연령</span>
           <span class="topscore ml-2">{{ avg_age }} 세</span>
         </v-col>
       </v-row>
     </v-card>
-    <p> * 리뷰는 참여자만 등록 가능합니다! 리뷰 작성은 <router-link to="/mypage"> My Page > My Meeting </router-link> 에서 진행해주세요!</p>
+    <p>
+      * 리뷰는 참여자만 등록 가능합니다! 리뷰 작성은
+      <router-link to="/mypage">My Page > My Meeting</router-link>에서 진행해주세요!
+    </p>
     <div v-if="(reviews.length > 0)">
-    <review-content v-for="review in reviews" :key="review.key" :review="review" />
+      <review-content v-for="review in reviews" :key="review.key" :review="review" />
     </div>
   </v-container>
 </template>
@@ -45,7 +54,7 @@ export default {
   data() {
     return {
       avg_age: "",
-      reviews:[],
+      reviews: []
     };
   },
   mounted() {
@@ -71,12 +80,10 @@ export default {
         this.avg_age = Math.floor(avg_ages);
       });
     },
-    getReviews(){
-      http
-      .get(`review/list?meeting_id=`+this.seq)
-      .then(response=>{
+    getReviews() {
+      http.get(`review/list?meeting_id=` + this.seq).then(response => {
         this.reviews = response.data;
-      })
+      });
     }
   }
 };
