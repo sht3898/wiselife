@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = ("*"), maxAge = 6000)
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/chat")
+@RequestMapping("/api")
 public class ChatRoomController {
 	private final ChatRoomRepository chatRoomRepository;
 

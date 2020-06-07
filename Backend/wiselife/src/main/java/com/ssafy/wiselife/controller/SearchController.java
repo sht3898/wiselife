@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @CrossOrigin(origins = ("*"), maxAge = 6000)
-@RequestMapping("/api")
+@RequestMapping("/chat")
 public class SearchController {
 
 @Autowired

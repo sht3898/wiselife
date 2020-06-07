@@ -2,7 +2,7 @@ package com.ssafy.wiselife.controller;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+
 import com.ssafy.wiselife.dto.ChatMessage;
 import com.ssafy.wiselife.repository.ChatRoomRepository;
 import com.ssafy.wiselife.service.RedisPublisher;

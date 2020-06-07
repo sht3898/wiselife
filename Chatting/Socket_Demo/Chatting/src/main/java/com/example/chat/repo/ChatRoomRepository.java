@@ -17,8 +17,6 @@ import com.example.chat.sevice.RedisSubscriber;
 
 import lombok.RequiredArgsConstructor;
 
-//실습에서는 간단하게 만들 것이므로 채팅방 정보를 Map으로 관리하지만, 서비스에서는 DB나 다른 저장 매체에 채팅방 정보를 저장하도록 구현해야 합니다.
-//그리고 ChatService는 ChatRoomRepository가 대체하므로 삭제합니다. 
 @RequiredArgsConstructor
 @Repository
 public class ChatRoomRepository {

@@ -12,7 +12,6 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 public class WiselifeApplication extends SpringBootServletInitializer implements WebMvcConfigurer{
 
 	public static void main(String[] args) {

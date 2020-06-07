@@ -62,9 +62,9 @@ export default {
   },
   created() {
     // init search
-    let index = Math.floor(Math.random() * (this.searchkeyword.length - 1));
-    let keyword = this.searchkeyword[index];
-    this.videoSearch(keyword);
+    // let index = Math.floor(Math.random() * (this.searchkeyword.length - 1));
+    // let keyword = this.searchkeyword[index];
+    // this.videoSearch(keyword);
   },
   methods: {
     videoSearch(searchTerm) {

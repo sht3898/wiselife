@@ -5,7 +5,6 @@ import lombok.Data;
 
 // Data 어노테이션은 getter, setter를 자동 생성합니다.
 @Data
-
 // AllArgsConstructor 어노테이션은 생성자를 자동 생성합니다.
 @AllArgsConstructor
 public class Socket {
