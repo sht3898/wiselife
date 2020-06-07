@@ -26,7 +26,7 @@ import http from "../../http-common";
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
 
-var sock = new SockJS("/");
+var sock = new SockJS("http://localhost:8081");
 var ws = Stomp.over(sock);
 var reconnect = 0;
 export default {
