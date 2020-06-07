@@ -1,36 +1,41 @@
 <template>
   <v-container fluid>
     <v-flex class="ma-auto mt-5" lg9>
-    <div v-if="!clickBtn">
-      <div class="mx-auto">
-        <img-banner :imgSrc="bannerImg" />
-        <v-row>
-          <v-col>
-            <div style="padding:60px;">
-              <v-img src="../assets/wiselife.png" style="margin:auto;" height="100%" width="350px"></v-img>
-            </div>
-          </v-col>
-          <v-col>
-            <div style="padding:45px;">
-              <p class="maintext" style="text-align:center;">
-                빅데이터 기반으로
-                <br />당신의 맞춤 여가생활을
-                <br />추천해드립니다!
-              </p>
-            </div>
+      <div v-if="!clickBtn">
+        <div class="mx-auto">
+          <img-banner :imgSrc="bannerImg" />
+          <v-row>
+            <v-col>
+              <div style="padding:60px;">
+                <v-img
+                  src="../assets/wiselife.png"
+                  style="margin:auto;"
+                  height="100%"
+                  width="350px"
+                ></v-img>
+              </div>
+            </v-col>
+            <v-col>
+              <div style="padding:45px;">
+                <p class="maintext" style="text-align:center;">
+                  빅데이터 기반으로
+                  <br />당신의 맞춤 여가생활을
+                  <br />추천해드립니다!
+                </p>
+              </div>
 
-            <div style="padding:30px;">
-              <v-img
-                style="cursor:pointer; margin:auto"
-                max-width="450px"
-                src="../assets/kakao_login_btn_large_wide.png"
-                @click="login()"
-              ></v-img>
-            </div>
-          </v-col>
-        </v-row>
+              <div style="padding:30px;">
+                <v-img
+                  style="cursor:pointer; margin:auto"
+                  max-width="450px"
+                  src="../assets/kakao_login_btn_large_wide.png"
+                  @click="login()"
+                ></v-img>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
       </div>
-    </div>
     </v-flex>
     <sign-up v-if="!isMember" :token="token" />
   </v-container>
@@ -108,7 +113,7 @@ export default {
           this.clickBtn = false;
           return;
         },
-        always: function(){
+        always: function() {
           this.clickBtn = false;
         }
       });

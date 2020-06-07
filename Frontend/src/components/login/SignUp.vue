@@ -212,9 +212,7 @@ export default {
             this.second_area.push(response.data[i]);
           }
         })
-        .catch(err => {
-          alert(err);
-        });
+        .catch(() => {});
     },
     validate() {
       if (
@@ -247,13 +245,20 @@ export default {
         }
       };
 
-      http.post(`user/signup/`, params, config).then(response => {
-        if (response.data.status) {
-          this.complete = true;
-          localStorage.setItem("token", this.token);
-          localStorage.setItem("username", response.data.info.username);
-        }
-      });
+      http
+        .post(`user/signup/`, params, config)
+        .then(response => {
+          if (response.data.status) {
+            this.complete = true;
+            localStorage.setItem("token", this.token);
+            localStorage.setItem("username", response.data.info.username);
+          }
+        })
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
+        });
     },
     pass() {
       localStorage.setItem("token", this.token);

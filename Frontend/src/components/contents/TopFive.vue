@@ -153,10 +153,12 @@ export default {
   },
   methods: {
     goDetail(seq) {
-      if(this.$route.name == "myPage"){
-        window.open('http://k02b1051.p.ssafy.io/contentdetail/' + seq, '_blank'); 
-      }
-      else{
+      if (this.$route.name == "myPage") {
+        window.open(
+          "http://k02b1051.p.ssafy.io/contentdetail/" + seq,
+          "_blank"
+        );
+      } else {
         this.$router.push("/contentdetail/" + seq);
       }
     },
@@ -183,12 +185,19 @@ export default {
       let config = {
         headers: { access_token: localStorage.getItem("token") }
       };
-      http.get(`toplank`, config).then(response => {
-        this.menlist = response.data.성별.남;
-        this.womenlist = response.data.성별.여;
-        this.ageslist = response.data.연령;
-        this.arealist = response.data.지역;
-      });
+      http
+        .get(`toplank`, config)
+        .then(response => {
+          this.menlist = response.data.성별.남;
+          this.womenlist = response.data.성별.여;
+          this.ageslist = response.data.연령;
+          this.arealist = response.data.지역;
+        })
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
+        });
     }
   }
 };

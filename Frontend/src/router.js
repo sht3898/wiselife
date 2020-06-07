@@ -13,24 +13,15 @@ import SurveyResultPage from './views/SurveyResultPage.vue'
 
 const originalPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err)
+	return originalPush.call(this, location).catch(err => err)
 };
 
 Vue.use(Router)
 
-// const requireAuth = () => (to, from, next) => {
-// 	if (localStorage.getItem('accessToken') == null) {	
-// 		alert("접근하실 수 없습니다. 로그인 해주세요!")	
-// 		return next('/');
-// 	}else{
-// 		return next();
-// 	}			
-//   };
-
 export default new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes: [
+	mode: 'history',
+	base: process.env.BASE_URL,
+	routes: [
 		{
 			path: '/',
 			name: 'home',
@@ -45,44 +36,44 @@ export default new Router({
 			path: '/team',
 			name: 'teamPage',
 			component: TeamPage
-		},	
+		},
 		{
-			path : '*',
-			name : 'errorPage',
+			path: '*',
+			name: 'errorPage',
 			component: ErrorPage
-        },
+		},
 		{
-			path : '/result/:category/:keyword?',
-			name : 'resultPage',
+			path: '/result/:category/:keyword?',
+			name: 'resultPage',
 			component: ResultPage,
-			props : true
+			props: true
 		},
 		{
-			path : '/contentwrite',
-			name : 'contentWritePage',
-			component: ContentWritePage	
+			path: '/contentwrite',
+			name: 'contentWritePage',
+			component: ContentWritePage
 		},
 		{
-			path : '/contentdetail/:seq',
-			name : 'contentDetailPage',
+			path: '/contentdetail/:seq',
+			name: 'contentDetailPage',
 			component: ContentDetailPage,
-			props : true	
+			props: true
 		},
 		{
-			path : '/contentupdate/:seq',
-			name : 'contentUpdatePage',
+			path: '/contentupdate/:seq',
+			name: 'contentUpdatePage',
 			component: ContentUpdatePage,
-			props : true	
+			props: true
 		},
 		{
-			path : '/mypage',
-			name : 'myPage',
+			path: '/mypage',
+			name: 'myPage',
 			component: MyPage
 		},
 		{
-			path : '/surveyresult',
-			name : 'surveyResultPage',
-			component : SurveyResultPage
+			path: '/surveyresult',
+			name: 'surveyResultPage',
+			component: SurveyResultPage
 		}
-  ]
+	]
 })

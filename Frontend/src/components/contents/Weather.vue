@@ -47,62 +47,43 @@ export default {
           this.temp_max = result.data.main.temp_max;
           this.ok = true;
         })
-        .catch(error => {
-          console.log(error);
-        });
+        .catch(() => {});
     },
     getLocation() {
-      // const this_component = this;
-      // if (window.navigator.geolocation) {
-      //   // GPS를 지원하면
-      //   window.navigator.geolocation.getCurrentPosition(
-      //     function(position) {
-      //       this_component.searchWeather(
-      //         position.coords.latitude,
-      //         position.coords.longitude
-      //       );
-      //     },
-      //     function(error) {
-      //       console.error(error);
-      //     },
-      //     {
-      //       enableHighAccuracy: false,
-      //       maximumAge: 0,
-      //       timeout: Infinity
-      //     }
-      //   );
-      // } else {
-      //   alert("GPS를 지원하지 않습니다");
-      // }
       let config = {
         headers: {
           access_token: localStorage.getItem("token")
         }
       };
-      http.get(`user/info`, config).then(response => {
-        if (response.data.status == "success") {
-          this.area1 = response.data.info.userinfo.area1;
-          this.area2 = response.data.info.userinfo.area2;
+      http
+        .get(`user/info`, config)
+        .then(response => {
+          if (response.data.status == "success") {
+            this.area1 = response.data.info.userinfo.area1;
+            this.area2 = response.data.info.userinfo.area2;
 
-          if(this.area2 == "전체"){
-            this.area2 = "";
-          }
-          var keyword = this.area1 + " " + this.area2;
-          console.log(keyword)
-
-          var geocoder = new kakao.maps.services.Geocoder();
-          const page = this;
-
-          geocoder.addressSearch(keyword, function(result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-              console.log(result);
-              var latitude = result[0].y;
-              var longitude = result[0].x;
-              page.searchWeather(latitude, longitude);
+            if (this.area2 == "전체") {
+              this.area2 = "";
             }
-          });
-        }
-      });
+            var keyword = this.area1 + " " + this.area2;
+
+            var geocoder = new kakao.maps.services.Geocoder();
+            const page = this;
+
+            geocoder.addressSearch(keyword, function(result, status) {
+              if (status === kakao.maps.services.Status.OK) {
+                var latitude = result[0].y;
+                var longitude = result[0].x;
+                page.searchWeather(latitude, longitude);
+              }
+            });
+          }
+        })
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
+        });
     },
     getIcon() {
       return require("../../assets/weather/" + this.weather + ".png");

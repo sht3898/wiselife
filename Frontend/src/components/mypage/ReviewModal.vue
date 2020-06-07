@@ -103,7 +103,7 @@
                 small
                 @click="writeReview()"
                 style="font-size: 12pt;"
-              >등록</v-btn>             
+              >등록</v-btn>
             </div>
           </v-container>
           <v-container v-else>
@@ -141,7 +141,13 @@
               </v-col>
             </v-row>
             <div style="text-align:right">
-             <v-btn class="reviewbtn" rounded small style="font-size: 12pt;" @click="deleteReview(picked.reviewId)">삭제</v-btn>
+              <v-btn
+                class="reviewbtn"
+                rounded
+                small
+                style="font-size: 12pt;"
+                @click="deleteReview(picked.reviewId)"
+              >삭제</v-btn>
             </div>
           </v-container>
         </v-tab-item>
@@ -217,13 +223,12 @@ export default {
             this.reviewlist = [];
           } else {
             this.reviewlist = response.data;
-            console.log(response.data);
           }
         })
         .catch(() => {
-          // alert("토큰 만료! 다시 로그인 해주세요!");
-          // localStorage.clear();
-          // this.$router.go();
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     },
     getMyMeeting() {
@@ -235,7 +240,6 @@ export default {
       http
         .get(`review/check`, config)
         .then(response => {
-          console.log(response);
           this.attendmeetinglist = response.data;
           for (var i = 0; i < this.attendmeetinglist.length; i++) {
             if (this.attendmeetinglist[i].isPeriod == "0") {
@@ -277,7 +281,6 @@ export default {
       return realdate;
     },
     handleFilesUploads() {
-      console.log(this.$refs);
       this.files = this.$refs.files.$refs.input.files[0];
     },
     writeReview() {
@@ -299,9 +302,6 @@ export default {
         }
       };
       let formData = new FormData();
-      // for (var i = 0; i < this.files.length; i++) {
-      //   let file = this.files[i];
-      // }
       formData.append("meetingId", this.pick);
       formData.append("content", this.reviewContent);
       formData.append("score", this.rating);
@@ -316,23 +316,29 @@ export default {
           this.wrote = true;
         })
         .catch(error => {
-          console.log(error);
+          alert(error);
+          location.reload();
         });
     },
-    deleteReview(seq){
+    deleteReview(seq) {
       let config = {
         headers: {
           access_token: localStorage.getItem("token")
         }
       };
-      http.delete(`/review/delete?review_id=`+seq, config)
-      .then(response=>{
-        console.log(response);
-         this.getMyReview();
+      http
+        .delete(`/review/delete?review_id=` + seq, config)
+        .then(response => {
+          this.getMyReview();
           this.pick = 0;
           this.tab = 0;
           this.wrote = false;
-      })
+        })
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
+        });
     }
   }
 };

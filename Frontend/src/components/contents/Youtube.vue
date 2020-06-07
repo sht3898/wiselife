@@ -33,7 +33,7 @@ export default {
   name: "Youtube",
   data() {
     return {
-      ok:false,
+      ok: false,
       video: "",
       videos: [],
       selectedVideo: "",
@@ -64,7 +64,7 @@ export default {
     // init search
     let index = Math.floor(Math.random() * (this.searchkeyword.length - 1));
     let keyword = this.searchkeyword[index];
-    this.videoSearch(keyword);
+    // this.videoSearch(keyword);
   },
   methods: {
     videoSearch(searchTerm) {
@@ -74,7 +74,7 @@ export default {
           this.videos = videos;
           // get the first video (before one is selected --this is the default)
           this.selectedVideo = videos[0];
-          this.ok=true;
+          this.ok = true;
         }
       );
     },
@@ -86,7 +86,7 @@ export default {
 </script>
 <style scoped>
 ::-webkit-scrollbar {
-  width: 5px;  /* 세로축 스크롤바 길이 */
+  width: 5px; /* 세로축 스크롤바 길이 */
   height: 0px; /* 가로축 스크롤바 길이 */
 }
 ::-webkit-scrollbar-track {

@@ -138,7 +138,14 @@
           </v-col>
         </v-row>
       </v-card>
-      <v-alert class="mt-3" outlined type="warning" dense border="left" style="font-size:10pt;">등록되어 있던 이미지는 삭제됩니다. 새로 등록해주세요!</v-alert>
+      <v-alert
+        class="mt-3"
+        outlined
+        type="warning"
+        dense
+        border="left"
+        style="font-size:10pt;"
+      >등록되어 있던 이미지는 삭제됩니다. 새로 등록해주세요!</v-alert>
       <v-row>
         <v-col cols="5">
           <v-file-input
@@ -274,7 +281,7 @@ export default {
     VueEditor
   },
   data: () => ({
-    username:"",
+    username: "",
     customToolbar: [
       ["bold", "italic", "underline"],
       [{ list: "ordered" }, { list: "bullet" }],
@@ -434,7 +441,9 @@ export default {
           this.username = response.data.info.userinfo.username;
         })
         .catch(error => {
-          alert(error);
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     },
     goback() {
@@ -450,7 +459,6 @@ export default {
       http
         .get(`meeting/${this.$route.params.seq}`, config)
         .then(response => {
-
           this.meeting = response.data;
 
           /////////데이터 정제//////////
@@ -477,7 +485,9 @@ export default {
           this.area1 = response.data.area1;
         })
         .catch(error => {
-          alert(error);
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     },
     validate() {
@@ -529,12 +539,12 @@ export default {
         .then(response => {
           if (response.status == 200) {
             alert("성공적으로 수정되었습니다!");
-            alert(response.data.meeting_id);
             this.$router.push("/contentdetail/" + response.data.meeting_id);
           }
         })
         .catch(() => {
           alert("에러! 업데이트 실패!");
+          location.reload();
         });
     },
     edit(index, item) {

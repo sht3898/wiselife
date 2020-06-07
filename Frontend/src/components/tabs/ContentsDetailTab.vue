@@ -2,28 +2,22 @@
   <div id="tabs" class="container">
     <div class="tabs">
       <a v-on:click="activetab=1" v-bind:class="[ activetab === 1 ? 'active' : '' ]">Review</a>
-      <a v-on:click="activetab=2" v-bind:class="[ activetab === 2 ? 'active' : '' ]">Chatting</a>
     </div>
 
     <div class="content">
       <div v-if="activetab === 1" class="tabcontent">
         <review :seq="this.seq" :score="this.score"></review>
       </div>
-      <div v-if="activetab === 2" class="tabcontent">
-        <chatting></chatting>
-      </div>
     </div>
   </div>
 </template>
 <script>
 import Review from "./Review";
-import Chatting from "./Chatting";
 
 export default {
   name: "ContentsDetailTab",
   components: {
-    Review,
-    Chatting
+    Review
   },
   props: {
     seq: { type: String, default: "" },
@@ -35,7 +29,7 @@ export default {
   methods: {
     reRendering() {
       this.activetab = 1;
-    },
+    }
   }
 };
 </script>
