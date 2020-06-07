@@ -22,19 +22,19 @@
 <script>
 import ContentsCard from "../contents/ContentsCard";
 export default {
-    name:"AttendMeetingList",
-    components: {
+  name: "AttendMeetingList",
+  components: {
     ContentsCard
   },
   data() {
     return {
       currentOffset: 0,
       windowSize: 4,
-      paginationFactor: 220,
+      paginationFactor: 220
     };
   },
-  props:{
-     attendlist: { type: Array }
+  props: {
+    attendlist: { type: Array }
   },
   computed: {
     atEndOfList() {

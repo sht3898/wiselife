@@ -14,7 +14,7 @@ export default {
   props: {
     contentslist: {
       type: Array,
-      default:()=>([])
+      default: () => []
     }
   },
   components: {

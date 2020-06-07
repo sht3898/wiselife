@@ -2,13 +2,24 @@
   <v-container>
     <v-flex class="ma-auto mt-5" lg10>
       <v-container fluid>
-        <p class="menu">추천 강좌/모임</p>
-        <recommends-list></recommends-list>
+        <p>
+          <span class="menu">추천 강좌/모임 👍</span>
+          <v-chip
+            class="mt-1"
+            outlined
+            :color="`grey lighten-2`"
+            label
+            style="float:right; text-align:right"
+          >
+            <weather />
+          </v-chip>
+        </p>
+        <recommends-list />
       </v-container>
 
       <v-container fluid>
-        <p class="menu">슬기로운 집콕 생활</p>
-        <youtube></youtube>
+        <p class="menu">슬기로운 집콕 생활 🏡</p>
+        <youtube />
       </v-container>
 
       <v-container fluid mb-8>
@@ -29,8 +40,8 @@
         </v-row>
       </v-container>
       <v-container fluid mb-12>
-        <p class="menu">인기 컨텐츠 TOP 5</p>
-        <top-five style="width:97%"/>
+        <p class="menu">인기 컨텐츠 TOP 5 🏆</p>
+        <top-five style="width:97%" />
       </v-container>
     </v-flex>
   </v-container>
@@ -40,12 +51,14 @@
 import RecommendsList from "@/components/contents/RecommendsList";
 import TopFive from "@/components/contents/TopFive";
 import Youtube from "@/components/contents/Youtube";
+import Weather from "@/components/contents/Weather";
 export default {
   name: "Home",
   components: {
     RecommendsList,
     TopFive,
-    Youtube
+    Youtube,
+    Weather
   },
   data() {
     return {

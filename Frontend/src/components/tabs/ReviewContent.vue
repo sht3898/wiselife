@@ -21,9 +21,9 @@
       <span class="topscore ml-1">{{ review.score }}</span>
     </v-row>
     <v-row height="100px">
-      <v-col>
+      <v-col cols="3">
         <v-card width="180" outlined>
-          <v-img :src="review.imageUrl" />
+          <v-img :src="`http://k02b1051.p.ssafy.io`+ review.imageUrl" />
         </v-card>
       </v-col>
       <v-col cols="9">

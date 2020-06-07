@@ -16,6 +16,15 @@
         </p>
       </div>
       <v-divider></v-divider>
+      <div>
+        <v-snackbar v-model="snackbar" :timeout="timeout">
+          <span class="pr-2" style="font-size:9pt">진행도</span>
+          <v-progress-linear v-model="value" :active="show" :query="true" style="width:300px"></v-progress-linear>
+          <span class="pl-2" style="font-size:9pt">{{ chkcount }}/30</span>
+
+          <span class="pl-2 mdi mdi-close-circle theme--dark" @click="snackbar = false"></span>
+        </v-snackbar>
+      </div>
       <div class="group_question">
         <ol class="list_question">
           <li v-for="question in questions" :key="question.number">
@@ -102,6 +111,8 @@ export default {
   },
   data() {
     return {
+      snackbar: true,
+      timeout: 0,
       questions: [
         {
           number: 1,
@@ -259,7 +270,12 @@ export default {
       ],
       ticksLabels: ["전혀 그렇지 않다", " ", " ", " ", "매우 그렇다"],
       chkuser: 0,
-      surveyid: 0
+      surveyid: 0,
+      value: 0,
+      query: false,
+      show: true,
+      interval: 0,
+      chkcount: 0
     };
   },
   mounted() {
@@ -272,16 +288,22 @@ export default {
           access_token: localStorage.getItem("token")
         }
       };
-      http.get(`user/info`, config).then(response => {
-        if (response.data.status == "success") {
-          if (response.data.info.survey == null) {
-            this.chkuser = 1;
-          }else{
-          this.surveyid=response.data.info.survey.surveyId;
+      http
+        .get(`user/info`, config)
+        .then(response => {
+          if (response.data.status == "success") {
+            if (response.data.info.survey == null) {
+              this.chkuser = 1;
+            } else {
+              this.surveyid = response.data.info.survey.surveyId;
+            }
           }
-         
-        }
-      });
+        })
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
+        });
     },
     validate() {
       var answers = [];
@@ -323,7 +345,6 @@ export default {
       agreeableness = ((agreeableness / 30) * 100).toFixed(0);
       neuroticism = ((neuroticism / 30) * 100).toFixed(0);
 
-      
       let data = {
         openness: openness,
         conscientiousness: conscientiousness,
@@ -339,33 +360,67 @@ export default {
       };
 
       if (this.chkuser == 1) {
-        http.post(`user/survey`, data, config).then(response => {
-          if (response.data.status) {
-            this.$router.push("/surveyresult");
-          }
-        });
+        http
+          .post(`user/survey`, data, config)
+          .then(response => {
+            if (response.data.status) {
+              this.$router.push("/surveyresult");
+            }
+          })
+          .catch(() => {
+            alert("토큰 만료! 다시 로그인 해주세요!");
+            localStorage.clear();
+            this.$router.go();
+          });
       } else {
-        http.put(`user/survey/update`, data, config).then(response => {
-          if (response.data.status) {
-            alert("수정되었습니다!");
-           this.$router.push("/surveyresult");
-          }
-        });
+        http
+          .put(`user/survey/update`, data, config)
+          .then(response => {
+            if (response.data.status) {
+              alert("수정되었습니다!");
+              this.$router.push("/surveyresult");
+            }
+          })
+          .catch(() => {
+            alert("토큰 만료! 다시 로그인 해주세요!");
+            localStorage.clear();
+            this.$router.go();
+          });
       }
     },
     clickDot1(question) {
+      if (question.answer == 0) {
+        this.value += (1 * 100) / 30;
+        this.chkcount++;
+      }
       question.answer = 1;
     },
     clickDot2(question) {
+      if (question.answer == 0) {
+        this.value += (1 * 100) / 30;
+        this.chkcount++;
+      }
       question.answer = 2;
     },
     clickDot3(question) {
+      if (question.answer == 0) {
+        this.value += (1 * 100) / 30;
+        this.chkcount++;
+      }
       question.answer = 3;
     },
     clickDot4(question) {
+      if (question.answer == 0) {
+        this.value += (1 * 100) / 30;
+        this.chkcount++;
+      }
       question.answer = 4;
     },
     clickDot5(question) {
+      if (question.answer == 0) {
+        this.value += (1 * 100) / 30;
+        this.chkcount++;
+      }
       question.answer = 5;
     }
   }

@@ -147,12 +147,13 @@ export default {
             this.profile_image = response.data.info.userinfo.profileImage;
             this.name = response.data.info.userinfo.username;
           })
-          .catch(error => {
-            alert(error);
-            this.$router.push("/");
+          .catch(() => {
+            alert("토큰 만료! 다시 로그인 해주세요!");
+            localStorage.clear();
+            this.$router.go();
           });
-          this.isLogin = true;
-      }else{
+        this.isLogin = true;
+      } else {
         alert("로그인이 필요합니다!");
         this.$router.push("/");
         location.reload();

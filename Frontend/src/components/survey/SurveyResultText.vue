@@ -301,7 +301,7 @@ export default {
           }
           activity_list = Array.from(new Set(activity_list));
           for (var k = 0; k < activity_list.length; k++) {
-            if(k==5){
+            if (k == 5) {
               break;
             }
             var index = Math.floor(Math.random() * (activity_list.length - 1));

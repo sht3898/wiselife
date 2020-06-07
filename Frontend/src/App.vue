@@ -1,9 +1,9 @@
 <template>
   <v-app id="app">
-    <toolbar v-if="isLogin"/>
+    <toolbar v-if="isLogin" />
     <router-view class="mt-12 pt-12" />
-    <go-top v-if="isLogin"/>    
-    <Footer v-if="isLogin"/>
+    <go-top v-if="isLogin" />
+    <Footer v-if="isLogin" />
   </v-app>
 </template>
 
@@ -16,17 +16,17 @@ export default {
   components: {
     Toolbar,
     GoTop,
-    Footer,
+    Footer
   },
   data() {
     return {
-      isLogin: "",
+      isLogin: ""
     };
   },
-  created(){
+  created() {
     this.isLogin = localStorage.getItem("token");
-    if(!this.isLogin){
-      this.$router.push('/login');
+    if (!this.isLogin) {
+      this.$router.push("/login");
     }
   }
 };

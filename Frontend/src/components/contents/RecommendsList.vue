@@ -19,7 +19,7 @@
   </v-flex>
 </template>
 <script>
-import http from "../../http-common.js"
+import http from "../../http-common.js";
 import ContentsCard from "./ContentsCard";
 export default {
   name: "RecommendsList",
@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      ok:false,
+      ok: false,
       currentOffset: 0,
       windowSize: 4,
       paginationFactor: 220,
@@ -46,20 +46,17 @@ export default {
       return this.currentOffset === 0;
     }
   },
-  mounted(){
+  mounted() {
     // this.getList();
   },
   methods: {
-    getList(){
+    getList() {
       let config = {
         headers: { access_token: localStorage.getItem("token") }
       };
       this.ok = false;
       http
-        .get(
-          `search/0?keyword=`,
-          config
-        )
+        .get(`search/0?keyword=`, config)
         .then(response => {
           this.items = response.data;
           for (var i = 0; i < this.items.length; i++) {
@@ -68,8 +65,10 @@ export default {
           this.items[i].tags = Array.from(new Set(this.items[i].tags));
           this.ok = true;
         })
-        .catch(err => {
-          alert(err);
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     },
     moveCarousel(direction) {

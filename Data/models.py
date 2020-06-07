@@ -129,11 +129,8 @@ class User(models.Model):
     gender = models.IntegerField()
     is_inst = models.IntegerField()
     profile_image = models.CharField(max_length=255, blank=True, null=True)
-    username = models.CharField(max_length=255, blank=True, null=True, unique=True)
+    username = models.CharField(max_length=255, blank=True, null=True)
     year = models.IntegerField()
-    
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = []
 
     class Meta:
         managed = False

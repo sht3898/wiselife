@@ -33,19 +33,22 @@
       </div>
     </v-container>
     <!-- 리뷰 modal -->
-    <v-dialog v-model="dialog" max-width="800">
+    <v-dialog v-model="dialog" scrollable max-width="970">
       <v-card>
-        <v-toolbar width="800" style="position:absolute; z-index:2">
-          <v-row class="menu py-4 px-3">
-            <v-col>강좌/모임 Review</v-col>
-            <v-col>
+        <v-card-title>
+          <v-row class="menu">
+            <v-col cols="9">강좌/모임 Review</v-col>
+            <v-col cols="3">
               <span style="text-align:right; float:right">
                 <v-btn color="green darken-1" text @click="dialog = false">Close</v-btn>
               </span>
             </v-col>
           </v-row>
-        </v-toolbar>
-        <review-modal style="padding-top:70px;" />
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text style="max-height: 550px;">
+          <review-modal />
+        </v-card-text>
       </v-card>
     </v-dialog>
 
@@ -224,7 +227,11 @@ export default {
           }
           this.ok = true;
         })
-        .catch(() => {});
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
+        });
     }
   },
   mounted() {
@@ -236,7 +243,7 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap");
 .menu {
   font-family: "Do Hyeon", sans-serif;
-  font-size: 23px;
+  font-size: 21px;
   padding-left: 10px;
 }
 @import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");

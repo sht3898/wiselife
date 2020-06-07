@@ -2,7 +2,7 @@
   <v-container class="my-5">
     <v-flex class="ma-auto" lg9 xs11>
       <h3 v-if="keyword" class="mt-5">'{{keyword}}'에 대한 검색 결과입니다.</h3>
-      <v-row class="pa-0">
+      <v-row class="hidden-xs-only justify-content-around pa-0">
         <v-col>
           <v-row class="filtering">
             <v-col v-for="category in categories" :key="category.key">
@@ -23,7 +23,11 @@
           </span>
         </v-col>
       </v-row>
-      <span class="ma-0 pa-0" v-for="sorting in sortingFilter" :key="sorting.key">
+      <span
+        class="hidden-xs-only justify-content-around ma-0 pa-0"
+        v-for="sorting in sortingFilter"
+        :key="sorting.key"
+      >
         <v-chip
           :color="`yellow lighten-4`"
           :class="{sort: sorting.clicked}"
@@ -33,6 +37,36 @@
           small
         >{{sorting.name}}</v-chip>
       </span>
+      <v-card outlined class="hidden-sm-and-up">
+        <v-row>
+          <v-col cols="12" class="pl-5">
+            <span style="font-size:9pt; color:dimgrey">내 지역</span>
+            <span class="ma-auto" style="float:center; text-align:center">
+              <v-switch class="ml-1 my-0 py-0" dense v-model="myarea" inset color="success"></v-switch>
+            </span>
+          </v-col>
+          <v-col cols="6" class="pl-5">
+            <v-overflow-btn
+              v-model="mainCategory"
+              :items="mainCategories"
+              item-value="value"
+              item-text="text"
+              label="카테고리"
+              dense
+            ></v-overflow-btn>
+          </v-col>
+          <v-col cols="6" class="pr-5">
+            <v-overflow-btn
+              v-model="smsort"
+              :items="sortingFilter"
+              item-value="key"
+              item-text="name"
+              label="정렬방식"
+              dense
+            ></v-overflow-btn>
+          </v-col>
+        </v-row>
+      </v-card>
     </v-flex>
     <v-flex class="ma-auto" lg10 xs12>
       <v-row v-if="!ok" justify="center" align="center">
@@ -82,8 +116,21 @@ export default {
       ok: false,
       page: 1,
       pagelength: 1,
+      mainCategory: Number(this.$route.params.category),
+      mainCategories: [
+        { text: "전체", value: 0 },
+        { text: "레저/스포츠", value: 1 },
+        { text: "요리", value: 2 },
+        { text: "수공예/공방", value: 3 },
+        { text: "놀이/게임", value: 4 },
+        { text: "문화", value: 5 },
+        { text: "예술", value: 6 },
+        { text: "축제/행사", value: 7 },
+        { text: "기타", value: 8 }
+      ],
       contentslist: [],
       page_list: [],
+      smsort: 0,
       categories: [
         {
           key: 0,
@@ -181,9 +228,53 @@ export default {
   },
   watch: {
     myarea: "getMyArea",
-    page: "pagination"
+    page: "pagination",
+    mainCategory: "smClickCategory",
+    smsort: "smSort"
   },
   methods: {
+    smSort() {
+      switch (this.smsort) {
+        case 1:
+          this.contentslist.sort(function(a, b) {
+            return b.meetingId - a.meetingId;
+          });
+          break;
+        case 2:
+          this.contentslist.sort(function(a, b) {
+            return a.title < b.title ? -1 : a.title > b.title ? 1 : 0;
+          });
+          break;
+        case 3:
+          this.contentslist.sort(function(a, b) {
+            return b.viewCnt - a.viewCnt;
+          });
+          break;
+        case 4:
+          this.contentslist.sort(function(a, b) {
+            return b.likeCnt - a.likeCnt;
+          });
+          break;
+        case 5:
+          this.contentslist.sort(function(a, b) {
+            return b.score - a.score;
+          });
+          break;
+      }
+      this.page = 1;
+      this.pagination();
+      this.ok = true;
+    },
+    smClickCategory() {
+      let keyword = "";
+      if (
+        this.$route.params.keyword != null &&
+        this.$route.params.keyword != "undefined"
+      ) {
+        keyword = this.$route.params.keyword;
+      }
+      this.$router.push("/result/" + this.mainCategory + "/" + keyword);
+    },
     pagination() {
       this.ok = false;
       var page_list = [];
@@ -238,8 +329,9 @@ export default {
           this.myarea2 = response.data.info.userinfo.area2;
         })
         .catch(error => {
-          alert(error);
-          this.$router.push("/");
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     },
     search() {
@@ -311,7 +403,11 @@ export default {
                 this.contentslist[i].meetingImages = null;
               }
             }
-            this.pagelength = Math.floor(this.contentslist.length / 12) + 1;
+            this.page = 1;
+            this.pagelength = Math.floor(this.contentslist.length / 12);
+            if (this.contentslist.length % 12 != 0) {
+              this.pagelength++;
+            }
             if (this.myarea == 1) {
               this.getMyArea();
             } else {
@@ -319,7 +415,11 @@ export default {
             }
           }
         })
-        .catch(() => {});
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
+        });
     },
     clickCategory(category) {
       for (var i = 0; i < this.categories.length; i++) {

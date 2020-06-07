@@ -12,9 +12,6 @@ export default {
   props: {
     videos: { type: Array, default: () => [] },
     selectedVideo: { type: Object, default: () => ({}) }
-  },
-  mounted() {
-    console.log(this.selectedVideo);
   }
 };
 </script>
