@@ -362,7 +362,9 @@ export default {
           }
         })
         .catch(error => {
-          alert(error);
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     },
     updateContent() {
@@ -380,8 +382,9 @@ export default {
             this.$router.push("/");
           })
           .catch(() => {
-            alert("삭제 실패! 다시 시도해주세요!");
-            return;
+            alert("토큰 만료! 다시 로그인 해주세요!");
+            localStorage.clear();
+            this.$router.go();
           });
       }
     },
@@ -461,7 +464,9 @@ export default {
           }
         })
         .catch(error => {
-          alert(error);
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     },
     btnLike() {
@@ -482,7 +487,9 @@ export default {
           }
         })
         .catch(error => {
-          alert(error);
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     },
     getAttendant() {
@@ -508,7 +515,9 @@ export default {
           }
         })
         .catch(error => {
-          alert(error);
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     },
     dateParsing(beforeParsing) {
@@ -620,7 +629,9 @@ export default {
           }
         })
         .catch(error => {
-          alert(error);
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     }
   }

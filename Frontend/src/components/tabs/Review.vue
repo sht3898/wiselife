@@ -2,7 +2,7 @@
   <v-container class="ma-auto">
     <v-card outlined class="pa-1 mb-2" width="100%" height="100%">
       <v-row>
-        <v-col  class="mx-0 px-0" cols="12" sm="6">
+        <v-col class="mx-0 px-0" cols="12" sm="6">
           <v-row class="ma-auto">
             <v-col cols="4">
               <span class="toptitle mt-1" style="text-align:right; float:right">평균 평점</span>
@@ -10,20 +10,22 @@
             <v-col v-if="score==0" class="toptitle mt-1">
               <span style="font-size:10pt; color:dimgrey">아직 등록된 리뷰가 없습니다</span>
             </v-col>
-            <v-col v-else class="toptitle ma-0 pa-0">    
+            <v-col v-else class="toptitle ma-0 pa-0">
               <v-row class="mx-0 px-0">
-                <v-col class="mx-0 px-0 mt-1">          
-                <v-rating
-                  :value="score"
-                  background-color="white"
-                  color="amber"
-                  dense
-                  half-increments
-                  readonly
-                  medium
-                />     </v-col>
-                <v-col class="mx-0 px-0 mt-1">        
-              <span class="topscore">{{ score }}</span></v-col>
+                <v-col class="mx-0 px-0 mt-1">
+                  <v-rating
+                    :value="score"
+                    background-color="white"
+                    color="amber"
+                    dense
+                    half-increments
+                    readonly
+                    medium
+                  />
+                </v-col>
+                <v-col class="mx-0 px-0 mt-1">
+                  <span class="topscore">{{ score }}</span>
+                </v-col>
               </v-row>
             </v-col>
           </v-row>
@@ -73,17 +75,24 @@ export default {
           access_token: localStorage.getItem("token")
         }
       };
-      http.get(`meeting/${this.seq}/attendant`, config).then(response => {
-        let attendants = response.data.length;
-        var sum_ages = 0;
-        for (var i = 0; i < attendants; i++) {
-          var date = new Date();
-          var year = date.getFullYear();
-          sum_ages += year - response.data[i].year + 1;
-        }
-        let avg_ages = sum_ages / attendants;
-        this.avg_age = Math.floor(avg_ages);
-      });
+      http
+        .get(`meeting/${this.seq}/attendant`, config)
+        .then(response => {
+          let attendants = response.data.length;
+          var sum_ages = 0;
+          for (var i = 0; i < attendants; i++) {
+            var date = new Date();
+            var year = date.getFullYear();
+            sum_ages += year - response.data[i].year + 1;
+          }
+          let avg_ages = sum_ages / attendants;
+          this.avg_age = Math.floor(avg_ages);
+        })
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
+        });
     },
     getReviews() {
       http.get(`review/list?meeting_id=` + this.seq).then(response => {

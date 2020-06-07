@@ -1,111 +1,116 @@
 <template>
-<v-hover
-v-slot:default="{ hover }" >
-  <v-card outlined :elevation="hover ? 5 : 0" :loading="loading" class="mx-auto my-3" width="200" height="340">
-    <v-img v-if="content.meetingImages != null && content.isUrl" height="100px" :src="content.meetingImages">
-      <div style=" position: relative;">
-        <v-chip
-          :color="`green lighten-4`"
-          class="black--text"
-          label
-          small
-          style="top: 0px; left: 5px;"
-        >{{ content.area1 }} {{ content.area2 }}</v-chip>
-      </div>
-      <v-btn icon style="top: 42px; left: 160px; z-index:5;" @click="btnLike(content)">
-        <v-icon v-if="content.isLike == 0">mdi-heart-outline</v-icon>
-        <v-icon v-else color="red">mdi-heart</v-icon>
-      </v-btn>
-    </v-img>
-    <v-img
-      v-else-if="content.meetingImages != null && !content.isUrl"
-      height="100px"
-      :src="`http://k02b1051.p.ssafy.io`+ content.meetingImages"
+  <v-hover v-slot:default="{ hover }">
+    <v-card
+      outlined
+      :elevation="hover ? 5 : 0"
+      :loading="loading"
+      class="mx-auto my-3"
+      width="200"
+      height="340"
     >
-      <div style="z-index:5; position: relative;">
-        <v-chip
-          :color="`green lighten-4`"
-          class="black--text"
-          label
-          small
-          style="top: 3px; left: 5px;"
-        >{{ content.area1 }} {{ content.area2 }}</v-chip>
-      </div>
-      <v-btn icon style="top: 42px; left: 160px;" @click="btnLike(content)">
-        <v-icon v-if="content.isLike == 0">mdi-heart-outline</v-icon>
-        <v-icon v-else color="red">mdi-heart</v-icon>
-      </v-btn>
-    </v-img>
-    <v-img
-      v-else
-      height="100px"
-      src="@/assets/noimage.png"
-    >
-      <div style="z-index:5; position: relative;">
-        <v-chip
-          :color="`green lighten-4`"
-          class="black--text"
-          label
-          small
-          style="top: 0px; left: 5px;"
-        >{{ content.area1 }} {{ content.area2 }}</v-chip>
-      </div>
-      <v-btn icon style="top: 42px; left: 160px;" @click="btnLike(content)">
-        <v-icon v-if="content.isLike == 0">mdi-heart-outline</v-icon>
-        <v-icon v-else color="red">mdi-heart</v-icon>
-      </v-btn>
-    </v-img>
-    
-    
-    <v-card-title
-      class="contenttitle"
-      style="font-weight:bold; height:60px; cursor:pointer"
-      @click="goDetail"
-    >{{ content.title }}</v-card-title>
+      <v-img
+        v-if="content.meetingImages != null && content.isUrl"
+        height="100px"
+        :src="content.meetingImages"
+      >
+        <div style=" position: relative;">
+          <v-chip
+            :color="`green lighten-4`"
+            class="black--text"
+            label
+            small
+            style="top: 0px; left: 5px;"
+          >{{ content.area1 }} {{ content.area2 }}</v-chip>
+        </div>
+        <v-btn icon style="top: 42px; left: 160px; z-index:5;" @click="btnLike(content)">
+          <v-icon v-if="content.isLike == 0">mdi-heart-outline</v-icon>
+          <v-icon v-else color="red">mdi-heart</v-icon>
+        </v-btn>
+      </v-img>
+      <v-img
+        v-else-if="content.meetingImages != null && !content.isUrl"
+        height="100px"
+        :src="`http://k02b1051.p.ssafy.io`+ content.meetingImages"
+      >
+        <div style="z-index:5; position: relative;">
+          <v-chip
+            :color="`green lighten-4`"
+            class="black--text"
+            label
+            small
+            style="top: 3px; left: 5px;"
+          >{{ content.area1 }} {{ content.area2 }}</v-chip>
+        </div>
+        <v-btn icon style="top: 42px; left: 160px;" @click="btnLike(content)">
+          <v-icon v-if="content.isLike == 0">mdi-heart-outline</v-icon>
+          <v-icon v-else color="red">mdi-heart</v-icon>
+        </v-btn>
+      </v-img>
+      <v-img v-else height="100px" src="@/assets/noimage.png">
+        <div style="z-index:5; position: relative;">
+          <v-chip
+            :color="`green lighten-4`"
+            class="black--text"
+            label
+            small
+            style="top: 0px; left: 5px;"
+          >{{ content.area1 }} {{ content.area2 }}</v-chip>
+        </div>
+        <v-btn icon style="top: 42px; left: 160px;" @click="btnLike(content)">
+          <v-icon v-if="content.isLike == 0">mdi-heart-outline</v-icon>
+          <v-icon v-else color="red">mdi-heart</v-icon>
+        </v-btn>
+      </v-img>
 
-    <v-card-text style="height:175px">
-      <div class="mx-0 mt-2" style="height:110px;">
-        <v-chip
-          v-for="(tag, index) in content.tags"
-          :key="tag"
-          :color="`${colors[index]} lighten-3`"
-          class="mr-2"
-          label
-          small
-          style="height:18px; cursor:pointer"
-          @click="tagSearch(tag)"
-        >#{{ tag }}</v-chip>
-      </div>
-      <v-row align="center" class="mx-2" style="height:20px;">
-        <v-rating
-          v-if="content.score != 0"
-          :value="content.score"
-          color="amber"
-          background-color="white"
-          dense
-          half-increments
-          readonly
-          size="14"
-        ></v-rating>
-        <div v-if="content.score != 0" class="grey--text ml-4">{{ content.score }}</div>
-      </v-row>
-      <v-row class="mx-0" style="height:20px">
-        <v-col>
-          <span class="mdi mdi-eye-outline" style="color:grey"></span>
-          <span class="grey--text ml-2">{{ content.viewCnt }}</span>
-        </v-col>
-        <v-col>
-          <span class="mdi mdi-heart" style="color:red"></span>
-          <span class="grey--text ml-2">{{ content.likeCnt }}</span>
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
-</v-hover>
+      <v-card-title
+        class="contenttitle"
+        style="font-weight:bold; height:60px; cursor:pointer"
+        @click="goDetail"
+      >{{ content.title }}</v-card-title>
+
+      <v-card-text style="height:175px">
+        <div class="mx-0 mt-2" style="height:110px;">
+          <v-chip
+            v-for="(tag, index) in content.tags"
+            :key="tag"
+            :color="`${colors[index]} lighten-3`"
+            class="mr-2"
+            label
+            small
+            style="height:18px; cursor:pointer"
+            @click="tagSearch(tag)"
+          >#{{ tag }}</v-chip>
+        </div>
+        <v-row align="center" class="mx-2" style="height:20px;">
+          <v-rating
+            v-if="content.score != 0"
+            :value="content.score"
+            color="amber"
+            background-color="white"
+            dense
+            half-increments
+            readonly
+            size="14"
+          ></v-rating>
+          <div v-if="content.score != 0" class="grey--text ml-4">{{ content.score }}</div>
+        </v-row>
+        <v-row class="mx-0" style="height:20px">
+          <v-col>
+            <span class="mdi mdi-eye-outline" style="color:grey"></span>
+            <span class="grey--text ml-2">{{ content.viewCnt }}</span>
+          </v-col>
+          <v-col>
+            <span class="mdi mdi-heart" style="color:red"></span>
+            <span class="grey--text ml-2">{{ content.likeCnt }}</span>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+  </v-hover>
 </template>
 
 <script>
-import http from "../../http-common"
+import http from "../../http-common";
 export default {
   name: "ContentsCard",
   props: {
@@ -127,14 +132,16 @@ export default {
   data: () => ({
     loading: false,
     isUrl: false,
-    colors: ["red", "amber", "lime", "teal", "indigo"],
+    colors: ["red", "amber", "lime", "teal", "indigo"]
   }),
   methods: {
     goDetail() {
-      if(this.$route.name == "myPage"){
-        window.open('http://k02b1051.p.ssafy.io/contentdetail/' + this.content.meetingId, '_blank'); 
-      }
-      else{
+      if (this.$route.name == "myPage") {
+        window.open(
+          "http://k02b1051.p.ssafy.io/contentdetail/" + this.content.meetingId,
+          "_blank"
+        );
+      } else {
         this.$router.push("/contentdetail/" + this.content.meetingId);
       }
     },
@@ -159,7 +166,9 @@ export default {
           }
         })
         .catch(() => {
-          alert("")
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     }
   }

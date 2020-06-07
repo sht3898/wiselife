@@ -9,7 +9,7 @@
             :style="{ transform: 'translateX' + '(' + currentOffset + 'px' + ')'}"
           >
             <div v-for="item in createlist" :key="item.name" class="card-carousel--card">
-              <contents-card :content="item"/>
+              <contents-card :content="item" />
             </div>
           </div>
         </div>
@@ -22,19 +22,19 @@
 <script>
 import ContentsCard from "../contents/ContentsCard";
 export default {
-    name:"CreateMeetingList",
-    components: {
+  name: "CreateMeetingList",
+  components: {
     ContentsCard
   },
   data() {
     return {
       currentOffset: 0,
       windowSize: 4,
-      paginationFactor: 220,
+      paginationFactor: 220
     };
   },
-  props:{
-     createlist: { type: Array }
+  props: {
+    createlist: { type: Array }
   },
   computed: {
     atEndOfList() {

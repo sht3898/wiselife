@@ -288,15 +288,22 @@ export default {
           access_token: localStorage.getItem("token")
         }
       };
-      http.get(`user/info`, config).then(response => {
-        if (response.data.status == "success") {
-          if (response.data.info.survey == null) {
-            this.chkuser = 1;
-          } else {
-            this.surveyid = response.data.info.survey.surveyId;
+      http
+        .get(`user/info`, config)
+        .then(response => {
+          if (response.data.status == "success") {
+            if (response.data.info.survey == null) {
+              this.chkuser = 1;
+            } else {
+              this.surveyid = response.data.info.survey.surveyId;
+            }
           }
-        }
-      });
+        })
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
+        });
     },
     validate() {
       var answers = [];
@@ -353,51 +360,65 @@ export default {
       };
 
       if (this.chkuser == 1) {
-        http.post(`user/survey`, data, config).then(response => {
-          if (response.data.status) {
-            this.$router.push("/surveyresult");
-          }
-        });
+        http
+          .post(`user/survey`, data, config)
+          .then(response => {
+            if (response.data.status) {
+              this.$router.push("/surveyresult");
+            }
+          })
+          .catch(() => {
+            alert("토큰 만료! 다시 로그인 해주세요!");
+            localStorage.clear();
+            this.$router.go();
+          });
       } else {
-        http.put(`user/survey/update`, data, config).then(response => {
-          if (response.data.status) {
-            alert("수정되었습니다!");
-            this.$router.push("/surveyresult");
-          }
-        });
+        http
+          .put(`user/survey/update`, data, config)
+          .then(response => {
+            if (response.data.status) {
+              alert("수정되었습니다!");
+              this.$router.push("/surveyresult");
+            }
+          })
+          .catch(() => {
+            alert("토큰 만료! 다시 로그인 해주세요!");
+            localStorage.clear();
+            this.$router.go();
+          });
       }
     },
     clickDot1(question) {
       if (question.answer == 0) {
-        this.value += 1 * 100 / 30;
+        this.value += (1 * 100) / 30;
         this.chkcount++;
       }
       question.answer = 1;
     },
     clickDot2(question) {
       if (question.answer == 0) {
-        this.value += 1 * 100 / 30;
+        this.value += (1 * 100) / 30;
         this.chkcount++;
       }
       question.answer = 2;
     },
     clickDot3(question) {
       if (question.answer == 0) {
-        this.value += 1 * 100 / 30;
+        this.value += (1 * 100) / 30;
         this.chkcount++;
       }
       question.answer = 3;
     },
     clickDot4(question) {
       if (question.answer == 0) {
-        this.value += 1 * 100 / 30;
+        this.value += (1 * 100) / 30;
         this.chkcount++;
       }
       question.answer = 4;
     },
     clickDot5(question) {
       if (question.answer == 0) {
-        this.value += 1 * 100 / 30;
+        this.value += (1 * 100) / 30;
         this.chkcount++;
       }
       question.answer = 5;

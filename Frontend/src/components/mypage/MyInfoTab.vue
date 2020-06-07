@@ -78,8 +78,8 @@
         </v-col>
       </v-row>
       <div class="my-10" style="text-align:right">
-        <v-btn rounded  class="mr-5" color="green" @click="modify" style="color:white">수정하기</v-btn>
-        <v-btn rounded  color="red" @click="withdraw" style="color:white">탈퇴하기</v-btn>
+        <v-btn rounded class="mr-5" color="green" @click="modify" style="color:white">수정하기</v-btn>
+        <v-btn rounded color="red" @click="withdraw" style="color:white">탈퇴하기</v-btn>
       </div>
     </v-flex>
   </v-container>
@@ -201,8 +201,7 @@ export default {
             this.second_area.push(response.data[i]);
           }
         })
-        .catch(() => {
-        });
+        .catch(() => {});
     },
     pass() {
       localStorage.setItem("token", this.token);
@@ -215,31 +214,39 @@ export default {
           access_token: localStorage.getItem("token")
         }
       };
-      http.get(`user/info`, config).then(response => {
-        if (response.data.status == "success") {
-          let userinfo = response.data.info.userinfo;
-          this.birth = userinfo.year;
-          this.gender = userinfo.gender.toString();
-          this.area1 = userinfo.area1;
-          this.area2 = userinfo.area2;
-          this.instructor = userinfo.isInst.toString();
+      http
+        .get(`user/info`, config)
+        .then(response => {
+          if (response.data.status == "success") {
+            let userinfo = response.data.info.userinfo;
+            this.birth = userinfo.year;
+            this.gender = userinfo.gender.toString();
+            this.area1 = userinfo.area1;
+            this.area2 = userinfo.area2;
+            this.instructor = userinfo.isInst.toString();
 
-          for (
-            var i = 0;
-            i < response.data.info.interest_category.length;
-            i++
-          ) {
-            var now_interest_category = response.data.info.interest_category[i];
-            for (var j = 0; j < this.categories.length; j++) {
-              if (
-                now_interest_category.categoryName == this.categories[j].name
-              ) {
-                this.categories[j].clicked = true;
+            for (
+              var i = 0;
+              i < response.data.info.interest_category.length;
+              i++
+            ) {
+              var now_interest_category =
+                response.data.info.interest_category[i];
+              for (var j = 0; j < this.categories.length; j++) {
+                if (
+                  now_interest_category.categoryName == this.categories[j].name
+                ) {
+                  this.categories[j].clicked = true;
+                }
               }
             }
           }
-        }
-      });
+        })
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
+        });
     },
     modify() {
       if (
@@ -271,12 +278,19 @@ export default {
           access_token: localStorage.getItem("token")
         }
       };
-      http.put(`user/update`, params, config).then(response => {
-        if (response.data.status == "success") {
-          alert("회원 정보가 수정되었습니다!");
-          this.getUserInfo();
-        }
-      });
+      http
+        .put(`user/update`, params, config)
+        .then(response => {
+          if (response.data.status == "success") {
+            alert("회원 정보가 수정되었습니다!");
+            this.getUserInfo();
+          }
+        })
+        .catch(() => {
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
+        });
     },
     withdraw() {
       let config = {
@@ -290,16 +304,18 @@ export default {
           .then(response => {
             if (response.data.status == "success") {
               alert("탈퇴 하였습니다.");
-                localStorage.clear();
-                this.$router.push("/");
-                location.reload();
+              localStorage.clear();
+              this.$router.push("/");
+              location.reload();
             } else {
               alert("오류가 발생했습니다. 다시 시도해 주세요.");
               this.$router.push("/mypage");
             }
           })
           .catch(() => {
-            this.errored = true;
+            alert("토큰 만료! 다시 로그인 해주세요!");
+            localStorage.clear();
+            this.$router.go();
           })
           .finally(() => (this.loading = false));
       } else {

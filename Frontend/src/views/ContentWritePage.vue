@@ -432,7 +432,9 @@ export default {
           this.username = response.data.info.userinfo.username;
         })
         .catch(error => {
-          alert(error);
+          alert("토큰 만료! 다시 로그인 해주세요!");
+          localStorage.clear();
+          this.$router.go();
         });
     },
     handleFilesUploads() {
@@ -469,8 +471,8 @@ export default {
       formData.append("refUrl", this.meeting.ref_url);
       formData.append("address", this.meeting.address);
       formData.append("fee", this.meeting.fee);
-      if(this.meeting.unit =="회비"){
-        this.meeting.unit = "원"
+      if (this.meeting.unit == "회비") {
+        this.meeting.unit = "원";
       }
       formData.append("unit", this.meeting.unit);
       formData.append(
@@ -492,6 +494,7 @@ export default {
         })
         .catch(() => {
           alert("에러! 등록 실패!");
+          location.reload();
         });
     },
     edit(index, item) {
