@@ -72,17 +72,16 @@ export default {
       // };
       this.ok = false;
       axios
-        .get(`http://13.125.114.122:8000/api/randomrecommend/` + this.uid)
+        .get(`http://13.125.114.122:8000/api/randomrecommend/` + this.uid+"/")
         .then(response => {
-          console.log(response);
+          console.log(response.data);
           this.items = response.data;
-
           for (var i = 0; i < this.items.length; i++) {
-            this.items[i].meetingId = this.itmes[i].meeting_id;
-            this.items[i].likeCnt = this.itmes[i].like_cnt;
-            this.items[i].viewCnt = this.itmes[i].view_cnt;
-            this.items[i].meetingImages = this.items[i].image_url;
-            this.items[i].isLike = this.items[i].is_like;
+            this.items[i]["meetingId"] = response.data[i].meeting_id;
+            this.items[i]["likeCnt"] = response.data[i].like_cnt;
+            this.items[i]["viewCnt"] = response.data[i].view_cnt;
+            this.items[i]["meetingImages"] = response.data[i].image_url;
+            this.items[i]["isLike"] = response.data[i].is_like;
             let split_tags = this.items[i].tags.split(" ");
             let tags = [];
             for (var j in split_tags) {
@@ -112,15 +111,6 @@ export default {
             } else {
               this.items[i].meetingImages = null;
             }
-
-            this.items[i].is_class = this.itmes[i].isClass;
-            this.items[i].is_class = this.itmes[i].isClass;
-            this.items[i].is_class = this.itmes[i].isClass;
-            this.items[i].is_class = this.itmes[i].isClass;
-            this.items[i].is_class = this.itmes[i].isClass;
-            this.items[i].is_class = this.itmes[i].isClass;
-            this.items[i].is_class = this.itmes[i].isClass;
-            this.items[i].is_class = this.itmes[i].isClass;
           }
 
           this.ok = true;
