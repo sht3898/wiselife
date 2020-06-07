@@ -31,14 +31,33 @@ def Recommend(request, uid):
 
 
 @api_view(["GET"])
-def RandomRecommend(request):
+def RandomRecommend(request, uid):
     meeting_count = models.MeetingImages.objects.count()
     count_range = list(range(meeting_count))
     meeting_list = random.sample(count_range, 12)
     results = []
+    likes = models.LikeMeeting.objects.filter(uid=uid)
+    like_list = []
+    for like in likes:
+        like_list.append(like.meeting_id)
     for meeting in meeting_list:
         idx = models.MeetingImages.objects.get(pk=meeting).meeting_id
-        results.append(MeetingSerializer(models.Meeting.objects.get(meeting_id=idx)).data)
+        temp = MeetingSerializer(models.Meeting.objects.get(meeting_id=idx)).data
+        
+        images = models.MeetingImages.objects.filter(meeting_id=idx)
+        image_list = []
+        for image in images:
+            image_list.append(image.image_url) 
+        temp['image_url'] = image_list
+
+        if idx in like_list:
+            is_like = 1
+        else:
+            is_like = 0
+
+        temp['is_like'] = is_like
+        # results.append(MeetingSerializer(models.Meeting.objects.get(meeting_id=idx)).data)
+        results.append(temp)
     return Response(results, status=status.HTTP_200_OK)
 
 
