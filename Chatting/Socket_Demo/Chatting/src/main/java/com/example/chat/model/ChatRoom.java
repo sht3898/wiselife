@@ -3,6 +3,9 @@ package com.example.chat.model;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+
 import lombok.Getter;
 import lombok.Setter;
 

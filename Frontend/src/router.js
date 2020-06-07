@@ -10,8 +10,6 @@ import ContentDetailPage from './views/ContentDetailPage.vue'
 import ContentUpdatePage from './views/ContentUpdatePage.vue'
 import MyPage from './views/MyPage.vue'
 import SurveyResultPage from './views/SurveyResultPage.vue'
-import room from './views/room.vue'
-import roomdetail from './views/roomdetail.vue'
 
 const originalPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
@@ -73,21 +71,9 @@ export default new Router({
 			component: MyPage
 		},
 		{
-			path : '/surveyresult',
-			name : 'surveyResultPage',
-			component : SurveyResultPage
-		},
-		{
-			path: '/room',
-			name: 'room',
-			component: room
-    },
-    
-    {
-			path: '/roomdetail/:roomId',
-			name: 'roomdetail',
-			component: roomdetail,
-			props:true
-		},
-  ]
+			path: '/surveyresult',
+			name: 'surveyResultPage',
+			component: SurveyResultPage
+		}
+	]
 })
