@@ -1,6 +1,7 @@
-from .models import Area, Category, Chatting, InterestCategory, LikeMeeting, Meeting, MeetingImages, Review, Survey, User, UserMeeting
+from .models import Area, Category, InterestCategory, LikeMeeting, Meeting, MeetingImages, Review, Survey, User, UserMeeting
+# from .models import Chatting
 from rest_framework import serializers
-from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth import authenticate
 from rest_framework.serializers import ValidationError
 
 class MeetingSerializer(serializers.ModelSerializer):

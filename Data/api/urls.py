@@ -29,8 +29,9 @@ urlpatterns = [
 
     
    path('recommendations/<int:uid>/', views.Recommend),
-   path('users/', views.Users),
-   path('userdetail/<int:uid>/', views.UserDetail),
-   path('meetings/', views.Meetings),
-   path('meetingdetail/<int:meeting_id>/', views.MeetingDetail),
+   path('randomrecommend/', views.RandomRecommend),
+   # path('users/', views.Users),
+   # path('userdetail/<int:uid>/', views.UserDetail),
+   # path('meetings/', views.Meetings),
+   # path('meetingdetail/<int:meeting_id>/', views.MeetingDetail),
 ]

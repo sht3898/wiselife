@@ -4,7 +4,7 @@ import api.models
 # Register your models here.
 admin.site.register(api.models.User)
 admin.site.register(api.models.Category) 
-admin.site.register(api.models.Chatting)
+# admin.site.register(api.models.Chatting)
 admin.site.register(api.models.InterestCategory)
 admin.site.register(api.models.LikeMeeting)
 admin.site.register(api.models.Meeting)
