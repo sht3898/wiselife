@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import http from "../../http-common";
+import http from "../http-common";
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
 
@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     findRoom: function() {
-      http.get("/chat/room/" + this.roomId).then(response => {
+      http.get("/room/" + this.roomId).then(response => {
         this.room = response.data;
         this.connect();
       });
@@ -83,7 +83,7 @@ export default {
       ws.connect(
         {},
         function(frame) {
-          ws.subscribe("/sub/chat/room/" + this_comp.roomId, function(message) {
+          ws.subscribe("/sub/api/room/" + this_comp.roomId, function(message) {
             var recv = JSON.parse(message.body);
             this_comp.recvMessage(recv);
           });
@@ -113,38 +113,6 @@ export default {
   }
 };
 
-// function connect() {
-//   // pub/sub event
-//   ws.connect(
-//     {},
-//     function() {
-//       ws.subscribe("/sub/chat/room/" + this.$data.roomId, function(message) {
-//         var recv = JSON.parse(message.body);
-//         this.recvMessage(recv);
-//       });
-//       ws.send(
-//         "/pub/chat/message",
-//         {},
-//         JSON.stringify({
-//           type: "ENTER",
-//           roomId: this.$data.roomId,
-//           sender: this.$data.sender
-//         })
-//       );
-//     },
-//     // function() {
-//     //   if (reconnect++ <= 5) {
-//     //     setTimeout(function() {
-//     //       console.log("connection reconnect");
-//     //       sock = new SockJS("/");
-//     //       ws = Stomp.over(sock);
-//     //       connect();
-//     //     }, 10 * 1000);
-//     //   }
-//     // }
-//   );
-// }
-// connect();
 </script>
 
 <style scoped>

@@ -1,4 +1,4 @@
-package com.example.chat.sevice;
+package com.ssafy.wiselife.service;
 
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -6,8 +6,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
-import com.example.chat.model.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.wiselife.dto.ChatMessage;
 
 import lombok.RequiredArgsConstructor;
 

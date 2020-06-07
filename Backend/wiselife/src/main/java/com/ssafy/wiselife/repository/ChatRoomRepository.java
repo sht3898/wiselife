@@ -1,4 +1,4 @@
-package com.example.chat.repo;
+package com.ssafy.wiselife.repository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +12,8 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Repository;
 
-import com.example.chat.model.ChatRoom;
-import com.example.chat.sevice.RedisSubscriber;
+import com.ssafy.wiselife.dto.ChatRoom;
+import com.ssafy.wiselife.service.RedisSubscriber;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.example.chat.controller;
+package com.ssafy.wiselife.controller;
 
 import java.util.List;
 
@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.chat.model.ChatRoom;
-import com.example.chat.repo.ChatRoomRepository;
+import com.ssafy.wiselife.dto.ChatRoom;
+import com.ssafy.wiselife.repository.ChatRoomRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @CrossOrigin(origins = ("*"), maxAge = 6000)
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/chat")
+@RequestMapping("/api")
 public class ChatRoomController {
 	private final ChatRoomRepository chatRoomRepository;
 
