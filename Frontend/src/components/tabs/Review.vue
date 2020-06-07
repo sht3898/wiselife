@@ -1,29 +1,34 @@
 <template>
   <v-container class="ma-auto">
-    <v-card outlined class="pa-3 mb-2" width="100%" height="100%">
+    <v-card outlined class="pa-1 mb-2" width="100%" height="100%">
       <v-row>
-        <v-col cols="12" sm="6">
-          <v-row>
-            <v-col>
+        <v-col  class="mx-0 px-0" cols="12" sm="6">
+          <v-row class="ma-auto">
+            <v-col cols="4">
               <span class="toptitle mt-1" style="text-align:right; float:right">평균 평점</span>
             </v-col>
-            <v-col>
-              <v-rating
-                :value="score"
-                background-color="white"
-                color="amber"
-                dense
-                half-increments
-                readonly
-                medium
-              />
+            <v-col v-if="score==0" class="toptitle mt-1">
+              <span style="font-size:10pt; color:dimgrey">아직 등록된 리뷰가 없습니다</span>
             </v-col>
-            <v-col cols="2">
-              <span class="topscore ml-2">{{ score }}</span>
+            <v-col v-else class="toptitle ma-0 pa-0">    
+              <v-row class="mx-0 px-0">
+                <v-col class="mx-0 px-0 mt-1">          
+                <v-rating
+                  :value="score"
+                  background-color="white"
+                  color="amber"
+                  dense
+                  half-increments
+                  readonly
+                  medium
+                />     </v-col>
+                <v-col class="mx-0 px-0 mt-1">        
+              <span class="topscore">{{ score }}</span></v-col>
+              </v-row>
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="12" sm="6" class="mt-3 text-center">
+        <v-col cols="12" sm="6" class="mt-4 text-center">
           <span class="toptitle">참여자 평균 연령</span>
           <span class="topscore ml-2">{{ avg_age }} 세</span>
         </v-col>
@@ -94,7 +99,7 @@ export default {
 }
 @import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
 .topscore {
-  font-size: 15pt;
+  font-size: 13pt;
   font-family: "Jua", sans-serif;
 }
 </style>

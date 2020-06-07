@@ -311,7 +311,11 @@ export default {
                 this.contentslist[i].meetingImages = null;
               }
             }
-            this.pagelength = Math.floor(this.contentslist.length / 12) + 1;
+            this.page=1;
+            this.pagelength = Math.floor(this.contentslist.length / 12);
+            if(this.contentslist.length % 12 != 0){
+              this.pagelength++;
+            }
             if (this.myarea == 1) {
               this.getMyArea();
             } else {
