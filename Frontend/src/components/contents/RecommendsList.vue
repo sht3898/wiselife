@@ -20,6 +20,7 @@
 </template>
 <script>
 import http from "../../http-common.js";
+import axios from "axios";
 import ContentsCard from "./ContentsCard";
 export default {
   name: "RecommendsList",
@@ -29,6 +30,7 @@ export default {
   data() {
     return {
       ok: false,
+      uid: 0,
       currentOffset: 0,
       windowSize: 4,
       paginationFactor: 220,
@@ -47,28 +49,84 @@ export default {
     }
   },
   mounted() {
-    // this.getList();
+    this.getUserInfo();
   },
   methods: {
-    getList() {
+    getUserInfo() {
       let config = {
         headers: { access_token: localStorage.getItem("token") }
       };
-      this.ok = false;
       http
-        .get(`search/0?keyword=`, config)
+        .get(`user/info/`, config)
         .then(response => {
+          this.uid = response.data.info.userinfo.uid;
+          this.getList();
+        })
+        .catch(() => {
+          location.reload();
+        });
+    },
+    getList() {
+      // let config = {
+      //   headers: { access_token: localStorage.getItem("token") }
+      // };
+      this.ok = false;
+      axios
+        .get(`http://13.125.114.122:8000/api/randomrecommend/` + this.uid)
+        .then(response => {
+          console.log(response);
           this.items = response.data;
+
           for (var i = 0; i < this.items.length; i++) {
-            this.items[i].tags = this.items[i].tags.split(" ");
+            this.items[i].meetingId = this.itmes[i].meeting_id;
+            this.items[i].likeCnt = this.itmes[i].like_cnt;
+            this.items[i].viewCnt = this.itmes[i].view_cnt;
+            this.items[i].meetingImages = this.items[i].image_url;
+            this.items[i].isLike = this.items[i].is_like;
+            let split_tags = this.items[i].tags.split(" ");
+            let tags = [];
+            for (var j in split_tags) {
+              tags.push(split_tags[j]);
+            }
+            tags = Array.from(new Set(tags));
+            this.items[i].tags = tags;
+            if (this.items[i].meetingImages.length != 0) {
+              if (this.items[i].meetingImages[0].substring(2, 3) == "t") {
+                if (this.items[i].meetingImages[0].substring(0, 1) == '"') {
+                  let length = this.items[i].meetingImages[0].length;
+                  this.items[i].meetingImages[0] = this.items[
+                    i
+                  ].meetingImages[0].substring(1, length - 1);
+                }
+                this.items[i].meetingImages = this.items[
+                  i
+                ].meetingImages[0].split(" ")[0];
+                if (this.items[i].meetingImages[0].substring(0, 1) == "h") {
+                  this.items[i].isUrl = true;
+                } else {
+                  this.items[i].isUrl = false;
+                }
+              } else {
+                this.items[i].meetingImages = this.items[i].meetingImages[0];
+              }
+            } else {
+              this.items[i].meetingImages = null;
+            }
+
+            this.items[i].is_class = this.itmes[i].isClass;
+            this.items[i].is_class = this.itmes[i].isClass;
+            this.items[i].is_class = this.itmes[i].isClass;
+            this.items[i].is_class = this.itmes[i].isClass;
+            this.items[i].is_class = this.itmes[i].isClass;
+            this.items[i].is_class = this.itmes[i].isClass;
+            this.items[i].is_class = this.itmes[i].isClass;
+            this.items[i].is_class = this.itmes[i].isClass;
           }
-          this.items[i].tags = Array.from(new Set(this.items[i].tags));
+
           this.ok = true;
         })
         .catch(() => {
-          alert("토큰 만료! 다시 로그인 해주세요!");
-          localStorage.clear();
-          this.$router.go();
+          alert("추천 리스트 가져오기 실패..");
         });
     },
     moveCarousel(direction) {

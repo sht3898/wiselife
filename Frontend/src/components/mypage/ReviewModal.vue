@@ -226,9 +226,7 @@ export default {
           }
         })
         .catch(() => {
-          alert("토큰 만료! 다시 로그인 해주세요!");
-          localStorage.clear();
-          this.$router.go();
+          location.reload();
         });
     },
     getMyMeeting() {
@@ -263,9 +261,7 @@ export default {
           }
         })
         .catch(() => {
-          alert("토큰 만료! 다시 로그인 해주세요!");
-          localStorage.clear();
-          this.$router.go();
+          location.reload();
         });
     },
     dateParsing(beforeParsing) {
@@ -315,8 +311,7 @@ export default {
           this.tab = 0;
           this.wrote = true;
         })
-        .catch(error => {
-          alert(error);
+        .catch(() => {
           location.reload();
         });
     },
@@ -328,15 +323,13 @@ export default {
       };
       http
         .delete(`/review/delete?review_id=` + seq, config)
-        .then(response => {
+        .then(() => {
           this.getMyReview();
           this.pick = 0;
           this.tab = 0;
           this.wrote = false;
         })
         .catch(() => {
-          alert("토큰 만료! 다시 로그인 해주세요!");
-          localStorage.clear();
           this.$router.go();
         });
     }

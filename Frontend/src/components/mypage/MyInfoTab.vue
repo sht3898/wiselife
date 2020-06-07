@@ -243,9 +243,6 @@ export default {
           }
         })
         .catch(() => {
-          alert("토큰 만료! 다시 로그인 해주세요!");
-          localStorage.clear();
-          this.$router.go();
         });
     },
     modify() {
@@ -287,8 +284,6 @@ export default {
           }
         })
         .catch(() => {
-          alert("토큰 만료! 다시 로그인 해주세요!");
-          localStorage.clear();
           this.$router.go();
         });
     },
@@ -308,13 +303,10 @@ export default {
               this.$router.push("/");
               location.reload();
             } else {
-              alert("오류가 발생했습니다. 다시 시도해 주세요.");
-              this.$router.push("/mypage");
+              this.$router.go();
             }
           })
           .catch(() => {
-            alert("토큰 만료! 다시 로그인 해주세요!");
-            localStorage.clear();
             this.$router.go();
           })
           .finally(() => (this.loading = false));
