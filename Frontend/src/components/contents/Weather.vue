@@ -80,9 +80,6 @@ export default {
           }
         })
         .catch(() => {
-          alert("토큰 만료! 다시 로그인 해주세요!");
-          localStorage.clear();
-          this.$router.go();
         });
     },
     getIcon() {
