@@ -13,32 +13,29 @@
         <v-tab-item style="font-size:9pt;">
           <v-row class="ma-auto" style="text-align:center;">
             <v-col cols="1.5">카테고리</v-col>
-            <v-col cols="3.5">강좌/모임명</v-col>
+            <v-col cols="3">강좌/모임명</v-col>
             <v-col cols="1.5">호스트</v-col>
             <v-col cols="2.5">지역</v-col>
-            <v-col cols="1.5">모임 유형</v-col>
+            <v-col cols="1">모임유형</v-col>
             <v-col cols="2.5">모임 날짜</v-col>
           </v-row>
-          <v-hover v-slot:default="{ hover }">
-            <v-card
-              v-for="meeting in attendmeetinglist"
-              :key="meeting.meetingId"
-              outlined
-              :elevation="hover ? 5 : 0"
-              class="my-1"
-              @click="pickMeeting(meeting)"
-            >
-              <v-row class="ma-auto" style="text-align:center;">
-                <v-col cols="1.5">{{ meeting.mainCategory }}</v-col>
-                <v-col cols="3.5">{{ meeting.title }}</v-col>
-                <v-col cols="1.5">{{ meeting.writer }}</v-col>
-                <v-col cols="2.5">{{ meeting.area1 }} {{ meeting.area2 }}</v-col>
-                <v-col cols="1.5">{{ meeting.isClass }}</v-col>
-                <v-col v-if="meeting.isPeriod == '정기'" cols="2.5">{{ meeting.periodDate }}</v-col>
-                <v-col v-else cols="2.5">{{ meeting.meetingDate }}</v-col>
-              </v-row>
-            </v-card>
-          </v-hover>
+          <v-card
+            v-for="meeting in attendmeetinglist"
+            :key="meeting.meetingId"
+            outlined
+            class="my-2"
+            @click="pickMeeting(meeting)"
+          >
+            <v-row class="ma-auto" style="text-align:center;">
+              <v-col cols="1.5">{{ meeting.mainCategory }}</v-col>
+              <v-col cols="3">{{ meeting.title }}</v-col>
+              <v-col cols="1.5">{{ meeting.writer }}</v-col>
+              <v-col cols="2.5">{{ meeting.area1 }} {{ meeting.area2 }}</v-col>
+              <v-col cols="1">{{ meeting.isClass }}</v-col>
+              <v-col v-if="meeting.isPeriod == '정기'" cols="2.5">{{ meeting.periodDate }}</v-col>
+              <v-col v-else cols="2.5">{{ meeting.meetingDate }}</v-col>
+            </v-row>
+          </v-card>
         </v-tab-item>
         <v-tab-item>
           <v-content
@@ -106,18 +103,17 @@
                 small
                 @click="writeReview()"
                 style="font-size: 12pt;"
-              >등록</v-btn>
-              <!-- <v-btn class="reviewbtn" rounded small style="font-size: 12pt;">삭제</v-btn> -->
+              >등록</v-btn>             
             </div>
           </v-container>
-          <v-container>
+          <v-container v-else>
             <v-row>
-              <v-col class="mt-2 pl-5" cols="12" sm="9">
+              <v-col class="mt-2 pl-5" cols="12" sm="8">
                 <span class="picktitle">{{ picktitle }}</span>
               </v-col>
-              <v-col class="pl-5" cols="12" sm="3">
+              <v-col class="pl-5" cols="12" sm="4">
                 <v-row>
-                  <v-col  style="padding-top:10px" >
+                  <v-col style="padding-top:10px">
                     <v-rating
                       :value="picked.score"
                       background-color="white"
@@ -125,7 +121,7 @@
                       dense
                       half-increments
                       readonly
-                      small                                           
+                      small
                     ></v-rating>
                   </v-col>
                   <v-col>
@@ -144,6 +140,9 @@
                 <v-card outlined class="pa-3" width="100%" height="100%">{{ picked.content }}</v-card>
               </v-col>
             </v-row>
+            <div style="text-align:right">
+             <v-btn class="reviewbtn" rounded small style="font-size: 12pt;" @click="deleteReview(picked.reviewId)">삭제</v-btn>
+            </div>
           </v-container>
         </v-tab-item>
       </v-tabs-items>
@@ -308,22 +307,32 @@ export default {
       formData.append("score", this.rating);
       formData.append("imageFile", this.files);
 
-      for (var key of formData.keys()) {
-        console.log(key);
-      }
-
-      for (var value of formData.values()) {
-        console.log(value);
-      }
-
       http
         .post("/review/write", formData, config)
-        .then(response => {
-          console.log(response);
+        .then(() => {
+          this.getMyReview();
+          this.pick = 0;
+          this.tab = 0;
+          this.wrote = true;
         })
         .catch(error => {
           console.log(error);
         });
+    },
+    deleteReview(seq){
+      let config = {
+        headers: {
+          access_token: localStorage.getItem("token")
+        }
+      };
+      http.delete(`/review/delete?review_id=`+seq, config)
+      .then(response=>{
+        console.log(response);
+         this.getMyReview();
+          this.pick = 0;
+          this.tab = 0;
+          this.wrote = false;
+      })
     }
   }
 };

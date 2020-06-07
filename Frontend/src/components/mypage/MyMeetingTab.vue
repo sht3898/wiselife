@@ -33,7 +33,7 @@
       </div>
     </v-container>
     <!-- 리뷰 modal -->
-    <v-dialog v-model="dialog" scrollable max-width="800">
+    <v-dialog v-model="dialog" scrollable max-width="970">
       <v-card>
         <v-card-title>
           <v-row class="menu">

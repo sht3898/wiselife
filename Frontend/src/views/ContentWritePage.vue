@@ -469,6 +469,9 @@ export default {
       formData.append("refUrl", this.meeting.ref_url);
       formData.append("address", this.meeting.address);
       formData.append("fee", this.meeting.fee);
+      if(this.meeting.unit =="회비"){
+        this.meeting.unit = "원"
+      }
       formData.append("unit", this.meeting.unit);
       formData.append(
         "mainCategory",
@@ -484,7 +487,6 @@ export default {
         .then(response => {
           if (response.status == 200) {
             alert("성공적으로 등록되었습니다!");
-            alert(response.data.meeting_id);
             this.$router.push("/contentdetail/" + response.data.meeting_id);
           }
         })

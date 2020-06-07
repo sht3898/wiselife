@@ -67,11 +67,11 @@
             <v-card-text>
               <v-row>
                 <v-col cols="4">Rest API 구축</v-col>
-                <v-col>사용자 관련 API 구축</v-col>
+                <v-col>사용자 관련 및 채팅 API 구축</v-col>
               </v-row>
               <v-row>
                 <v-col cols="4">BigData</v-col>
-                <v-col>데이터 가공 및 Hybrid 추천 시스템 구현</v-col>
+                <v-col>강좌/모임 데이터 가공</v-col>
               </v-row>
             </v-card-text>
           </v-expansion-panel-content>
@@ -108,7 +108,7 @@
               </v-row>
               <v-row>
                 <v-col cols="4">BigData</v-col>
-                <v-col>데이터 가공 및 Hybrid 추천 시스템 구현</v-col>
+                <v-col>강좌/모임 데이터 가공</v-col>
               </v-row>
             </v-card-text>
           </v-expansion-panel-content>
@@ -182,8 +182,8 @@
             <v-divider></v-divider>
             <v-card-text>
               <v-row>
-                <v-col cols="4">DataBase 설계</v-col>
-                <v-col>테이블 설계 및 생성</v-col>
+                <v-col cols="4">DataBase 설계 및 BigData</v-col>
+                <v-col>ERD 설계 및 추천 시스템 고도화</v-col>
               </v-row>
               <v-row>
                 <v-col cols="4">화면 구현 및 API 활용</v-col>
@@ -213,7 +213,7 @@
               </v-col>
 
               <v-col class="text-no-wrap hidden-xs-only" cols="5" sm="3">
-                <span>프론트</span>
+                <span>프론트 및 배포</span>
               </v-col>
 
               <v-col class="grey--text text-truncate">jennyahn94@naver.com</v-col>
