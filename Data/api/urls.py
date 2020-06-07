@@ -29,7 +29,7 @@ urlpatterns = [
 
     
    path('recommendations/<int:uid>/', views.Recommend),
-   path('randomrecommend/', views.RandomRecommend),
+   path('randomrecommend/<int:uid>/', views.RandomRecommend),
    # path('users/', views.Users),
    # path('userdetail/<int:uid>/', views.UserDetail),
    # path('meetings/', views.Meetings),
