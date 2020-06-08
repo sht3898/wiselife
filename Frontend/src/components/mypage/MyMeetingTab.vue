@@ -116,6 +116,7 @@ export default {
       http
         .get(`meeting/list`, config)
         .then(response => {
+          console.log(response.data);
           this.attendmeetinglist = response.data.참여;
           if (this.attendmeetinglist.length == 0) {
             this.notattend = true;

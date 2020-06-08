@@ -40,7 +40,9 @@ export default {
     atEndOfList() {
       return (
         this.currentOffset <=
-        this.paginationFactor * -1 * (this.attendlist.length - this.windowSize)
+        this.paginationFactor *
+          -1 *
+          (this.attendlist.length - this.windowSize + 2)
       );
     },
     atHeadOfList() {

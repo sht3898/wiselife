@@ -429,7 +429,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
 
 			if (userMeeting != null) {
-				if (userMeeting.getUser().getUid() == uid)
+				if (meeting.getUser().getUid() == uid)
 					return -3; // 개설자는 참가 취소 못함
 
 				userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
