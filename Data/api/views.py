@@ -12,6 +12,8 @@ from .serializers import MeetingSerializer, UserSerializer, MeetingSerializer
 # Create your views here.
 # 유저 기반 추천 시스템
 # recommend(유저 아이디, 추천 받고 싶은 추천 개수(기본값=12))
+# 아직 작성한 리뷰가 3개가 안되거나 서버에 등록된 미팅 개수가 30개 미만이면
+# 전제 미팅을 좋아요수 기준으로 내림차순 정렬하여 반환
 @api_view(["GET"])
 def Recommend(request, uid):
     meeting_count = models.Meeting.objects.count()
