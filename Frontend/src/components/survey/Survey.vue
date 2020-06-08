@@ -373,7 +373,6 @@ export default {
           .put(`user/survey/update`, data, config)
           .then(response => {
             if (response.data.status) {
-              alert("수정되었습니다!");
               this.$router.push("/surveyresult");
             }
           })

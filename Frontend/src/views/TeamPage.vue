@@ -145,7 +145,7 @@
               </v-row>
               <v-row>
                 <v-col cols="4">BigData</v-col>
-                <v-col>데이터 가공 및 Hybrid 추천 시스템 구현</v-col>
+                <v-col>데이터 가공 및 Item-based CF 추천 시스템 구현</v-col>
               </v-row>
             </v-card-text>
           </v-expansion-panel-content>
