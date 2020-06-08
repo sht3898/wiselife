@@ -41,7 +41,7 @@ export default {
     atEndOfList() {
       return (
         this.currentOffset <=
-        this.paginationFactor * -1 * (this.items.length - this.windowSize)
+        this.paginationFactor * -1 * (this.items.length - this.windowSize + 2)
       );
     },
     atHeadOfList() {
@@ -72,7 +72,7 @@ export default {
       // };
       this.ok = false;
       axios
-        .get(`http://13.125.114.122:8000/api/randomrecommend/` + this.uid+"/")
+        .get(`http://13.125.114.122:8000/api/randomrecommend/` + this.uid + "/")
         .then(response => {
           console.log(response.data);
           this.items = response.data;
