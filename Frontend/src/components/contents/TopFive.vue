@@ -176,9 +176,6 @@ export default {
             response.data.info.userinfo.area2;
         })
         .catch(() => {
-          alert("토큰 만료! 다시 로그인 해주세요!");
-          localStorage.clear();
-          this.$router.go();
         });
     },
     getTopFive() {
@@ -194,9 +191,6 @@ export default {
           this.arealist = response.data.지역;
         })
         .catch(() => {
-          alert("토큰 만료! 다시 로그인 해주세요!");
-          localStorage.clear();
-          this.$router.go();
         });
     }
   }

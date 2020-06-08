@@ -21,7 +21,6 @@
         </v-row>
       </div>
     </div>
-    <!-- /.container -->
   </section>
 </template>
 
@@ -64,7 +63,7 @@ export default {
     // init search
     let index = Math.floor(Math.random() * (this.searchkeyword.length - 1));
     let keyword = this.searchkeyword[index];
-    // this.videoSearch(keyword);
+    this.videoSearch(keyword);
   },
   methods: {
     videoSearch(searchTerm) {
