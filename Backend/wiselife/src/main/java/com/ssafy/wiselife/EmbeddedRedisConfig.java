@@ -1,5 +1,4 @@
-package com.example.chat.config;
-
+package com.ssafy.wiselife;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 

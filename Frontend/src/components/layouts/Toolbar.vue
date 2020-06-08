@@ -146,6 +146,7 @@ export default {
           .then(response => {
             this.profile_image = response.data.info.userinfo.profileImage;
             this.name = response.data.info.userinfo.username;
+            localStorage.setItem("kakao_name",this.name);
           })
           .catch(() => {
             alert("토큰 만료! 다시 로그인 해주세요!");

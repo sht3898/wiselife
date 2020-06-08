@@ -1,14 +1,13 @@
-package com.example.chat.controller;
+package com.ssafy.wiselife.controller;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import com.example.chat.model.ChatMessage;
-import com.example.chat.repo.ChatRoomRepository;
-import com.example.chat.sevice.RedisPublisher;
+import com.ssafy.wiselife.dto.ChatMessage;
+import com.ssafy.wiselife.repository.ChatRoomRepository;
+import com.ssafy.wiselife.service.RedisPublisher;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
 @CrossOrigin(origins = ("*"), maxAge = 6000)

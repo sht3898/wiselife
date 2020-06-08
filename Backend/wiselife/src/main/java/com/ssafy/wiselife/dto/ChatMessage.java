@@ -1,5 +1,6 @@
-package com.example.chat.model;
+package com.ssafy.wiselife.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,7 @@ public class ChatMessage {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Builder
 	public ChatMessage(MessageType type, String roomId, String sender, String message) {
 		this.type = type;
 		this.roomId = roomId;

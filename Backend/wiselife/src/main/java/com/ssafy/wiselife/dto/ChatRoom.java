@@ -1,10 +1,7 @@
-package com.example.chat.model;
+package com.ssafy.wiselife.dto;
 
 import java.io.Serializable;
 import java.util.UUID;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +14,7 @@ public class ChatRoom implements Serializable {
 			
 	private String roomId;
 	private String name;
+//	private long userCount;
 
 	public static ChatRoom create(String name) {
 		ChatRoom chatRoom = new ChatRoom();

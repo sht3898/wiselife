@@ -9,7 +9,7 @@
       <div class="input-group-prepend">
         <label class="input-group-text">방제목</label>
       </div>
-      <input type="text" class="form-control" v-model="room_name" v-on:keyup.enter="createRoom" />
+      <input type="text" class="form-control" v-model="roomName" v-on:keyup.enter="createRoom" />
       <div class="input-group-append">
         <button class="btn btn-primary" type="button" @click="createRoom">채팅방 개설</button>
       </div>
@@ -20,13 +20,14 @@
         v-for="item in chatrooms"
         v-bind:key="item.roomId"
         v-on:click="enterRoom(item.roomId,item.name)"
-      >{{item.name}}</li>
+      ><h6>{{item.name}} 
+        </h6></li>
     </ul>
   </div>
 </template>
 
 <script>
-import http from "../../http-common";
+import http from "../http-common";
 
 export default {
   name: "room",
@@ -35,7 +36,7 @@ export default {
   },
   data() {
     return {
-      room_name: "",
+      roomName: "",
       chatrooms: []
     };
   },
@@ -45,22 +46,23 @@ export default {
   methods: {
     findAllRoom: function() {
       http
-      .get("/chat/rooms").then(response => {
+      .get("/rooms").then(response => {
         this.chatrooms = response.data;
+        console.log(this.chatrooms);
       });
     },
     createRoom: function() {
-      if ("" === this.room_name) {
+      if ("" === this.roomName) {
         alert("방 제목을 입력해 주십시오.");
         return;
       } else {
         var params = new URLSearchParams();
-        params.append("name", this.room_name);
+        params.append("name", this.roomName);
         http
-          .post("/chat/room", params)
+          .post("/room", params)
           .then(response => {
             alert(response.data.name + "방 개설에 성공하였습니다.");
-            this.room_name = "";
+            this.roomName = "";
             this.findAllRoom();                                                                
           })
           .catch(error => {
@@ -69,16 +71,14 @@ export default {
           ;
       }
     }, 
-    enterRoom: function(roomId, room_name) {
-      var sender = prompt("대화명을 입력해 주세요.");
-      if (sender != "") {
+    enterRoom: function(roomId, roomName) {
         localStorage.setItem("wschat.roomId", roomId);
-        localStorage.setItem("wschat.room_name", room_name);
-        localStorage.setItem("wschat.sender", sender);
-        location.href = "/roomdetail/" + roomId;
+        localStorage.setItem("wschat.roomName", roomName);
+        localStorage.setItem("wschat.sender", localStorage.getItem("kakao_name"));
+        // location.href = "/roomdetail/" + roomId;
+        this.$router.push("/roomdetail/"+roomId);
       }
     } 
-  }
 };
 </script>
 

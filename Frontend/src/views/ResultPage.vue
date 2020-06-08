@@ -329,7 +329,7 @@ export default {
           this.myarea2 = response.data.info.userinfo.area2;
         })
         .catch(error => {
-          alert("토큰 만료! 다시 로그인 해주세요!");
+          alert(error+"토큰 만료! 다시 로그인 해주세요!");
           localStorage.clear();
           this.$router.go();
         });

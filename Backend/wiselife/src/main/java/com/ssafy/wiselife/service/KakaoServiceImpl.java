@@ -89,9 +89,7 @@ public class KakaoServiceImpl implements IKakaoService {
 			// 요청에 필요한 Header에 포함될 내용
 			conn.setRequestProperty("Authorization", "Bearer " + access_token);
 
-			System.out.println(access_token);
 			int responseCode = conn.getResponseCode();
-			System.out.println("responseCode : " + responseCode);
 
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
@@ -102,8 +100,6 @@ public class KakaoServiceImpl implements IKakaoService {
 				result += line;
 			}
 			
-			System.out.println("response body : " + result);
-
 			JsonParser parser = new JsonParser();
 			JsonElement element = parser.parse(result);			
 
@@ -117,9 +113,9 @@ public class KakaoServiceImpl implements IKakaoService {
 			}else {
 				profile_image = properties.getAsJsonObject().get("profile_image").getAsString();
 			}
-			System.out.println("id : "+id);
-			System.out.println("nickname : "+nickname);
-			System.out.println("profile_image : "+profile_image);
+//			System.out.println("id : "+id);
+//			System.out.println("nickname : "+nickname);
+//			System.out.println("profile_image : "+profile_image);
 
 			userInfo.put("id", id);
 			userInfo.put("nickname", nickname);

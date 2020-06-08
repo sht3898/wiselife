@@ -1,7 +1,7 @@
 <template>
   <div class="container" v-cloak>
     <div>
-      <h2>{{room.name}}</h2>
+      <h2>{{roomName}}</h2>
     </div>
     <div class="input-group">
       <div class="input-group-prepend">
@@ -22,11 +22,11 @@
 </template>
 
 <script>
-import http from "../../http-common";
+import http from "../http-common";
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
 
-var sock = new SockJS("http://localhost:8081");
+var sock = new SockJS("http://localhost:8080/api");
 var ws = Stomp.over(sock);
 var reconnect = 0;
 export default {
@@ -37,27 +37,27 @@ export default {
   data() {
     return {
       roomId: "",
-      room: {},
+      roomName: '',
       sender: "",
       message: "",
-      messages: []
+      messages: [],
     };
   },
   created() {
     this.roomId = localStorage.getItem("wschat.roomId");
+    this.roomName = localStorage.getItem("wschat.roomName");
     this.sender = localStorage.getItem("wschat.sender");
     this.findRoom();
     this.connect();
   },
   methods: {
     findRoom: function() {
-      http.get("/chat/room/" + this.roomId).then(response => {
+      http.get("/room/" + this.roomId).then(response => {
         this.room = response.data;
         this.connect();
       });
     },
     sendMessage: function() {
-      // var msg= ;
       ws.send(
         "/pub/chat/message",
         JSON.stringify({
@@ -71,11 +71,13 @@ export default {
       this.message = "";
     },
     recvMessage: function(recv) {
+      this.userCount=recv.userCount
       this.messages.unshift({
         type: recv.type,
         roomId: recv.roomId,
         sender: recv.type == "ENTER" ? "[알림]" : recv.sender,
-        message: recv.message
+        message: recv.message,
+       
       });
     },
     connect() {
@@ -86,13 +88,14 @@ export default {
           ws.subscribe("/sub/chat/room/" + this_comp.roomId, function(message) {
             var recv = JSON.parse(message.body);
             this_comp.recvMessage(recv);
+            console.log("recv:  "+recv)
           });
           ws.send(
             "/pub/chat/message",
             JSON.stringify({
               type: "ENTER",
               roomId: this_comp.roomId,
-              sender: this_comp.sender
+              sender: this_comp.sender,
             }),
             {}
           );
@@ -102,7 +105,7 @@ export default {
           if (reconnect++ <= 5) {
             setTimeout(function() {
               console.log("connection reconnect");
-              sock = new SockJS("/");
+              sock = new SockJS("http://localhost:8080/api");
               ws = Stomp.over(sock);
               this_comp.connect();
             }, 10 * 1000);
@@ -113,38 +116,6 @@ export default {
   }
 };
 
-// function connect() {
-//   // pub/sub event
-//   ws.connect(
-//     {},
-//     function() {
-//       ws.subscribe("/sub/chat/room/" + this.$data.roomId, function(message) {
-//         var recv = JSON.parse(message.body);
-//         this.recvMessage(recv);
-//       });
-//       ws.send(
-//         "/pub/chat/message",
-//         {},
-//         JSON.stringify({
-//           type: "ENTER",
-//           roomId: this.$data.roomId,
-//           sender: this.$data.sender
-//         })
-//       );
-//     },
-//     // function() {
-//     //   if (reconnect++ <= 5) {
-//     //     setTimeout(function() {
-//     //       console.log("connection reconnect");
-//     //       sock = new SockJS("/");
-//     //       ws = Stomp.over(sock);
-//     //       connect();
-//     //     }, 10 * 1000);
-//     //   }
-//     // }
-//   );
-// }
-// connect();
 </script>
 
 <style scoped>
