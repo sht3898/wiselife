@@ -1,0 +1,222 @@
+<template>
+  <div>
+    <v-app-bar class="toolbar" id="app-toolbar" flat color="white">
+      <!-- 모바일 화면 -->
+      <v-toolbar-title class="hidden-sm-and-up">
+        <v-img :src="getImgUrl('wiselife.png')" height="55px" width="125px" @click="gohome()" />
+      </v-toolbar-title>
+      <v-toolbar-items class="hidden-sm-and-up">
+        <v-row class="ml-1">
+          <v-col cols="7">
+            <v-text-field
+              prefix="🔎"
+              placeholder=" 검색"
+              @keyup.enter="goSearch(researchValue)"
+              filled
+              rounded
+              dense
+              v-model="researchValue"
+            ></v-text-field>
+          </v-col>
+          <v-col class="ma-0 pa-0 mt-3">
+            <v-btn fab small class="infotext orange lighten-2" @click="insertContent">✒️</v-btn>
+
+            <v-btn text v-if="isLogin" class="text-center ma-0 pa-0">
+              <v-menu offset-y open-on-hover>
+                <template v-slot:activator="{ on }">
+                  <v-avatar size="38px" v-on="on">
+                    <img :src="profile_image" />
+                  </v-avatar>
+                </template>
+
+                <v-list dense shaped width="150px">
+                  <v-list-item @click="entermypage">
+                    <v-list-item-action>
+                      <v-list-item-content
+                        style="font-weight:bold; font-size:10pt; color:dimgrey"
+                      >My Page</v-list-item-content>
+                    </v-list-item-action>
+                  </v-list-item>
+                  <v-list-item @click="logout">
+                    <v-list-item-action>
+                      <v-list-item-content
+                        style="font-weight:bold; font-size:10pt; color:dimgrey"
+                      >Logout</v-list-item-content>
+                    </v-list-item-action>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-toolbar-items>
+
+      <!-- 전체화면 -->
+      <v-toolbar-title class="hidden-xs-only justify-content-around">
+        <v-img :src="getImgUrl('wiselife.png')" height="62px" width="100px" @click="gohome()" />
+      </v-toolbar-title>
+      <v-toolbar-items class="hidden-xs-only justify-content-around">
+        <v-col cols="11" class="searchbar ml-6 mr-2 pr-2">
+          <v-text-field
+            prefix="🔎"
+            placeholder="강좌/모임 검색"
+            @keyup.enter="goSearch(researchValue)"
+            filled
+            rounded
+            dense
+            v-model="researchValue"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-btn rounded class="infotext orange lighten-2" @click="insertContent">강좌/모임 만들기 ✒️</v-btn>
+        </v-col>
+        <v-col cols="3">
+          <span v-if="isLogin" class="text-center mt-1" style="cursor:pointer">
+            <v-menu offset-y open-on-hover>
+              <template v-slot:activator="{ on }">
+                <span
+                  class="infotext"
+                  text
+                  v-on="on"
+                  style="padding-bottom:15px; font-size:16pt; color:dimgrey"
+                >
+                  <v-avatar size="40px">
+                    <img :src="profile_image" />
+                  </v-avatar>
+                  {{name}} 님
+                </span>
+              </template>
+
+              <v-list dense shaped width="150px">
+                <v-list-item @click="entermypage">
+                  <v-list-item-action>
+                    <v-list-item-content
+                      style="font-weight:bold; font-size:15px; color:dimgrey"
+                    >My Page</v-list-item-content>
+                  </v-list-item-action>
+                </v-list-item>
+                <v-list-item @click="logout">
+                  <v-list-item-action>
+                    <v-list-item-content
+                      style="font-weight:bold; font-size:15px; color:dimgrey"
+                    >Logout</v-list-item-content>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </span>
+        </v-col>
+      </v-toolbar-items>
+    </v-app-bar>
+  </div>
+</template>
+
+<script>
+import http from "../../http-common.js";
+export default {
+  name: "Toolbar",
+  components: {},
+  data: () => ({
+    sidebar: false,
+    responsive: false,
+    id: "",
+    isLogin: false,
+    email: "",
+    name: "",
+    profile_image: "",
+    researchValue: ""
+  }),
+  computed: {},
+  mounted() {
+    this.getUserInfo();
+    this.onResponsiveInverted();
+    window.addEventListener("resize", this.onResponsiveInverted);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.onResponsiveInverted);
+  },
+  methods: {
+    getUserInfo() {
+      if (localStorage.getItem("token") != null) {
+        let config = {
+          headers: { access_token: localStorage.getItem("token") }
+        };
+        http
+          .get(`user/info/`, config)
+          .then(response => {
+            this.profile_image = response.data.info.userinfo.profileImage;
+            this.name = response.data.info.userinfo.username;
+            localStorage.setItem("kakao_name",this.name);
+          })
+          .catch(() => {
+            alert("토큰 만료! 다시 로그인 해주세요!");
+            localStorage.clear();
+            this.$router.go();
+          });
+        this.isLogin = true;
+      } else {
+        alert("로그인이 필요합니다!");
+        this.$router.push("/");
+        location.reload();
+      }
+    },
+    onResponsiveInverted() {
+      if (window.innerWidth < 900) {
+        this.responsive = true;
+      } else {
+        this.responsive = false;
+      }
+    },
+    getImgUrl(img) {
+      return require("../../assets/" + img);
+    },
+    gohome() {
+      this.$router.push("/");
+    },
+    goSearch(keyword) {
+      this.researchValue = "";
+      this.$router.push("/result/0/" + keyword);
+    },
+    insertContent() {
+      this.$router.push("/contentwrite");
+    },
+    /////////////////// 회원 ////////////////////////
+    getUserName() {
+      this.id = localStorage.getItem("id");
+    },
+
+    logout() {
+      let conf = confirm("로그아웃 하시겠습니까?");
+      if (conf == true) {
+        localStorage.clear();
+        // this.$router.push("/");
+        this.$router.go();
+      }
+    },
+    /////////////////////////////////////////////////////
+    entermypage() {
+      this.$router.push("/mypage");
+    }
+  }
+};
+</script>
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap");
+.infotext {
+  font-family: "Nanum Pen Script", cursive;
+}
+.toolbar {
+  min-height: 100px;
+  max-width: 1000px;
+  margin: auto;
+  padding-top: 20px;
+  position: absolute;
+}
+.mobiletoolbar {
+  min-height: 100px;
+  max-width: 375px;
+  margin: auto;
+  padding-top: 20px;
+  position: absolute;
+}
+</style>
