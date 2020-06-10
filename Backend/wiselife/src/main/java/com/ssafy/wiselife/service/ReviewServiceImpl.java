@@ -110,7 +110,7 @@ public class ReviewServiceImpl implements IReviewService {
 			reviewrepo.save(reviewEntity);
 
 			// 별점 평균 저장
-			int avgScore = reviewrepo.avgScoreMeeting(review.getMeetingId());
+			double avgScore = reviewrepo.avgScoreMeeting(review.getMeetingId());
 			meeting.setScore(avgScore);
 			meetingrepo.save(meeting);
 

@@ -141,6 +141,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingEntity.setIsClass(meeting.getIsClass());
 			meetingEntity.setContent(meeting.getContent());
 			meetingEntity.setRefUrl(meeting.getRefUrl());
+			meetingEntity.setMaxPerson(meeting.getMaxPerson());
 			meetingEntity.setAddress(meeting.getAddress());
 			meetingEntity.setFee(meeting.getFee());
 			meetingEntity.setUnit(meeting.getUnit());
