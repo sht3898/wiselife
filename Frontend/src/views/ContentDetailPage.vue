@@ -511,15 +511,10 @@ export default {
         });
     },
     dateParsing(beforeParsing) {
-      const t = beforeParsing.indexOf("T");
-      const afterParsing = beforeParsing.substring(0, t);
-      const realdate =
-        afterParsing.substring(0, 4) +
-        "년 " +
-        afterParsing.substring(5, 7) +
-        "월 " +
-        afterParsing.substring(8, 10) +
-        "일";
+      let year = beforeParsing.substring(0,4);
+      let month = beforeParsing.substring(5,7);
+      let date = beforeParsing.substring(8,10);
+      let realdate = year + "년 " + month + "월 " + date + "일";
       return realdate;
     },
     init() {
