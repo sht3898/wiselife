@@ -47,6 +47,7 @@ public class MeetingDTO {
 		private String content;
 		private String refUrl;
 		private String address;
+		private int maxPerson;
 		private int fee;
 		private String unit;
 		private int isActive;
