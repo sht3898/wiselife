@@ -141,6 +141,7 @@ public class MeetingServiceImpl implements IMeetingService {
 			meetingEntity.setIsClass(meeting.getIsClass());
 			meetingEntity.setContent(meeting.getContent());
 			meetingEntity.setRefUrl(meeting.getRefUrl());
+			meetingEntity.setMaxPerson(meeting.getMaxPerson());
 			meetingEntity.setAddress(meeting.getAddress());
 			meetingEntity.setFee(meeting.getFee());
 			meetingEntity.setUnit(meeting.getUnit());
@@ -435,6 +436,7 @@ public class MeetingServiceImpl implements IMeetingService {
 				userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
 				usermeetingrepo.delete(userMeeting);
 				meeting.setNowPerson(meeting.getNowPerson() - 1);
+				meetingrepo.save(meeting);
 				return 0; // 미팅참여취소
 			} else {
 				if (meeting.getNowPerson() == meeting.getMaxPerson()) {

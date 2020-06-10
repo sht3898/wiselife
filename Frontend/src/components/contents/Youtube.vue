@@ -68,7 +68,7 @@ export default {
   methods: {
     videoSearch(searchTerm) {
       YouTubeSearch(
-        { key: "AIzaSyD2ipx6PqlX5qy6cAWXfwg265izg7YPe2Y", term: searchTerm },
+        { key: "AIzaSyCcEivZ1lgn-0g21xY-Oz0Huxw4-kZBGjc", term: searchTerm },
         videos => {
           this.videos = videos;
           // get the first video (before one is selected --this is the default)

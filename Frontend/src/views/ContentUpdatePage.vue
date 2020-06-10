@@ -480,6 +480,9 @@ export default {
           if (this.meeting.tags != null || this.meeting.tags != "") {
             this.hashtag = this.meeting.tags.split(" ");
           }
+          if(this.meeting.unit == "원"){
+            this.meeting.unit = "회비"
+          }
           this.area1 = response.data.area1;
         })
         .catch(() => {

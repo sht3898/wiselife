@@ -35,9 +35,70 @@ def loaddata():
     ratings = pd.merge(meetings, reviews, on='meeting_id')
     return meetings, reviews, ratings
 
-def make_list():
+def mbti(uid):
+    # mysql 연결
+    conn = pymysql.connect(host='13.125.114.122', user='root', password='wiselife5', db='wiselife', charset='utf8')
+    curs = conn.cursor()
+    # meeting과 review 데이터 가져오기
+    df_users = pd.read_sql('select * from user', con=conn)
+    df_surveys = pd.read_sql('select * from survey', con=conn)
+    df_usermeetings = pd.read_sql('select * from user_meeting', con=conn)
+    df_meetings = pd.read_sql('select * from meeting', con=conn)
+    df_meetings = df_meetings[['meeting_id', 'title']]
+    df_reviews = pd.read_sql('select * from review', con=conn)
+    conn.close()
+    
+    avg = {'openness': 67, 'conscientiousness': 64, 'extraversion': 60, 'agreeableness': 60, 'neuroticism': 55}
+    users = pd.merge(df_users, df_surveys, on='uid')
+    mbti = []
+    users['avg_extraversion'] = avg['extraversion']
+    users['avg_openness'] = avg['openness']
+    users['avg_agreeableness'] = avg['agreeableness']
+    users['avg_conscientiousness'] = avg['conscientiousness']
+    for i, user in users.iterrows():
+        temp = ''
+        if user['extraversion'] < user['avg_extraversion']:
+            temp += 'I'
+        elif user['extraversion'] >= user['avg_extraversion']:
+            temp += 'E'
+        if user['openness'] < user['avg_openness']:
+            temp += 'S'
+        elif user['openness'] >= user['avg_openness']:
+            temp += 'N'
+        if user['agreeableness'] < user['avg_agreeableness']:
+            temp += 'T'
+        elif user['agreeableness'] >= user['avg_agreeableness']:
+            temp += 'F'
+        if user['conscientiousness'] < user['avg_conscientiousness']:
+            temp += 'P'
+        elif user['conscientiousness'] >= user['avg_conscientiousness']:
+            temp += 'J'
+        mbti.append(temp)
+    users['mbti'] = mbti
+    users.drop(['avg_extraversion', 'avg_openness', 'avg_agreeableness', 'avg_conscientiousness'], axis='columns', inplace=True)
+    
+    my_mbti = users[users.uid==uid].mbti
+    same_users = users[users.mbti==my_mbti.values[0]]
+    same_meetings = df_usermeetings[df_usermeetings['uid'].isin(same_users['uid'])]
+    recommend_meetings = df_meetings[df_meetings['meeting_id'].isin(same_meetings['meeting_id'])]
+
+    meetings = recommend_meetings[['meeting_id', 'title']]
+    reviews = df_reviews[['uid', 'meeting_id', 'score']]
+    ratings = pd.merge(meetings, reviews, on='meeting_id')
+    print(ratings)
+    return meetings, reviews, ratings
+
+def make_list(uid):
     # 데이터 불러오기
-    meetings, reviews, ratings = loaddata()
+    check = 0
+    try:
+        meetings, reviews, ratings = mbti(uid)
+    except:
+        check = 1
+
+    if check == 1 or len(meetings) <= 24 or len(ratings) <= 24:
+        meetings, reviews, ratings = loaddata()
+    
     # ratings에서 uid를 인덱스, meeting_id를 컬럼, score를 값으로 하는 피봇을 만들어 저장
     df_user_meeting_ratings = ratings.pivot(
         index='uid',
@@ -70,7 +131,7 @@ def make_list():
 
 def recommend(uid, num_recommendations=12):
     # make_list에서 작업한 정보들 불러오기
-    df_svd_preds, meetings, reviews = make_list()
+    df_svd_preds, meetings, reviews = make_list(uid)
     # uid를 받아서 유저에 따른 추천 목록을 내림차순으로 보여준다
     sorted_user_predictions = df_svd_preds.loc[uid].sort_values(ascending=False)
     # uid를 통해 유저가 작성했던 리뷰들을 불러온다
@@ -87,5 +148,7 @@ def recommend(uid, num_recommendations=12):
     return recommendations
 
 if __name__ == "__main__":
-    predictions = recommend(1, 10)
-    print(predictions)
+    # predictions = recommend(1, 10)
+    # print(predictions)
+    print(make_list(1375532981))
+    # print(mbti(1375532981))

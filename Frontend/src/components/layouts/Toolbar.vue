@@ -3,10 +3,10 @@
     <v-app-bar class="toolbar" id="app-toolbar" flat color="white">
       <!-- 모바일 화면 -->
       <v-toolbar-title class="hidden-sm-and-up">
-        <v-img :src="getImgUrl('wiselife.png')" height="55px" width="125px" @click="gohome()" />
+        <v-img :src="getImgUrl('wiselife.png')" height="auto" width="18vw" max-width="100px" @click="gohome()" />
       </v-toolbar-title>
       <v-toolbar-items class="hidden-sm-and-up">
-        <v-row class="ml-1">
+        <v-row class="ml-3">
           <v-col cols="7">
             <v-text-field
               prefix="🔎"

@@ -19,23 +19,25 @@
             <v-col cols="1">모임유형</v-col>
             <v-col cols="2.5">모임 날짜</v-col>
           </v-row>
-          <v-card
-            v-for="meeting in attendmeetinglist"
-            :key="meeting.meetingId"
-            outlined
-            class="my-2"
-            @click="pickMeeting(meeting)"
-          >
-            <v-row class="ma-auto" style="text-align:center;">
-              <v-col cols="1.5">{{ meeting.mainCategory }}</v-col>
-              <v-col cols="3">{{ meeting.title }}</v-col>
-              <v-col cols="1.5">{{ meeting.writer }}</v-col>
-              <v-col cols="2.5">{{ meeting.area1 }} {{ meeting.area2 }}</v-col>
-              <v-col cols="1">{{ meeting.isClass }}</v-col>
-              <v-col v-if="meeting.isPeriod == '정기'" cols="2.5">{{ meeting.periodDate }}</v-col>
-              <v-col v-else cols="2.5">{{ meeting.meetingDate }}</v-col>
-            </v-row>
-          </v-card>
+          <div v-if="attendmeetinglist.length > 0">
+            <v-card
+              v-for="meeting in attendmeetinglist"
+              :key="meeting.meetingId"
+              outlined
+              class="my-2"
+              @click="pickMeeting(meeting)"
+            >
+              <v-row class="ma-auto" style="text-align:center;">
+                <v-col cols="1.5">{{ meeting.mainCategory }}</v-col>
+                <v-col cols="3">{{ meeting.title }}</v-col>
+                <v-col cols="1.5">{{ meeting.writer }}</v-col>
+                <v-col cols="2.5">{{ meeting.area1 }} {{ meeting.area2 }}</v-col>
+                <v-col cols="1">{{ meeting.isClass }}</v-col>
+                <v-col v-if="meeting.isPeriod == '정기'" cols="2.5">{{ meeting.periodDate }}</v-col>
+                <v-col v-else cols="2.5">{{ meeting.meetingDate }}</v-col>
+              </v-row>
+            </v-card>
+          </div>
         </v-tab-item>
         <v-tab-item>
           <v-content
