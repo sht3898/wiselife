@@ -435,6 +435,7 @@ public class MeetingServiceImpl implements IMeetingService {
 				userMeeting = usermeetingrepo.findByUserAndMeeting(user, meeting);
 				usermeetingrepo.delete(userMeeting);
 				meeting.setNowPerson(meeting.getNowPerson() - 1);
+				meetingrepo.save(meeting);
 				return 0; // 미팅참여취소
 			} else {
 				if (meeting.getNowPerson() == meeting.getMaxPerson()) {
