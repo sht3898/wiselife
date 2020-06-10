@@ -49,6 +49,15 @@ export default {
       return this.currentOffset === 0;
     }
   },
+  mounted(){
+    if(window.innerWidth < 600){
+      this.windowSize = 2;
+    }else if(window.innerWidth < 1264){
+      this.windowSize = 3;
+    }else{
+      this.windowSize = 4;
+    }
+  },
   methods: {
     moveCarousel(direction) {
       // Find a more elegant way to express the :style. consider using props to make it truly generic
@@ -80,7 +89,7 @@ body {
 .card-carousel {
   display: flex;
   justify-content: center;
-  width: 42vw;
+  width: 55vw;
 }
 .card-carousel--overflow-container {
   overflow: hidden;

@@ -1,5 +1,5 @@
 <template>
-  <v-flex>
+  <v-flex class="ma-auto">
     <div v-if="ok" class="card-carousel-wrapper">
       <div class="card-carousel--nav__left" :disabled="atHeadOfList" @click="moveCarousel(-1)" />
       <div class="card-carousel">
@@ -40,8 +40,8 @@ export default {
   computed: {
     atEndOfList() {
       return (
-        this.currentOffset <=
-        this.paginationFactor * -1 * (this.items.length - this.windowSize + 2)
+        this.currentOffset <
+        this.paginationFactor * -1 * (this.items.length - this.windowSize)
       );
     },
     atHeadOfList() {
@@ -50,6 +50,13 @@ export default {
   },
   mounted() {
     this.getUserInfo();
+    if (window.innerWidth < 960) {
+      this.windowSize = 2;
+    } else if (window.innerWidth < 1264) {
+      this.windowSize = 3;
+    } else {
+      this.windowSize = 4;
+    }
   },
   methods: {
     getUserInfo() {
@@ -74,7 +81,6 @@ export default {
       axios
         .get(`http://13.125.114.122:8000/api/randomrecommend/` + this.uid + "/")
         .then(response => {
-          console.log(response.data);
           this.items = response.data;
           for (var i = 0; i < this.items.length; i++) {
             this.items[i]["meetingId"] = response.data[i].meeting_id;
