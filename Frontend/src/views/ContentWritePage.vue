@@ -474,9 +474,6 @@ export default {
       formData.append("refUrl", this.meeting.ref_url);
       formData.append("address", this.meeting.address);
       formData.append("fee", this.meeting.fee);
-      if (this.meeting.unit == "회비") {
-        this.meeting.unit = "원";
-      }
       formData.append("unit", this.meeting.unit);
       formData.append(
         "mainCategory",

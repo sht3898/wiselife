@@ -47,12 +47,12 @@ export default {
       return this.currentOffset === 0;
     }
   },
-  mounted(){
-    if(window.innerWidth < 600){
+  mounted() {
+    if (window.innerWidth < 600) {
       this.windowSize = 2;
-    }else if(window.innerWidth < 1264){
+    } else if (window.innerWidth < 1264) {
       this.windowSize = 3;
-    }else{
+    } else {
       this.windowSize = 4;
     }
   },
@@ -87,7 +87,8 @@ body {
 .card-carousel {
   display: flex;
   justify-content: center;
-  width: 55vw;
+  width: 42vw;
+  min-width: 200px;
 }
 .card-carousel--overflow-container {
   overflow: hidden;
