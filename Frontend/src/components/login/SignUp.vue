@@ -86,8 +86,8 @@
     </v-flex>
   </v-container>
   <v-container v-else>
-    <survey :token="token" style="text-align:center; margin:auto; width:85%" />
-    <div class="btn pb-5" style="float:right">
+    <survey :token="token" class="mb-12" style="text-align:center; margin:auto; width:85%" />
+    <div class="btn pb-12" style="float:right">
       <v-btn color="grey lighten-3" class="mr-4" @click="pass()">건너뛰기</v-btn>
     </div>
   </v-container>

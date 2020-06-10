@@ -258,7 +258,7 @@
       </v-row>
 
       <v-row class="mb-5" style="text-align:right; float:right">
-        <v-btn rounded class="mr-2 submitbtn">취소</v-btn>
+        <v-btn rounded class="mr-2 submitbtn" @click="cancel()">취소</v-btn>
         <v-btn rounded class="mr-3 submitbtn" color="orange lighten-1" @click="validate()">등록</v-btn>
       </v-row>
     </v-flex>
@@ -437,6 +437,11 @@ export default {
     },
     handleFilesUploads() {
       this.files = this.$refs.files.$refs.input.files;
+    },
+    cancel(){
+      if (confirm("작성 중인 모든 입력한 내용이 삭제됩니다. 그래도 취소하시겠습니까?") == true) {
+        this.$router.go(-1);
+      }
     },
     validate() {
       let config = {

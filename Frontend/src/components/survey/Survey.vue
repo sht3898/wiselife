@@ -16,10 +16,10 @@
         </p>
       </div>
       <v-divider></v-divider>
-      <div>
-        <v-snackbar v-model="snackbar" :timeout="timeout">
+      <div class="ma-auto" style="width:70vw; text-align:center;">
+        <v-snackbar v-model="snackbar" center :timeout="timeout">
           <span class="pr-2" style="font-size:9pt">진행도</span>
-          <v-progress-linear v-model="value" :active="show" :query="true" style="width:300px"></v-progress-linear>
+          <v-progress-linear v-model="value" :active="show" :query="true" style="max-width:200px;"></v-progress-linear>
           <span class="pl-2" style="font-size:9pt">{{ chkcount }}/30</span>
 
           <span class="pl-2 mdi mdi-close-circle theme--dark" @click="snackbar = false"></span>
@@ -95,7 +95,7 @@
         </ol>
       </div>
     </div>
-    <div class="btn pb-5" style="float:right;">
+    <div class="btn pb-12" style="float:right;">
       <v-btn color="success" class="mr-4" @click="validate()">결과 확인</v-btn>
     </div>
   </div>

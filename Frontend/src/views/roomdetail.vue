@@ -26,7 +26,7 @@ import http from "../http-common";
 import Stomp from "webstomp-client";
 import SockJS from "sockjs-client";
 
-var sock = new SockJS("http://localhost:8080/api");
+var sock = new SockJS("http://13.125.114.122:8080/api");
 var ws = Stomp.over(sock);
 var reconnect = 0;
 export default {
@@ -105,7 +105,7 @@ export default {
           if (reconnect++ <= 5) {
             setTimeout(function() {
               console.log("connection reconnect");
-              sock = new SockJS("http://localhost:8080/api");
+              sock = new SockJS("http://13.125.114.122:8080/api");
               ws = Stomp.over(sock);
               this_comp.connect();
             }, 10 * 1000);
