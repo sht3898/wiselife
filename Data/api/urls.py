@@ -27,11 +27,6 @@ urlpatterns = [
    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
-    
    path('recommendations/<int:uid>/', views.Recommend),
    path('randomrecommend/<int:uid>/', views.RandomRecommend),
-   # path('users/', views.Users),
-   # path('userdetail/<int:uid>/', views.UserDetail),
-   # path('meetings/', views.Meetings),
-   # path('meetingdetail/<int:meeting_id>/', views.MeetingDetail),
 ]

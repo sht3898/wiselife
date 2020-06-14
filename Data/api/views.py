@@ -18,17 +18,59 @@ from .serializers import MeetingSerializer, UserSerializer, MeetingSerializer
 def Recommend(request, uid):
     meeting_count = models.Meeting.objects.count()
     review_count = models.Review.objects.filter(uid=uid).count()
-    results = []
-    if review_count >= 3 and meeting_count >= 30:
-        user = get_object_or_404(models.User, uid=uid)
+
+    user = get_object_or_404(models.User, uid=uid)
+    
+    try:
         meetings = recommend.recommend(user.uid)
+    except:
+        meetings = []
+
+    results = []
+
+    likes = models.LikeMeeting.objects.filter(uid=uid)
+    like_list = []
+    for like in likes:
+        like_list.append(like.meeting_id)
+    
+    if review_count >= 3 and len(meetings) >= 12 and meeting_count >= 30:
         for meeting in meetings.meeting_id.values:
-            results.append(MeetingSerializer(models.Meeting.objects.get(meeting_id=meeting)).data)
-            # results.append(MeetingSerializer(models.Meeting.objects.get(meeting_id=uid)).data)
+            temp = MeetingSerializer(models.Meeting.objects.get(meeting_id=meeting)).data
+
+            images = models.MeetingImages.objects.filter(meeting_id=meeting)
+            image_list = []
+            for image in images:
+                image_list.append(image.image_url) 
+            temp['image_url'] = image_list
+
+            if meeting in like_list:
+                is_like = 1
+            else:
+                is_like = 0
+            temp['is_like'] = is_like
+            results.append(temp)
+    
     else:
-        meetings = models.Meeting.objects.order_by('like_cnt')[:12]
+        meetings = models.Meeting.objects.filter(area1=user.area1).order_by('like_cnt')[:12]
+        if len(meetings) < 12:
+            meetings = models.Meeting.objects.order_by('like_cnt')[:12]
         for meeting in meetings:
-            results.append(MeetingSerializer(models.Meeting.objects.get(meeting_id=meeting.meeting_id)).data)
+            temp = MeetingSerializer(models.Meeting.objects.get(meeting_id=meeting.meeting_id)).data
+
+            images = models.MeetingImages.objects.filter(meeting_id=meeting.meeting_id)
+            image_list = []
+            for image in images:
+                image_list.append(image.image_url)
+            temp['image_url'] = image_list
+
+            if meeting.meeting_id in like_list:
+                is_like = 1
+            else:
+                is_like = 0
+
+            temp['is_like'] = is_like
+            results.append(temp)
+        
     return Response(results, status=status.HTTP_200_OK)
 
 
@@ -65,35 +107,3 @@ def RandomRecommend(request, uid):
         # results.append(MeetingSerializer(models.Meeting.objects.get(meeting_id=idx)).data)
         results.append(temp)
     return Response(results, status=status.HTTP_200_OK)
-
-
-@api_view(["GET"])
-def UserDetail(request, uid):
-    user = models.User.objects.get(uid=uid)
-    print(user)
-    return Response()
-
-
-@api_view(["GET"])
-def Users(request):
-    users = models.User.objects.values()
-    results = []
-    for user in users:
-        results.append(UserSerializer(models.User.objects.get(uid=user['uid'])).data)
-    return Response(results, status=status.HTTP_200_OK)
-
-
-@api_view(["GET"])
-def Meetings(request):
-    meetings = models.Meeting.objects.values()
-    results = []
-    print(meetings)
-    for meeting in meetings:
-        results.append(MeetingSerializer(models.Meeting.objects.get(meeting_id=meeting['meeting_id'])).data)
-    return Response(results, status=status.HTTP_200_OK)
-
-@api_view(["GET"])
-def MeetingDetail(request, meeting_id):
-    meeting = models.Meeting.objects.get(meeting_id=meeting_id)
-    print(meeting)
-    return Response()

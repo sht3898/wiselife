@@ -39,7 +39,8 @@ def mbti(uid):
     # mysql 연결
     conn = pymysql.connect(host='13.125.114.122', user='root', password='wiselife5', db='wiselife', charset='utf8')
     curs = conn.cursor()
-    # meeting과 review 데이터 가져오기
+    # user, survey, usermeeting, meeting, review 데이터 가져오기
+    # meetings는 필요한 정보(meeting_id, title)만 가져오기
     df_users = pd.read_sql('select * from user', con=conn)
     df_surveys = pd.read_sql('select * from survey', con=conn)
     df_usermeetings = pd.read_sql('select * from user_meeting', con=conn)
@@ -48,6 +49,8 @@ def mbti(uid):
     df_reviews = pd.read_sql('select * from review', con=conn)
     conn.close()
     
+    # 미리 계산해둔 big5 평균 점수를 유저별 big5와 비교하여 유저의 mbti 성향을 도출
+    # 계산 때문에 column에 넣었던 avg 변수들은 계산 후 제거
     avg = {'openness': 67, 'conscientiousness': 64, 'extraversion': 60, 'agreeableness': 60, 'neuroticism': 55}
     users = pd.merge(df_users, df_surveys, on='uid')
     mbti = []
@@ -77,6 +80,7 @@ def mbti(uid):
     users['mbti'] = mbti
     users.drop(['avg_extraversion', 'avg_openness', 'avg_agreeableness', 'avg_conscientiousness'], axis='columns', inplace=True)
     
+    # 유저의 mbti를 불러와서 동일한 mbti를 같은 유저 목록을 저장하고 미팅 목록 중 같은 유저들이 참가했던 목록을 계산
     my_mbti = users[users.uid==uid].mbti
     same_users = users[users.mbti==my_mbti.values[0]]
     same_meetings = df_usermeetings[df_usermeetings['uid'].isin(same_users['uid'])]
@@ -85,20 +89,19 @@ def mbti(uid):
     meetings = recommend_meetings[['meeting_id', 'title']]
     reviews = df_reviews[['uid', 'meeting_id', 'score']]
     ratings = pd.merge(meetings, reviews, on='meeting_id')
-    print(ratings)
     return meetings, reviews, ratings
 
 def make_list(uid):
     # 데이터 불러오기
+    # mbti 검사결과가 있다면 mbti 실행으로 생긴 결과 값을 받아오고
+    # mbti 검사결과가 없거나 전체 미팅 개수가 적거나 리뷰 개수가 적어서 오류가 뜬다면 전체 값을 불러옴
     check = 0
     try:
         meetings, reviews, ratings = mbti(uid)
     except:
         check = 1
-
-    if check == 1 or len(meetings) <= 24 or len(ratings) <= 24:
+    if check == 1 or len(meetings) <= 30 or len(ratings) <= 30:
         meetings, reviews, ratings = loaddata()
-    
     # ratings에서 uid를 인덱스, meeting_id를 컬럼, score를 값으로 하는 피봇을 만들어 저장
     df_user_meeting_ratings = ratings.pivot(
         index='uid',
@@ -150,5 +153,8 @@ def recommend(uid, num_recommendations=12):
 if __name__ == "__main__":
     # predictions = recommend(1, 10)
     # print(predictions)
-    print(make_list(1375532981))
+    # print(loaddata())
     # print(mbti(1375532981))
+    # print(make_list(1375532981))
+    # print(mbti(1375532981))
+    print(recommend(1375532981))
